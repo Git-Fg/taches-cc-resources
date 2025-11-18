@@ -45,4 +45,8 @@ Perfect for when your context is getting full, you need a clean slate, or you're
 
 More prompts coming soon.
 
+---
+
+**Community Ports:** [OpenCode](https://github.com/stephenschoettler/taches-oc-prompts)
+
 —TÂCHES
