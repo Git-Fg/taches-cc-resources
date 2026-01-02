@@ -5,6 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-02
+
+### Security & Code Quality Improvements
+
+This release focuses on security hardening and code quality improvements for all automation hooks, following official Claude Code documentation best practices.
+
+### Fixed
+
+**Critical Bug: Mutable Default Argument**
+
+- Removed `optimize-prompt.py` script (dataclass with `metadata: Dict = None` causing TypeError)
+- This script was unused and contained a critical runtime bug
+
+**Security: Path Traversal Protection**
+
+- Added `contains_path_traversal()` function to all hooks
+- Detects `..` in path components and URL-encoded variants (`%2e%2e`, `%2E%2E`)
+- Logs detection and skips silently (permissive mode maintained)
+
+**Code Quality**
+
+- Fixed redundant string splitting in `type-check-on-edit.py` (was splitting 3 times)
+- Standardized type annotations to modern `list[str]` syntax (removed `from typing import List`)
+- Added proper error logging with `logging.getLogger(__name__)` and `logger.debug()`
+- All exception handlers now log with `exc_info=True` for debugging
+
+### Changed
+
+**All Hooks (4 files updated)**
+
+- `protect-files.py` - Added security checks, improved input validation
+- `security-check.py` - Added security checks, improved input validation
+- `format-on-edit.py` - Added security checks, modern type annotations
+- `type-check-on-edit.py` - Added security checks, fixed string splitting bug
+
+**Build Artifacts**
+
+- Updated `.gitignore` to exclude Python cache files (`__pycache__/`, `*.pyc`, `*.pyo`, `*.pyd`)
+
+### Benefits
+
+**Enhanced Security:** Path traversal detection prevents malicious file access attempts
+
+**Better Debugging:** All errors now logged with full tracebacks (via `--debug` flag)
+
+**Modern Code:** Uses Python 3.9+ built-in generic types instead of `typing` module
+
+**Documentation Compliance:** All hooks now follow [official Claude Code hooks documentation](https://code.claude.com/docs/hooks) best practices
+
+### Migration Notes
+
+No breaking changes. Hooks remain in permissive mode (warn, don't block). Security checks silently skip suspicious paths and log for debugging.
+
 ## [1.0.8] - 2026-01-02
 
 ### AI Agent Discoverability Improvements
@@ -109,6 +162,7 @@ All specialist agents now include explicit "Input Handling" or "Initialization" 
 ### Technical Details
 
 The "Refine & Relay" pattern represents the "Middle Way" between:
+
 - **Dumb Relay**: Main model passes raw input without processing
 - **Smart Agent**: Agent does all context gathering and synthesis
 
@@ -123,35 +177,42 @@ This release completes the XML to Markdown migration that was incomplete in v1.0
 ### Fixed
 
 **Phase 1: Router Skills** (4 files)
+
 - Preserved `<intake>` and `<routing>` XML sections only (complex routing logic)
 - Converted all other XML to Markdown headings
 - Files: create-plans, create-agent-skills, create-subagents, create-hooks
 
 **Phase 2: Expertise Skills** (Complete)
+
 - Converted all XML tags to Markdown in expertise skills
 - Files: macos-apps, iphone-apps (SKILL.md and all workflow files)
 
 **Phase 3: Framework Skills** (Complete)
+
 - Converted all XML framework definitions to Markdown
 - Files: All frameworks in strategic-thinking/, prioritization/, problem-analysis/
 
 **Phase 4: Reference Files** (Complete)
+
 - Converted XML reference documentation to Markdown
 - Files: All reference files with remaining XML tags
 
 ### Changed
 
 **YAML Frontmatter Standardization**
+
 - Standardized frontmatter across all agents (added permissionMode where missing)
 - Standardized frontmatter across all commands (consistent structure)
 - Verified all skills have proper name and description fields
 
 **Cleanup**
+
 - Removed .DS_Store files from all directories
 
 ### Migration Notes
 
 If upgrading from v1.0.1, note that:
+
 - XML structure has been fully converted to Markdown (except `<intake>` and `<routing>` in router skills)
 - All functionality remains backwards-compatible
 - No breaking changes
@@ -165,6 +226,7 @@ This release integrates comprehensive workflow capabilities including operationa
 ### Added
 
 #### Operational Agents (7 new)
+
 - **orchestrator** - Master coordinator for complex multi-step tasks (uses Opus model)
 - **code-reviewer** - Expert code review specialist for quality, security, and performance
 - **debugger** - Systematic bug investigation and fixing with 6-phase protocol
@@ -174,6 +236,7 @@ This release integrates comprehensive workflow capabilities including operationa
 - **test-architect** - Comprehensive test strategy design
 
 #### Knowledge Domain Skills (6 new)
+
 - **project-analysis** - Understand codebase structure and patterns
 - **architecture-patterns** - System design guidance (Clean Architecture, Hexagonal, Event-Driven, CQRS)
 - **testing-strategy** - Test approaches (unit, integration, E2E)
@@ -182,6 +245,7 @@ This release integrates comprehensive workflow capabilities including operationa
 - **api-design** - REST/GraphQL API patterns and best practices
 
 #### Strategic Thinking Skills (3 new)
+
 - **strategic-thinking** - Long-term perspective and big-picture analysis
   - Frameworks: first-principles, inversion, second-order, swot, 10-10-10
   - Use when making strategic decisions, business planning, or major life choices
@@ -193,6 +257,7 @@ This release integrates comprehensive workflow capabilities including operationa
   - Use when analyzing problems, making constrained choices, or simplifying complexity
 
 #### Brainstormer Agent & Command (1 new)
+
 - **brainstormer agent** - Strategic thinking and decision specialist (opus model)
   - Auto-selects appropriate frameworks based on context
   - Combines multiple frameworks when beneficial
@@ -202,12 +267,14 @@ This release integrates comprehensive workflow capabilities including operationa
   - Skill mode: Apply frameworks from strategic-thinking, prioritization, or problem-analysis
 
 #### Output Mode Commands (4 new)
+
 - **/architect** - System design mode focusing on architecture before code
 - **/rapid** - Fast development mode for shipping quickly and iterating
 - **/mentor** - Learning mode that explains the "why"
 - **/review** - Code review mode with strict quality standards
 
 #### Automation Hooks (3 new)
+
 - **protect-files.py** - Blocks edits to sensitive files (lock files, .env, .git)
 - **security-check.py** - Scans for potential secrets before writes
 - **format-on-edit.py** - Auto-formats files on edit
@@ -219,12 +286,14 @@ This release integrates comprehensive workflow capabilities including operationa
 ### Changed
 
 **Agent Refinements**
+
 - **test-architect** - Added "Use PROACTIVELY when..." pattern for proper activation
 - **docs-writer** - Added "Use PROACTIVELY when..." pattern and project-analysis skill
 - **refactorer** - Added "Use PROACTIVELY when..." pattern
 - **debugger** - Added debug-like-expert skill for systematic debugging methodology
 
 **Creation Commands Guidance**
+
 - Added guidance notes to all creation commands explaining when to use each:
   - `/create-plan` - For building projects (hierarchical planning)
   - `/create-meta-prompt` - For Claude→Claude pipelines (staged workflows)
@@ -235,6 +304,7 @@ This release integrates comprehensive workflow capabilities including operationa
   - `/create-hook` - For automation
 
 **Plugin Configuration**
+
 - Updated plugin.json description to reflect expanded capabilities
 - Added keywords: orchestration, code-review, security, testing, architecture, debugging
 - Updated README with new strategic thinking section
@@ -242,12 +312,14 @@ This release integrates comprehensive workflow capabilities including operationa
 ### Removed
 
 **12 consider:* commands** - Consolidated into unified brainstormer:
+
 - Old: `/consider:pareto`, `/consider:first-principles`, etc.
 - New: `/brainstorm` with framework-specific or auto-detect modes
 
 ### Migration Guide
 
 **Thinking Frameworks:**
+
 - Before: `/consider:pareto` or `/consider:first-principles`
 - After:
   - `/brainstorm` - Auto-detect best framework
@@ -255,6 +327,7 @@ This release integrates comprehensive workflow capabilities including operationa
   - `/brainstorm strategic` - Use strategic-thinking skill frameworks
 
 ### Total Counts
+
 - **Agents**: 3 → 11 (+8 operational)
 - **Skills**: 9 → 16 (+7 knowledge and strategic thinking)
 - **Commands**: 27 → 20 (-12 consider consolidated, +1 brainstorm, +4 output modes)
@@ -263,6 +336,7 @@ This release integrates comprehensive workflow capabilities including operationa
 ## [1.0.0] - Initial Release
 
 ### Features
+
 - Meta-prompting system with staged prompts
 - Todo management with context preservation
 - 12 thinking model commands (consider/)

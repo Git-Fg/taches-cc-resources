@@ -1,10 +1,10 @@
 # THE CAT TOOLKIT
 
-**Version:** 1.0.9 | **License:** MIT | **Author:** Git-Fg
+**Version:** 1.1.0 | **License:** MIT | **Author:** Git-Fg
 
 A comprehensive collection of AI agent resources (primarily for Claude Code, adaptable to other AI assistants) built for real workflows.
 
-/// A PERSONAL MERGE & REFINEMENT FROM https://github.com/glittercowboy/taches-cc-resources and https://github.com/CloudAI-X/claude-workflow ///
+/// A PERSONAL MERGE & REFINEMENT FROM <https://github.com/glittercowboy/taches-cc-resources> and <https://github.com/CloudAI-X/claude-workflow> ///
 
 ## Quick Start
 
@@ -61,22 +61,26 @@ Dream big. Happy building.
 ## What's Inside
 
 **[Commands](#commands)** (18 total) - Slash commands that expand into structured workflows
+
 - **Meta-Prompting**: Separate planning from execution with staged prompts
 - **Strategic Thinking**: Unified mental models framework with 12 thinking patterns
 - **Deep Analysis**: Systematic debugging methodology with evidence and hypothesis testing
 - **Output Modes**: Architect, rapid, mentor, and review modes
 
 **[Skills](#skills)** (16 total) - Autonomous workflows that research, generate, and self-heal
+
 - **Workflow Creation**: Create plans, meta-prompts, slash commands, subagents, hooks
 - **Strategic Thinking**: Strategic thinking, prioritization, problem analysis
 - **Knowledge Domains**: Project analysis, architecture patterns, testing, performance, git workflow, API design
 - **Specialized**: Debug like expert, prompt engineering patterns
 
 **[Agents](#agents)** (11 total) - Specialized subagents for various workflows
+
 - **Operational**: Orchestrator, code-reviewer, debugger, docs-writer, security-auditor, refactorer, test-architect, brainstormer
 - **Quality Assurance**: skill-auditor, slash-command-auditor, subagent-auditor
 
 **[Hooks](#hooks)** (4 total) - Automation triggers (Claude Code-specific)
+
 - **File Protection**: Warn about edits to sensitive files (lock files, .env, .git)
 - **Security Check**: Warn about potential secrets before writes
 - **Auto-Format**: Format files on edit (Python with ruff, markdown with markdownlint, JS/TS with prettier)
@@ -121,6 +125,7 @@ Commands install globally to `~/.claude/commands/`. Skills install to `~/.claude
 ```
 
 The code-reviewer will:
+
 1. Run `git diff` to see changes
 2. Analyze modified files for quality, security, performance
 3. Provide findings with severity ratings (Critical, Warning, Suggestion, Positive)
@@ -133,6 +138,7 @@ The code-reviewer will:
 ```
 
 The brainstorm command applies strategic thinking frameworks:
+
 - **Auto-detect**: Chooses appropriate frameworks automatically
 - **Specific framework**: `/thecattoolkit:brainstorm pareto`
 - **Skill-level**: `/thecattoolkit:brainstorm strategic`
@@ -144,6 +150,7 @@ The brainstorm command applies strategic thinking frameworks:
 ```
 
 This will:
+
 1. Invoke the create-agent-skills skill
 2. Guide through skill structure (simple vs router pattern)
 3. Help with YAML frontmatter and progressive disclosure
@@ -163,6 +170,7 @@ This will:
 ```
 
 Each audit provides:
+
 - Overall assessment
 - Critical issues (must-fix)
 - Recommendations (should-fix)
@@ -176,6 +184,7 @@ Each audit provides:
 ```
 
 The macos-apps skill provides:
+
 - CLI-only development (no Xcode required)
 - "Prove, don't promise" methodology
 - Verification with xcodebuild
@@ -227,6 +236,7 @@ Unified mental models framework for decision-making, prioritization, and problem
 **12 Frameworks in 3 Skills:**
 
 **Strategic Thinking** (5 frameworks) - Long-term perspective and big-picture analysis:
+
 - first-principles - Break down to fundamentals and rebuild
 - inversion - Solve backwards (what guarantees failure?)
 - second-order - Think through consequences of consequences
@@ -234,17 +244,20 @@ Unified mental models framework for decision-making, prioritization, and problem
 - 10-10-10 - Evaluate across time horizons
 
 **Prioritization** (3 frameworks) - Focus resources on high-impact activities:
+
 - pareto - Apply 80/20 rule to focus on what matters
 - one-thing - Identify highest-leverage action
 - eisenhower-matrix - Prioritize by urgent/important
 
 **Problem Analysis** (4 frameworks) - Deep understanding and root causes:
+
 - 5-whys - Drill to root cause
 - opportunity-cost - Analyze what you give up
 - occams-razor - Find simplest explanation
 - via-negativa - Improve by removing
 
 **Usage:**
+
 - `/brainstorm` - Auto-detect best framework for your situation
 - `/brainstorm pareto` - Apply specific framework
 - `/brainstorm strategic` - Use strategic-thinking frameworks
@@ -311,6 +324,7 @@ See [create-plans README](./skills/create-plans/README.md) for full documentatio
 Build skills by describing what you want. Asks clarifying questions, researches APIs if needed, and generates properly structured skill files.
 
 **Two types of skills:**
+
 1. **Task-execution skills** - Regular skills that perform specific operations
 2. **Domain expertise skills** - Exhaustive knowledge bases (5k-10k+ lines) that live in `~/.claude/skills/expertise/` and provide framework-specific context to other skills like [create-plans](#create-plans)
 
@@ -355,6 +369,7 @@ Mental models and frameworks for decision-making, prioritization, and problem an
 ### [Strategic Thinking](./skills/strategic-thinking/)
 
 Long-term perspective and big-picture analysis with 5 frameworks:
+
 - first-principles - Break down to fundamentals and rebuild
 - inversion - Solve backwards (what guarantees failure?)
 - second-order - Think through consequences of consequences
@@ -368,6 +383,7 @@ Agent integration: Strategic Thinker agent (opus model)
 ### [Prioritization](./skills/prioritization/)
 
 Focus resources on high-impact activities with 3 frameworks:
+
 - pareto - Apply 80/20 rule to identify vital few
 - one-thing - Find highest-leverage domino action
 - eisenhower-matrix - Categorize by urgent/important
@@ -379,6 +395,7 @@ Agent integration: Priority Strategist agent (sonnet model)
 ### [Problem Analysis](./skills/problem-analysis/)
 
 Deep understanding and root causes with 4 frameworks:
+
 - 5-whys - Drill to root cause by asking why repeatedly
 - opportunity-cost - Analyze what you give up by choosing
 - occams-razor - Find simplest explanation that fits all facts
@@ -440,6 +457,12 @@ REST and GraphQL API patterns, best practices, and design principles.
 
 Event-driven automation that triggers during Claude Code operations. All hooks use **permissive mode** - they warn but never block edits.
 
+**Security Features:**
+
+- Path traversal protection (detects `..`, `%2e%2e` encoded attempts)
+- Input validation on all file paths
+- Proper error logging for debugging
+
 - **PreToolUse (Edit/Write)**: File protection and security checks (warn only, never block)
   - `protect-files.py` - Warns about edits to lock files, .env, .git, credentials
   - `security-check.py` - Warns about potential secrets (API keys, passwords, tokens)
@@ -448,6 +471,12 @@ Event-driven automation that triggers during Claude Code operations. All hooks u
   - `type-check-on-edit.py` - Type-checks Python files when pyproject.toml is configured (uv run pyrefly/mypy)
 
 **Hooks use uv with python3 fallback** - Automatically prefers `uv run` for formatters/type-checkers if available.
+
+**Code Quality:**
+
+- Modern type annotations (`list[str]` vs `List[str]`)
+- Comprehensive error handling with `logging` module
+- All scripts follow official Claude Code hooks documentation best practices
 
 **See [docs/hooks-best-practices.md](./docs/hooks-best-practices.md) for detailed documentation.**
 
@@ -470,17 +499,21 @@ Event-driven automation that triggers during Claude Code operations. All hooks u
 **Symptom:** Commands don't appear after installation
 
 **Solutions:**
+
 1. Verify plugin.json exists and is valid:
+
    ```bash
    cat .claude-plugin/plugin.json | python3 -m json.tool
    ```
 
 2. Try loading with full path:
+
    ```bash
    claude --plugin-dir /full/path/to/thecattoolkit
    ```
 
 3. Check Claude Code version (requires 1.0.33+):
+
    ```bash
    claude --version
    ```
@@ -490,12 +523,15 @@ Event-driven automation that triggers during Claude Code operations. All hooks u
 **Symptom:** `/help` doesn't show thecattoolkit commands
 
 **Solutions:**
+
 1. Verify command files exist:
+
    ```bash
    ls commands/*.md
    ```
 
 2. Check YAML frontmatter in commands:
+
    ```bash
    head -5 commands/your-command.md
    ```
@@ -507,17 +543,21 @@ Event-driven automation that triggers during Claude Code operations. All hooks u
 **Symptom:** Skills don't activate automatically
 
 **Solutions:**
+
 1. Check SKILL.md exists:
+
    ```bash
    ls skills/your-skill/SKILL.md
    ```
 
 2. Verify description includes trigger keywords:
+
    ```bash
    head -10 skills/your-skill/SKILL.md
    ```
 
 3. Use explicit invocation:
+
    ```
    > Use the your-skill skill to...
    ```
@@ -527,22 +567,27 @@ Event-driven automation that triggers during Claude Code operations. All hooks u
 **Symptom:** Errors on file edits or hooks not running
 
 **Solutions:**
+
 1. Verify Python is available:
+
    ```bash
    which python3
    ```
 
 2. Test script manually:
+
    ```bash
    python3 hooks/scripts/protect-files.py < /dev/null
    ```
 
 3. Check CLAUDE_PLUGIN_ROOT variable:
+
    ```bash
    echo $CLAUDE_PLUGIN_ROOT
    ```
 
 4. Review hook configuration:
+
    ```bash
    cat hooks/hooks.json | python3 -m json.tool
    ```
@@ -552,12 +597,15 @@ Event-driven automation that triggers during Claude Code operations. All hooks u
 **Symptom:** "Agent not found" error when invoking
 
 **Solutions:**
+
 1. Check agent file exists:
+
    ```bash
    ls agents/your-agent.md
    ```
 
 2. Verify agent name in YAML frontmatter:
+
    ```bash
    head -5 agents/your-agent.md
    ```
@@ -671,7 +719,8 @@ More resources coming soon.
 **Community Ports:** [OpenCode](https://github.com/stephenschoettler/taches-oc-prompts)
 
 **Support:**
-- Issues: https://github.com/Git-Fg/thecattoolkit/issues
-- Email: felix@gitfg.dev
+
+- Issues: <https://github.com/Git-Fg/thecattoolkit/issues>
+- Email: <felix@gitfg.dev>
 
 —TÂCHES
