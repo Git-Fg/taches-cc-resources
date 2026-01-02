@@ -1,38 +1,28 @@
 ---
-description: Apply expert debugging methodology to investigate a specific issue
-argument-hint: [issue description]
-allowed-tools: Skill(debug-like-expert), Bash
+description: Analyze context and launch the Debugger Agent with a targeted investigation plan.
+argument-hint: [error description]
+allowed-tools: Task
 ---
 
-## Context
+# Objective
+The user needs to debug: $ARGUMENTS
 
-Before invoking the debug skill, gather system context:
-
+# System Context
 - Git Status: ! `git status --short`
 - Recent Log: ! `git log -1 --oneline`
-- Node Version: ! `node -v || echo "Not Node"`
-- Python Version: ! `python3 --version || echo "Not Python"`
-- Rust Version: ! `rustc --version || echo "Not Rust"`
-- File Tree (Depth 2): ! `find . -maxdepth 2 -not -path '*/.*'`
+- File Tree: ! `find . -maxdepth 2 -not -path '*/.*' -not -path './node_modules*'`
 
-## Objective
+# Instructions
+You are a Lead Engineer handing off a task to a Debugging Specialist. Do not debug it yourself. Instead, prepare a **Targeted Investigation Directive**:
 
-Load the debug-like-expert skill to investigate: $ARGUMENTS
+1. **Analyze the Context:** Look at the `Git Status`. Are specific files modified? Mention them explicitly.
+2. **Refine the Request:**
+   - If the user query is vague (e.g., "it's broken"), combine it with the file context (e.g., "The user reports a break, likely related to the modified `auth.ts` file").
+   - If the user query is specific, preserve it.
+3. **Delegate:** Call the `debugger` subagent with a prompt that includes:
+   - The Refined Issue Description.
+   - A list of "Suspect Files" based on the git status.
+   - The raw system context for reference.
 
-This applies systematic debugging methodology with evidence gathering, hypothesis testing, and rigorous verification.
-
-## Process
-
-1. Gather system context using the bash commands above
-2. Invoke the Skill tool with debug-like-expert
-3. Pass both the issue description ($ARGUMENTS) AND the gathered system context
-4. Follow the skill's debugging methodology
-5. Apply rigorous investigation and verification
-
-**Important:** Do not assume the debugger knows what language or environment it is in. Pass the gathered system context to the debug skill.
-
-## Success Criteria
-
-- System context gathered successfully
-- Context passed to skill along with issue description
-- Skill successfully invoked with full environment details
+**Example Task Description:**
+"Investigate a crash in the Login flow. The user reports failure after recent changes to `src/auth.ts`. Focus your investigation there first. Context: [Raw Data]"

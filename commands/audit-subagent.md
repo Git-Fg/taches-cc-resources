@@ -1,85 +1,24 @@
 ---
-description: Audit subagent configuration for role definition, prompt quality, tool selection, Markdown structure compliance, and effectiveness
-argument-hint: <subagent-path-or-name>
+description: Locate and audit a subagent configuration file.
+argument-hint: [agent-name]
+allowed-tools: Task
 ---
 
-## Context
+# Objective
+Audit the subagent: $ARGUMENTS
 
-Subagent: $ARGUMENTS
+# Context Injection (Pre-flight)
+- Agent Search: ! `find .claude/agents agents ~/.claude/agents -name "$(basename "$ARGUMENTS" .md).md" -o -name "$ARGUMENTS" 2>/dev/null | head -1`
 
-Pre-flight checks:
-- Agent exists: ! `find .claude/agents agents ~/.claude/agents -name "$(basename "$ARGUMENTS" .md).md" -o -name "$ARGUMENTS" 2>/dev/null | head -1 | xargs test -f && echo "FOUND" || echo "NOT_FOUND"`
-- Plugin agents: ! `ls agents/*.md 2>/dev/null | wc -l`
-- Project agents: ! `ls .claude/agents/*.md 2>/dev/null | wc -l`
-- User agents: ! `ls ~/.claude/agents/*.md 2>/dev/null | wc -l`
+# Instructions
+You are an Audit Coordinator. Prepare the task for the `subagent-auditor` agent.
 
-## Objective
+1. **Validate the Search Result:**
+   - If the search found a path: Note the file location for the auditor.
+   - If the search was empty: The agent will need to ask the user for clarification.
 
-Invoke the subagent-auditor to audit the subagent at `$ARGUMENTS` for compliance with best practices.
+2. **Synthesize the Directive:**
+   - If path found: "Audit the subagent at `[found path]`. Evaluate it for best practices compliance."
+   - If not found: "The user wants to audit `$ARGUMENTS` but the file was not found in standard locations. Please ask for clarification."
 
-This ensures subagents follow proper structure, role definition, prompt quality, tool selection, and effectiveness patterns.
-
-## Pre-Flight Validation
-
-Before invoking the auditor:
-
-1. **Agent Discovery**
-   - If argument is an agent name: Find the actual file
-   - If argument is a path: Verify it exists and is an .md file
-   - If NOT_FOUND: Ask user for valid agent path/name
-
-2. **Agent Type**
-   - Built-in agent: Inform that built-ins cannot be audited
-   - User/project/plugin agent: Proceed with audit
-
-## Process
-
-1. **Invoke subagent-auditor** with:
-   - Agent path: $ARGUMENTS (resolved to full path)
-   - Context from pre-flight checks
-
-2. **Auditor will evaluate:**
-   - YAML frontmatter (name, description, tools, model)
-   - Role definition clarity
-   - Prompt quality and structure
-   - Tool appropriateness
-   - Workflow specification
-   - Constraints definition
-
-3. **Audit output includes:**
-   - Assessment summary
-   - Critical issues (must-fix)
-   - Recommendations (should-fix)
-   - Strengths (what works well)
-   - Context (agent type, complexity)
-
-## Success Criteria
-
-- Subagent invoked successfully
-- Path resolved and validated
-- Audit covers all evaluation areas
-- Findings include file:line locations
-- Contextual judgment applied
-
-## Output Format
-
-```markdown
-## Audit Results: [subagent-name]
-
-### Assessment
-[1-2 sentence overall assessment]
-
-### Critical Issues (Must Fix)
-[Issues that hurt effectiveness]
-
-### Recommendations (Should Fix)
-[Improvements for quality]
-
-### Strengths
-[What's working well]
-
-### Context
-- Subagent type: [simple/complex/delegation]
-- Tool access: [appropriate/needs review]
-- Estimated effort: [low/medium/high]
-```
+3. **Delegate:** Call the `subagent-auditor` subagent with the synthesized directive.

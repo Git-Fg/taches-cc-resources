@@ -1,6 +1,6 @@
 # THE CAT TOOLKIT
 
-**Version:** 1.0.2 | **License:** MIT | **Author:** Git-Fg
+**Version:** 1.0.7 | **License:** MIT | **Author:** Git-Fg
 
 A comprehensive collection of AI agent resources (primarily for Claude Code, adaptable to other AI assistants) built for real workflows.
 

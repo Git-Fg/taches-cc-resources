@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.7] - 2026-01-02
+
+### Architecture Refactoring - "Refine & Relay" Pattern
+
+This release implements a systematic architectural improvement across all slash commands and agent interactions. The "Refine & Relay" pattern optimizes the relationship between main model (cheaper, faster) and specialist agents (more capable, expensive).
+
+### Changed
+
+**Slash Commands - Pre-Flight Controller Pattern**
+
+Commands now act as "Pre-Flight Controllers" that gather context, synthesize it into high-fidelity prompts, then delegate to specialist agents. This prevents agents from wasting their first turn asking basic questions.
+
+- `/brainstorm` - Categorizes requests (Technical/Strategic/Analytical) and adds thinking direction before delegating to brainstormer
+- `/debug` - Analyzes git status to identify suspect files, creates targeted investigation directive for debugger
+- `/review` - Synthesizes diff stats with user focus to create precise briefing for code-reviewer
+- `/audit-subagent` - Validates search results and synthesizes directive for subagent-auditor
+- `/audit-skill` - Validates pre-flight checks and synthesizes directive for skill-auditor
+- `/create-*` commands - Standardized to "dumb relay" pattern for skill delegation
+
+**Agent Input Handling**
+
+All specialist agents now include explicit "Input Handling" or "Initialization" sections to process synthesized context from commands:
+
+- `debugger.md` - Added Input Handling section to process context injection and adapt to detected language
+- `code-reviewer.md` - Added Input Processing section to handle specific paths vs vague requests
+- `subagent-auditor.md` - Added Initialization section to read files or ask for clarification
+- `skill-auditor.md` - Added Initialization section to validate paths and check SKILL.md existence
+
+### Benefits
+
+**Token Efficiency**: Agents receive targeted context in their first prompt (no "what file?" questions)
+
+**Cost Optimization**: Cheaper main model (Haiku/Sonnet) does synthesis, expensive agent (Opus) executes
+
+**Human Alignment**: Main model translates "vague human" to "precise agent directive"
+
+**Speed**: Bash commands (`!`) execute instantly before model thinking, providing immediate context
+
+### Technical Details
+
+The "Refine & Relay" pattern represents the "Middle Way" between:
+- **Dumb Relay**: Main model passes raw input without processing
+- **Smart Agent**: Agent does all context gathering and synthesis
+
+Instead: Main model gathers context via bash commands, synthesizes into sharp prompt, delegates to agent.
+
 ## [1.0.2] - 2025-01-01
 
 ### Bug Fixes - Incomplete Migration
