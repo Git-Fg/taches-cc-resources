@@ -6,11 +6,14 @@
 2. references/plan-format.md
 3. references/scope-estimation.md
 4. references/checkpoints.md
-5. Read `.planning/ROADMAP.md`
-6. Read `.planning/BRIEF.md`
+5. Read `.prompts/planning/ROADMAP.md`
+6. Read `.prompts/planning/BRIEF.md`
 
 **If domain expertise should be loaded (determined by intake):**
-7. Read domain SKILL.md: `~/.claude/skills/expertise/[domain]/SKILL.md`
+7. Read domain SKILL.md from discovered location (search order: project → plugin → user):
+   - `.claude/skills/expertise/[domain]/SKILL.md`
+   - `{CLAUDE_PLUGIN_ROOT}/expertise/[domain]/SKILL.md`
+   - `~/.claude/skills/expertise/[domain]/SKILL.md`
 8. Determine phase type from ROADMAP (UI, database, API, etc.)
 9. Read ONLY relevant references from domain's `<references_index>` section
 
@@ -28,8 +31,8 @@ gets transformed into a prompt.
 ### Step: Identify Phase
 Check roadmap for phases:
 ```bash
-cat .planning/ROADMAP.md
-ls .planning/phases/
+cat .prompts/planning/ROADMAP.md
+ls .prompts/planning/phases/
 ```
 
 If multiple phases available, ask which one to plan.
@@ -190,13 +193,13 @@ Loop until "Create phase prompt" selected.
 Use template from `templates/phase-prompt.md`.
 
 **If single plan:**
-Write to `.planning/phases/XX-name/{phase}-01-PLAN.md`
+Write to `.prompts/planning/phases/XX-name/{phase}-01-PLAN.md`
 
 **If multiple plans:**
 Write multiple files:
-- `.planning/phases/XX-name/{phase}-01-PLAN.md`
-- `.planning/phases/XX-name/{phase}-02-PLAN.md`
-- `.planning/phases/XX-name/{phase}-03-PLAN.md`
+- `.prompts/planning/phases/XX-name/{phase}-01-PLAN.md`
+- `.prompts/planning/phases/XX-name/{phase}-02-PLAN.md`
+- `.prompts/planning/phases/XX-name/{phase}-03-PLAN.md`
 
 Each file follows the template structure:
 
@@ -216,19 +219,20 @@ Output: [What artifacts will be created by this plan]
 </objective>
 
 <execution_context>
-@~/.claude/skills/create-plans/workflows/execute-phase.md
-@~/.claude/skills/create-plans/templates/summary.md
+Note: Adjust paths based on where create-plans skill is installed (plugin/user/project)
+@{path-to-create-plans}/workflows/execute-phase.md
+@{path-to-create-plans}/templates/summary.md
 [If plan has ANY checkpoint tasks (type="checkpoint:*"), add:]
-@~/.claude/skills/create-plans/references/checkpoints.md
+@{path-to-create-plans}/references/checkpoints.md
 </execution_context>
 
 <context>
-@.planning/BRIEF.md
-@.planning/ROADMAP.md
+@.prompts/planning/BRIEF.md
+@.prompts/planning/ROADMAP.md
 [If research done:]
-@.planning/phases/XX-name/FINDINGS.md
+@.prompts/planning/phases/XX-name/FINDINGS.md
 [If continuing from previous plan:]
-@.planning/phases/XX-name/{phase}-{prev}-SUMMARY.md
+@.prompts/planning/phases/XX-name/{phase}-{prev}-SUMMARY.md
 [Relevant source files:]
 @src/path/to/relevant.ts
 </context>
@@ -247,7 +251,7 @@ Output: [What artifacts will be created by this plan]
 </success_criteria>
 
 <output>
-After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
+After completion, create `.prompts/planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 [Include summary structure from template]
 </output>
 ```
@@ -260,7 +264,7 @@ After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 ### Step: Offer Next
 **If single plan:**
 ```
-Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
+Phase plan created: .prompts/planning/phases/XX-name/{phase}-01-PLAN.md
 [X] tasks defined.
 
 What's next?

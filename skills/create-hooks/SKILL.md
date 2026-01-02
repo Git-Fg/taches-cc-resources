@@ -17,8 +17,8 @@ Hooks are shell commands or LLM-evaluated prompts that execute in response to Cl
 
 Workflow:
 1. Create hooks config file:
-   - Project: `.claude/hooks.json`
-   - User: `~/.claude/hooks.json`
+   - **Default**: `.claude/hooks.json` (project, portable)
+   - **Alternative**: `~/.claude/hooks.json` (only if specifically requested)
 2. Choose hook event (when it fires)
 3. Choose hook type (command or prompt)
 4. Configure matcher (which tools trigger it)

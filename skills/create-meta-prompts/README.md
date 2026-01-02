@@ -1,6 +1,6 @@
 # Create Meta-Prompts
 
-The skill-based evolution of the [meta-prompting](../../prompts/meta-prompting/) system. Creates prompts optimized for Claude-to-Claude pipelines with improved dependency detection and structured outputs.
+Creates prompts optimized for Claude-to-Claude pipelines with improved dependency detection and structured outputs for multi-stage workflows.
 
 ## The Problem
 
@@ -20,7 +20,7 @@ Describe your task. Claude creates a prompt optimized for its purpose.
 1. Determines purpose: Do (execute), Plan (strategize), or Research (gather info)
 2. Detects existing research/plan files to chain from
 3. Creates prompt with purpose-specific structure
-4. Saves to `.prompts/{number}-{topic}-{purpose}/`
+4. Saves to `.prompts/metaprompt/{number}-{topic}-{purpose}/`
 5. Runs with dependency-aware execution
 
 **Usage:**
@@ -59,7 +59,7 @@ Claude: [Asks about depth, sources, output format]
 You: [Answer questions]
 
 Claude: [Creates research prompt]
-✓ Created: .prompts/001-auth-research/001-auth-research.md
+✓ Created: .prompts/metaprompt/001-auth-research/001-auth-research.md
 
 What's next?
 1. Run prompt now
@@ -68,7 +68,7 @@ What's next?
 You: 1
 
 Claude: [Executes research]
-✓ Output: .prompts/001-auth-research/auth-research.md
+✓ Output: .prompts/metaprompt/001-auth-research/auth-research.md
 ```
 
 ```
@@ -80,12 +80,12 @@ Should this prompt reference any existing research?
 You: [Select auth-research.md]
 
 Claude: [Creates plan prompt referencing the research]
-✓ Created: .prompts/002-auth-plan/002-auth-plan.md
+✓ Created: .prompts/metaprompt/002-auth-plan/002-auth-plan.md
 
 You: 1
 
 Claude: [Executes plan, reads research output]
-✓ Output: .prompts/002-auth-plan/auth-plan.md
+✓ Output: .prompts/metaprompt/002-auth-plan/auth-plan.md
 ```
 
 ```
@@ -95,7 +95,7 @@ Claude: Found existing files: auth-research.md, auth-plan.md
 [Detects it should reference the plan]
 
 Claude: [Creates implementation prompt]
-✓ Created: .prompts/003-auth-implement/003-auth-implement.md
+✓ Created: .prompts/metaprompt/003-auth-implement/003-auth-implement.md
 
 You: 1
 
@@ -123,7 +123,7 @@ create-meta-prompts/
 
 **Generated prompts structure:**
 ```
-.prompts/
+.prompts/metaprompt/
 ├── 001-auth-research/
 │   ├── completed/
 │   │   └── 001-auth-research.md    # Prompt (archived after run)

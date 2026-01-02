@@ -9,7 +9,8 @@
 ## Step 1: Select the Skill
 
 ```bash
-ls ~/.claude/skills/
+# Check project skills first, then user skills
+{ ls .claude/skills/ 2>/dev/null; ls ~/.claude/skills/ 2>/dev/null; } | sort -u
 ```
 
 Present numbered list, ask: "Which skill should be upgraded to the router pattern?"
@@ -18,8 +19,9 @@ Present numbered list, ask: "Which skill should be upgraded to the router patter
 
 Read the skill:
 ```bash
-cat ~/.claude/skills/{skill-name}/SKILL.md
-ls ~/.claude/skills/{skill-name}/
+# Try project location first, then user location
+cat .claude/skills/{skill-name}/SKILL.md 2>/dev/null || cat ~/.claude/skills/{skill-name}/SKILL.md
+ls .claude/skills/{skill-name}/ 2>/dev/null || ls ~/.claude/skills/{skill-name}/
 ```
 
 **Already a router?** (has workflows/ and intake question)
@@ -64,6 +66,12 @@ Ask: "Does this breakdown look right? Any adjustments?"
 ## Step 4: Create Directory Structure
 
 ```bash
+# Use the appropriate location (project or user)
+# For project-level:
+mkdir -p .claude/skills/{skill-name}/workflows
+mkdir -p .claude/skills/{skill-name}/references
+
+# For user-level (if specifically requested):
 mkdir -p ~/.claude/skills/{skill-name}/workflows
 mkdir -p ~/.claude/skills/{skill-name}/references
 ```

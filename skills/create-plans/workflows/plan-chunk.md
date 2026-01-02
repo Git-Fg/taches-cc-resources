@@ -12,7 +12,7 @@ to focus on "what's next" without replanning the whole phase.
 ### Step: Find Current Position
 Read the phase plan:
 ```bash
-cat .planning/phases/XX-current/PLAN.md
+cat .prompts/planning/phases/XX-current/PLAN.md
 ```
 
 Identify:

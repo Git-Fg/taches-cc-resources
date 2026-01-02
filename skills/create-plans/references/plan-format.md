@@ -26,8 +26,8 @@ Purpose: [...]
 Output: [...]
 
 ## Context
-@.planning/BRIEF.md
-@.planning/ROADMAP.md
+@.prompts/planning/BRIEF.md
+@.prompts/planning/ROADMAP.md
 @relevant/source/files.ts
 
 ## Tasks
@@ -226,9 +226,9 @@ Use @file references to load context for the prompt:
 
 ```markdown
 ## Context
-@.planning/BRIEF.md           # Project vision
-@.planning/ROADMAP.md         # Phase structure
-@.planning/phases/02-auth/FINDINGS.md  # Research results
+@.prompts/planning/BRIEF.md           # Project vision
+@.prompts/planning/ROADMAP.md         # Phase structure
+@.prompts/planning/phases/02-auth/FINDINGS.md  # Research results
 @src/lib/db.ts                # Existing database setup
 @src/types/user.ts            # Existing type definitions
 ```
@@ -264,7 +264,7 @@ Specify the SUMMARY.md structure:
 
 ```markdown
 ## Output
-After completion, create `.planning/phases/XX-name/SUMMARY.md`:
+After completion, create `.prompts/planning/phases/XX-name/SUMMARY.md`:
 
 # Phase X: Name Summary
 

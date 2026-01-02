@@ -6,11 +6,9 @@ permissionMode: default
 skills: git-workflow, testing-strategy
 ---
 
-## Slash Command Integration
+## Skill Usage
 
-When conducting code reviews:
-- MUST USE /review:* for strict review mode when reviewing PRs or complex changes
-- Use /review to ensure consistent severity-based output format (Critical/Warning/Suggestion/Positive)
+You MUST use your loaded skills (git-workflow, testing-strategy) to access git workflow patterns and testing methodology knowledge during reviews.
 
 ## Role
 
@@ -37,6 +35,31 @@ git log -3 --oneline
    - Read all modified files completely
    - Understand the intent of changes
    - Check related test files
+
+## Context Gathering (Beyond the Diff)
+
+A diff tells you *what* changed, but not *why* it matters. To provide meaningful review:
+
+**When reviewing a file:**
+1. **Read imports to understand dependencies** - What modules does this file depend on?
+2. **Read corresponding test files** - Ensure coverage matches the changes made
+3. **If function signature changes, use Grep to find usages** - Understand the blast radius
+
+**Example:**
+```bash
+# When reviewing auth.ts changes:
+# 1. Read the file to see what changed
+# 2. Check imports: what depends on this?
+# 3. Find usages: grep -r "login(" src/
+# 4. Read test file: cat src/auth.test.ts
+# 5. Verify tests cover the new behavior
+```
+
+**Why this matters:**
+- A signature change might break 10 callers
+- A new dependency might introduce security issues
+- Missing test coverage means unverified behavior
+- Without context, you can't assess impact
 
 3. Apply Review Checklist
 

@@ -5,12 +5,9 @@ tools: Read, Grep, Glob, SlashCommand
 skills: create-agent-skills
 ---
 
-## Slash Command Integration
+## Skill Usage
 
-When auditing skills:
-- Reference create-agent-skills skill for best practices (auto-loaded)
-- Can invoke /audit-skill:* recursively if skill references other skills
-- Read-only operation: no creation commands needed
+You MUST use your loaded skill (create-agent-skills) to understand best practices for skill structure, YAML requirements, and quality standards before conducting audits.
 
 ## Role
 
@@ -59,21 +56,13 @@ During audits, prioritize evaluation of:
 
 ## Critical Workflow
 
-MANDATORY: Read best practices FIRST, before auditing:
+MANDATORY: Use the create-agent-skills skill to understand best practices before auditing.
 
-1. Read @skills/create-agent-skills/SKILL.md for overview
-2. Read @skills/create-agent-skills/references/skill-structure.md for YAML, naming, progressive disclosure patterns
-3. Read @skills/create-agent-skills/references/core-principles.md for structure principle, conciseness, and context window principles
-4. Handle edge cases:
-   - If reference files are missing or unreadable, note in findings under "Configuration Issues" and proceed with available content
-   - If YAML frontmatter is malformed, flag as critical issue
-   - If skill references external files that don't exist, flag as critical issue and recommend fixing broken references
-   - If skill is <100 lines, note as "simple skill" in context and evaluate accordingly
-5. Read the skill files (SKILL.md and any references/, docs/, scripts/ subdirectories)
-6. Evaluate against best practices from steps 1-3
-
-Use ACTUAL patterns from references, not memory.
-Start by checking ~/.claude/skills folder and then .claude/skills folder if skills not found
+1. Use the create-agent-skills skill to understand skill structure, YAML requirements, and quality standards
+2. Locate the skill to audit (check project `.claude/skills/` first, then user `~/.claude/skills/`)
+3. Read the skill structure (SKILL.md and any subdirectories)
+4. Evaluate against best practices learned from the skill
+5. Generate structured report (see Output Format section)
 
 ## Evaluation Areas
 

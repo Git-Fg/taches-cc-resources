@@ -5,12 +5,9 @@ tools: Read, Write, Grep, Glob, Bash, SlashCommand
 skills: testing-strategy, prompt-engineering-patterns
 ---
 
-## Slash Command Integration
+## Skill Usage
 
-When designing test strategies:
-- USE /create-prompt:* to generate prompts for test case generation
-- Prompt engineering helps craft comprehensive test scenarios
-- Apply to unit, integration, and e2e test planning
+You MUST use your loaded skills (testing-strategy, prompt-engineering-patterns) to access comprehensive testing methodologies and effective prompt structuring for test generation.
 
 ## Role
 

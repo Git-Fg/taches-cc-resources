@@ -12,7 +12,7 @@ Output: {topic}-plan.md with actionable phases/steps
 </objective>
 
 <context>
-Research findings: @.prompts/{num}-{topic}-research/{topic}-research.md
+Research findings: @.prompts/metaprompt/{num}-{topic}-research/{topic}-research.md
 {Additional context files}
 </context>
 
@@ -23,7 +23,7 @@ Research findings: @.prompts/{num}-{topic}-research/{topic}-research.md
 </planning_requirements>
 
 <output_structure>
-Save to: `.prompts/{num}-{topic}-plan/{topic}-plan.md`
+Save to: `.prompts/metaprompt/{num}-{topic}-plan/{topic}-plan.md`
 
 Structure the plan using this XML format:
 
@@ -67,7 +67,7 @@ Structure the plan using this XML format:
 </output_structure>
 
 <summary_requirements>
-Create `.prompts/{num}-{topic}-plan/SUMMARY.md`
+Create `.prompts/metaprompt/{num}-{topic}-plan/SUMMARY.md`
 
 Load template: [summary-template.md](summary-template.md)
 
@@ -91,7 +91,7 @@ For plans, emphasize phase breakdown with objectives and assumptions needing val
 Plans should build on research findings:
 ```xml
 <context>
-Research findings: @.prompts/001-auth-research/auth-research.md
+Research findings: @.prompts/metaprompt/001-auth-research/auth-research.md
 
 Key findings to incorporate:
 - Recommended approach from research
@@ -140,7 +140,7 @@ Output: auth-plan.md with 4-5 implementation phases
 </objective>
 
 <context>
-Research: @.prompts/001-auth-research/auth-research.md
+Research: @.prompts/metaprompt/001-auth-research/auth-research.md
 </context>
 
 <planning_requirements>

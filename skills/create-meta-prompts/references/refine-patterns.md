@@ -6,15 +6,15 @@ Prompt patterns for improving existing research or plan outputs based on feedbac
 <objective>
 Refine {topic}-{original_purpose} based on feedback.
 
-Target: @.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md
-Current summary: @.prompts/{num}-{topic}-{original_purpose}/SUMMARY.md
+Target: @.prompts/metaprompt/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md
+Current summary: @.prompts/metaprompt/{num}-{topic}-{original_purpose}/SUMMARY.md
 
 Purpose: {What improvement is needed}
 Output: Updated {topic}-{original_purpose}.md with improvements
 </objective>
 
 <context>
-Original output: @.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md
+Original output: @.prompts/metaprompt/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md
 </context>
 
 <feedback>
@@ -37,13 +37,13 @@ Original output: @.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_pu
 </requirements>
 
 <output>
-1. Archive current output to: `.prompts/{num}-{topic}-{original_purpose}/archive/{topic}-{original_purpose}-v{n}.md`
-2. Write improved version to: `.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md`
+1. Archive current output to: `.prompts/metaprompt/{num}-{topic}-{original_purpose}/archive/{topic}-{original_purpose}-v{n}.md`
+2. Write improved version to: `.prompts/metaprompt/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md`
 3. Create SUMMARY.md with version info and changes from previous
 </output>
 
 <summary_requirements>
-Create `.prompts/{num}-{topic}-{original_purpose}/SUMMARY.md`
+Create `.prompts/metaprompt/{num}-{topic}-{original_purpose}/SUMMARY.md`
 
 Load template: [summary-template.md](summary-template.md)
 
@@ -69,7 +69,7 @@ For Refine, always include:
 Refine builds on existing work, not replaces it:
 ```xml
 <context>
-Original output: @.prompts/001-auth-research/auth-research.md
+Original output: @.prompts/metaprompt/001-auth-research/auth-research.md
 
 Key strengths to preserve:
 - Library comparison structure
@@ -97,8 +97,8 @@ Do NOT change:
 Archive before overwriting:
 ```xml
 <output>
-1. Archive: `.prompts/001-auth-research/archive/auth-research-v1.md`
-2. Write improved: `.prompts/001-auth-research/auth-research.md`
+1. Archive: `.prompts/metaprompt/001-auth-research/archive/auth-research-v1.md`
+2. Write improved: `.prompts/metaprompt/001-auth-research/auth-research.md`
 3. Update SUMMARY.md with version info
 </output>
 ```
@@ -112,7 +112,7 @@ When research was too surface-level:
 <objective>
 Refine auth-research based on feedback.
 
-Target: @.prompts/001-auth-research/auth-research.md
+Target: @.prompts/metaprompt/001-auth-research/auth-research.md
 </objective>
 
 <feedback>
@@ -142,7 +142,7 @@ When research missed important areas:
 <objective>
 Refine stripe-research to include webhooks.
 
-Target: @.prompts/005-stripe-research/stripe-research.md
+Target: @.prompts/metaprompt/005-stripe-research/stripe-research.md
 </objective>
 
 <feedback>
@@ -172,7 +172,7 @@ When plan needs adjustment:
 <objective>
 Refine auth-plan to add rate limiting phase.
 
-Target: @.prompts/002-auth-plan/auth-plan.md
+Target: @.prompts/metaprompt/002-auth-plan/auth-plan.md
 </objective>
 
 <feedback>
@@ -201,7 +201,7 @@ When output has factual errors:
 <objective>
 Refine jwt-research to correct library recommendation.
 
-Target: @.prompts/003-jwt-research/jwt-research.md
+Target: @.prompts/metaprompt/003-jwt-research/jwt-research.md
 </objective>
 
 <feedback>
@@ -228,7 +228,7 @@ Target: @.prompts/003-jwt-research/jwt-research.md
 Refine prompts get their own folder (new number), but output goes to the original folder:
 
 ```
-.prompts/
+.prompts/metaprompt/
 ├── 001-auth-research/
 │   ├── completed/
 │   │   └── 001-auth-research.md       # Original prompt
@@ -256,7 +256,7 @@ Refine prompts depend on the target output existing:
 
 ```xml
 <dependency_check>
-If `.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md` not found:
+If `.prompts/metaprompt/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md` not found:
 - Error: "Cannot refine - target output doesn't exist"
 - Offer: "Create the original {purpose} prompt first?"
 </dependency_check>
@@ -265,9 +265,9 @@ If `.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md` not
 ### Archive Creation
 Before overwriting, ensure archive exists:
 ```bash
-mkdir -p .prompts/{num}-{topic}-{original_purpose}/archive/
-mv .prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md \
-   .prompts/{num}-{topic}-{original_purpose}/archive/{topic}-{original_purpose}-v{n}.md
+mkdir -p .prompts/metaprompt/{num}-{topic}-{original_purpose}/archive/
+mv .prompts/metaprompt/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md \
+   .prompts/metaprompt/{num}-{topic}-{original_purpose}/archive/{topic}-{original_purpose}-v{n}.md
 ```
 
 ### Summary Update

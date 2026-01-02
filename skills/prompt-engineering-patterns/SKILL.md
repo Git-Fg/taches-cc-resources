@@ -3,6 +3,23 @@ name: prompt-engineering-patterns
 description: Create effective prompts for AI-to-AI communication through Web UI. Covers meta-prompts, constraint structuring, example-based learning, chain-of-thought, and skill creation patterns.
 ---
 
+# Path Resolution
+
+This skill can be installed in multiple locations. Before reading any references, locate the skill directory:
+
+```bash
+# Search in priority order (project → plugin → user)
+SKILL_PATH="$(
+  find .claude/skills/prompt-engineering-patterns -maxdepth 0 2>/dev/null && echo "project" ||
+  find ~/.claude/skills/prompt-engineering-patterns -maxdepth 0 2>/dev/null && echo "user" ||
+  find {plugin_root}/skills/prompt-engineering-patterns -maxdepth 0 2>/dev/null && echo "plugin"
+)"
+
+# Use absolute path when reading internal reference files
+```
+
+All references to `references/` files must use the discovered absolute path.
+
 # Objective
 
 Create effective prompts for AI-to-AI communication through Web UI. Covers meta-prompts, constraint structuring, example-based learning, chain-of-thought, and skill creation patterns.

@@ -5,12 +5,9 @@ tools: Read, Write, Edit, Glob, Grep, SlashCommand
 skills: project-analysis, api-design
 ---
 
-## Slash Command Integration
+## Skill Usage
 
-When writing documentation:
-- USE /mentor:* mode when creating educational content that explains concepts
-- /mentor helps with progressive explanation and teaching patterns
-- Skip /mentor for reference documentation (use direct style instead)
+You MUST use your loaded skills (project-analysis, api-design) to access codebase understanding and API documentation patterns for accurate technical writing.
 
 ## Role
 

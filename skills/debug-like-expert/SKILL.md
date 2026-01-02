@@ -3,6 +3,23 @@ name: debug-like-expert
 description: Deep analysis debugging mode for complex issues. Activates methodical investigation protocol with evidence gathering, hypothesis testing, and rigorous verification. MUST USE when standard troubleshooting fails or when issues require systematic root cause analysis.
 ---
 
+# Path Resolution
+
+This skill can be installed in multiple locations. Before reading any references, locate the skill directory:
+
+```bash
+# Search in priority order (project → plugin → user)
+SKILL_PATH="$(
+  find .claude/skills/debug-like-expert -maxdepth 0 2>/dev/null && echo "project" ||
+  find ~/.claude/skills/debug-like-expert -maxdepth 0 2>/dev/null && echo "user" ||
+  find {plugin_root}/skills/debug-like-expert -maxdepth 0 2>/dev/null && echo "plugin"
+)"
+
+# Use absolute path when reading internal reference files
+```
+
+All references to `references/` files must use the discovered absolute path.
+
 # Objective
 
 Deep analysis debugging mode for complex issues. This skill activates methodical investigation protocols with evidence gathering, hypothesis testing, and rigorous verification when standard troubleshooting has failed.
@@ -25,23 +42,27 @@ find . -maxdepth 2 -type f 2>/dev/null | grep -E '\.(py|js|jsx|ts|tsx|rs|swift|c
 [ -f "*.xcodeproj" ] || [ -f "Package.swift" ] && echo "DETECTED: Swift/macOS project"
 [ -f "go.mod" ] && echo "DETECTED: Go project"
 
-# Scan for available domain expertise
+# Scan for available domain expertise (check project, plugin, then user)
 echo "EXPERTISE_SKILLS:"
-ls ~/.claude/skills/expertise/ 2>/dev/null | head -5
+{ ls .claude/skills/expertise/ 2>/dev/null; ls ${CLAUDE_PLUGIN_ROOT}/expertise/ 2>/dev/null; ls ~/.claude/skills/expertise/ 2>/dev/null; } | head -5
 ```
 
 **Present findings before starting investigation.**
 
 # Domain Expertise
 
-**Domain-specific expertise lives in `~/.claude/skills/expertise/`**
+**Domain-specific expertise lives in multiple locations:**
+- Project: `.claude/skills/expertise/` (portable, team-shared)
+- Plugin: `{CLAUDE_PLUGIN_ROOT}/expertise/` (plugin-provided)
+- User: `~/.claude/skills/expertise/` (personal, global)
 
 Domain skills contain comprehensive knowledge including debugging, testing, performance, and common pitfalls. Before investigation, determine if domain expertise should be loaded.
 
 ## Scan Domains
 
 ```bash
-ls ~/.claude/skills/expertise/ 2>/dev/null
+# Check all locations for domain expertise
+{ ls .claude/skills/expertise/ 2>/dev/null; ls ${CLAUDE_PLUGIN_ROOT}/expertise/ 2>/dev/null; ls ~/.claude/skills/expertise/ 2>/dev/null; } | sort -u
 ```
 
 This reveals available domain expertise (e.g., macos-apps, iphone-apps, python-games, unity-games).
@@ -91,9 +112,14 @@ Select:
 
 ## Load Domain
 
-When domain selected, READ all references from that skill:
+When domain selected, READ all references from that skill (try project → plugin → user):
 
 ```bash
+# Try project location first
+cat .claude/skills/expertise/[domain]/references/*.md 2>/dev/null || \
+# Then plugin location
+cat ${CLAUDE_PLUGIN_ROOT}/expertise/[domain]/references/*.md 2>/dev/null || \
+# Finally user location
 cat ~/.claude/skills/expertise/[domain]/references/*.md 2>/dev/null
 ```
 

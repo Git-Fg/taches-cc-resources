@@ -44,7 +44,7 @@ Phases:
 
 What to commit:
 ```bash
-git add .planning/
+git add .prompts/planning/
 git commit
 ```
 
@@ -65,7 +65,7 @@ Use `fix([domain])` for bug fix phases.
 
 What to commit:
 ```bash
-git add .planning/phases/XX-name/  # PLAN.md + SUMMARY.md
+git add .prompts/planning/phases/XX-name/  # PLAN.md + SUMMARY.md
 git add src/                        # Actual code created
 git commit
 ```
@@ -81,7 +81,7 @@ Current: [task name]
 
 What to commit:
 ```bash
-git add .planning/
+git add .prompts/planning/
 git commit
 ```
 

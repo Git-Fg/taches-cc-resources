@@ -21,7 +21,7 @@ Ask: What do we need to learn before we can plan this phase?
 
 ### Step: Create Research Prompt
 Use templates/research-prompt.md.
-Write to `.planning/phases/XX-name/RESEARCH.md`
+Write to `.prompts/planning/phases/XX-name/RESEARCH.md`
 
 Include:
 - Clear research objective
@@ -37,7 +37,7 @@ Run the research prompt:
 - Structure findings per template
 
 ### Step: Create Findings
-Write `.planning/phases/XX-name/FINDINGS.md`:
+Write `.prompts/planning/phases/XX-name/FINDINGS.md`:
 - Summary with recommendation
 - Key findings with sources
 - Code examples if applicable
@@ -75,7 +75,7 @@ If "address first": Gather user input on questions, update findings.
 
 ### Step: Offer Next
 ```
-Research complete: .planning/phases/XX-name/FINDINGS.md
+Research complete: .prompts/planning/phases/XX-name/FINDINGS.md
 Recommendation: [one-liner]
 Confidence: [level]
 

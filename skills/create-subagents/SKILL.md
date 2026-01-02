@@ -15,7 +15,8 @@ Subagents enable delegation of complex tasks to specialized agents that operate 
 
 1. Run `/agents` command
 2. Select "Create New Agent"
-3. Choose project-level (`.claude/agents/`) or user-level (`~/.claude/agents/`)
+3. **Default**: Project-level (`.claude/agents/`) for portability
+   **Alternative**: User-level (`~/.claude/agents/`) only if specifically requested
 4. Define the subagent:
    - **name**: lowercase-with-hyphens
    - **description**: When should this subagent be used?
@@ -57,11 +58,11 @@ Provide specific, actionable feedback with file:line references.
 
 | Type | Location | Scope | Priority |
 |------|----------|-------|----------|
-| **Project** | `.claude/agents/` | Current project only | Highest |
-| **User** | `~/.claude/agents/` | All projects | Lower |
+| **Project** (default) | `.claude/agents/` | Current project only, portable | Highest |
+| **User** (if requested) | `~/.claude/agents/` | All projects | Lower |
 | **Plugin** | Plugin's `agents/` dir | All projects | Lowest |
 
-Project-level subagents override user-level when names conflict.
+Project-level subagents override user-level when names conflict. Use project location for portability.
 
 # Configuration
 
@@ -214,6 +215,70 @@ For structure principles, see @skills/create-agent-skills/references/core-princi
 
 # Invocation
 
+## Context Management (CRITICAL)
+
+**When invoking subagents via Task tool, you MUST provide complete context.**
+
+Subagents are like new hires who started 5 seconds ago. They know NOTHING about:
+- The project structure or tech stack
+- Previous conversation history
+- Decisions made earlier
+- What files exist or where they are located
+
+**When you invoke a subagent, compile a Context Payload:**
+
+1. **Project State:**
+   - What is the tech stack? (Node/Python/Rust/etc.)
+   - What frameworks are in use?
+   - What is the project structure?
+
+2. **Immediate Goal:**
+   - What specifically needs to be done?
+   - Why is this task being done?
+
+3. **Relevant Files (Context Saturation):**
+   - Do not just reference file paths
+   - You must READ key files and either:
+     - PASTE their relevant contents into the task prompt, OR
+     - Explicitly instruct the subagent to read specific paths
+
+4. **Constraints:**
+   - What must they NOT do?
+   - What patterns must they follow?
+
+**Example good delegation:**
+```
+Write a test for the auth service.
+
+**Project Context:**
+- Node.js project using TypeScript and Jest
+- Located in src/services/auth.ts
+
+**What I Found:**
+I read src/auth.ts and it exports a login(username, password) function that returns a JWT token.
+
+**Dependencies:**
+- Uses src/utils/jwt.ts for token generation
+- Uses src/models/user.ts for user lookup
+
+**Requirements:**
+- Create test at src/auth.test.ts
+- Test with valid credentials and error handling
+- Follow existing test patterns from src/user/user.test.ts
+- Do not modify the auth service, only add tests
+```
+
+**Example bad delegation:**
+```
+Write a test for the auth service.
+```
+
+**Why this matters:**
+- The subagent starts with ZERO context
+- Without tech stack, wrong test framework
+- Without function signature, guessing parameters
+- Without file location, creates files in wrong place
+
 ## Automatic
 
 Claude automatically selects subagents based on the `description` field when it matches the current task.
@@ -243,8 +308,8 @@ Run `/agents` for an interactive interface to:
 ## Manual Editing
 
 You can also edit subagent files directly:
-- Project: `.claude/agents/subagent-name.md`
-- User: `~/.claude/agents/subagent-name.md`
+- **Default**: `.claude/agents/subagent-name.md` (project, portable)
+- **Alternative**: `~/.claude/agents/subagent-name.md` (if specifically requested)
 
 # Reference Guides
 

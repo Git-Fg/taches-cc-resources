@@ -1,7 +1,7 @@
 {
   "name": "thecattoolkit",
   "description": "Comprehensive Claude Code workflow toolkit with orchestration agents, code review, debugging, security auditing, testing, architecture patterns, strategic thinking frameworks, productivity commands, and automation hooks",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "author": {
     "name": "Git-Fg",
     "email": "felix@gitfg.dev"

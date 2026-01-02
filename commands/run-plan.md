@@ -1,139 +1,78 @@
 ---
-description: Execute a PLAN.md file directly without loading planning skill context
+description: Execute a PLAN.md file with full project context (BRIEF, ROADMAP)
 argument-hint: <plan-path>
-allowed-tools: [Read, Write, Task, Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(git log:*), Bash(ls:*), Bash(grep:*)]
+allowed-tools: [Read, Write, Task, Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(ls:*)]
 ---
-
-Execute the plan at $ARGUMENTS using intelligent segmentation for optimal quality.
 
 ## Objective
 
-Execute the plan at the specified path using Task tool delegation with intelligent segmentation based on checkpoint structure.
-
-## Context
-
-Plan existence: ! `test -f "$ARGUMENTS" && echo "EXISTS" || echo "NOT_FOUND"`
-Summary status: ! `test -f "$(dirname "$ARGUMENTS")/SUMMARY.md" && echo "EXECUTED" || echo "NOT_EXECUTED"`
-Checkpoint count: ! `grep -c "type=\"checkpoint" "$ARGUMENTS" 2>/dev/null || echo "0"`
-Git status: ! `git status --short`
+Execute the plan at `$ARGUMENTS` using the context-aware plan-executor agent.
 
 ## Process
 
-1. Verify plan exists and is unexecuted:
-   - Read $ARGUMENTS
-   - Check if corresponding SUMMARY.md exists in same directory
-   - If SUMMARY exists: inform user plan already executed, ask if they want to re-run
-   - If plan doesn't exist: error and exit
+1. **Verify plan exists:**
+   ```bash
+   test -f "$ARGUMENTS" || echo "Plan not found: $ARGUMENTS"
+   ```
 
-2. Parse plan and determine execution strategy:
-   - Extract `<objective>`, `<execution_context>`, `<context>`, `<tasks>`, `<verification>`, `<success_criteria>` sections
-   - Analyze checkpoint structure: `grep "type=\"checkpoint" $ARGUMENTS`
-   - Determine routing strategy:
+2. **Check if already executed:**
+   ```bash
+   test -f "$(dirname "$ARGUMENTS")/SUMMARY.md" && echo "Plan already executed (SUMMARY.md exists)"
+   ```
 
-   Strategy A: Fully Autonomous (no checkpoints)
-   - Spawn single subagent to execute entire plan
-   - Subagent reads plan, executes all tasks, creates SUMMARY, commits
-   - Main context: Orchestration only (~5% usage)
-   - Go to step 3A
+3. **Invoke plan-executor agent:**
+   Use Task tool with subagent_type="general-purpose" and model="sonnet":
+   ```
+   Execute the plan located at: $ARGUMENTS
 
-   Strategy B: Segmented Execution (has verify-only checkpoints)
-   - Parse into segments separated by checkpoints
-   - Check if checkpoints are verify-only (checkpoint:human-verify)
-   - If all checkpoints are verify-only: segment execution enabled
-   - Go to step 3B
+   CRITICAL: Follow your Context Loading protocol explicitly:
 
-   Strategy C: Decision-Dependent (has decision/action checkpoints)
-   - Has checkpoint:decision or checkpoint:human-action checkpoints
-   - Following tasks depend on checkpoint outcomes
-   - Must execute sequentially in main context
-   - Go to step 3C
+   **1. HYDRATE CONTEXT (MANDATORY - Do This First):**
+   You are a new instance and know NOTHING about this project.
+   Before doing ANY work, you MUST read these files to understand architecture and vision:
+   - Read `.prompts/planning/BRIEF.md` for project vision and constraints
+   - Read `.prompts/planning/ROADMAP.md` for architecture and phase structure
+   - Read any files listed in the plan's `## Execution Context` section
 
-3. Execute based on strategy:
+   **2. PARSE PLAN STRUCTURE:**
+   The plan uses Markdown structure (NOT XML tags):
+   - `# Objective` - The goal
+   - `## Execution Context` - Files to read before starting
+   - `## Tasks` - Checkbox list of actions
+   - `**[CHECKPOINT]**` - Items requiring human verification
+   - `## Success Criteria` - Definition of done
 
-   3A: Fully Autonomous Execution
-   Spawn Task tool (subagent_type="general-purpose"):
+   **3. EXECUTE:**
+   - Perform Context Hydration: read files mentioned in the plan
+   - Execute all tasks sequentially
+   - Create SUMMARY.md when complete
+   - Update ROADMAP.md to mark plan complete
+   - Commit changes with format: `feat({phase}-{plan}): [summary]`
 
-   Prompt: "Execute plan at $ARGUMENTS
+   If the path provided is relative (e.g., "01-auth/PLAN.md" or "phases/01-auth/PLAN.md"),
+   look inside `.prompts/planning/` for the file.
+   ```
 
-   This is a fully autonomous plan (no checkpoints).
+4. **Monitor completion:**
+   - Wait for agent to complete
+   - Verify SUMMARY.md was created
+   - Verify git commit was successful
 
-   - Read the plan for full objective, context, and tasks
-   - Execute ALL tasks sequentially
-   - Follow all deviation rules and authentication gate protocols
-   - Create SUMMARY.md in same directory as PLAN.md
-   - Update ROADMAP.md plan count
-   - Commit with format: feat({phase}-{plan}): [summary]
-   - Report: tasks completed, files modified, commit hash"
-
-   Wait for completion → Done
-
-   3B: Segmented Execution (verify-only checkpoints)
-   For each segment (autonomous block between checkpoints):
-
-     IF segment is autonomous:
-       Spawn subagent:
-         "Execute tasks [X-Y] from $ARGUMENTS
-          Read plan for context and deviation rules.
-          DO NOT create SUMMARY or commit.
-          Report: tasks done, files modified, deviations"
-
-       Wait for subagent completion
-       Capture results
-
-     ELSE IF task is checkpoint:
-       Execute in main context:
-         - Load checkpoint task details
-         - Present checkpoint to user (action/verify/decision)
-         - Wait for user response
-         - Continue to next segment
-
-   After all segments complete:
-     - Aggregate results from all segments
-     - Create SUMMARY.md with aggregated data
-     - Update ROADMAP.md
-     - Commit all changes
-     - Done
-
-   3C: Decision-Dependent Execution
-   Execute in main context:
-
-   Read execution context from plan `<execution_context>` section
-   Read domain context from plan `<context>` section
-
-   For each task in `<tasks>`:
-     IF type="auto": execute in main, track deviations
-     IF type="checkpoint:*": execute in main, wait for user
-
-   After all tasks:
-     - Create SUMMARY.md
-     - Update ROADMAP.md
-     - Commit
-     - Done
-
-4. Summary and completion:
-   - Verify SUMMARY.md created
-   - Verify commit successful
-   - Present completion message with next steps
+5. **Report completion:**
+   - Show SUMMARY.md contents
+   - Display commit hash
+   - Suggest next steps based on ROADMAP
 
 ## Constraints
 
-- Read execution_context first: Always load files from `<execution_context>` section before executing
-- Minimal context loading: Only read files explicitly mentioned in `<execution_context>` and `<context>` sections
-- No skill invocation: Execute directly using native tools - don't invoke create-plans skill
-- All deviations tracked: Apply deviation rules from execute-phase.md, document everything in Summary
-- Checkpoints are blocking: Never skip user interaction for checkpoint tasks
-- Verification is mandatory: Don't mark complete without running verification checks
-- Follow execute-phase.md protocol: Loaded context contains all execution instructions
+- The plan-executor agent handles all context loading automatically
+- Do NOT manually read BRIEF.md or ROADMAP.md in this command
+- Let the agent establish full context before execution
+- Trust the agent's Context Loading protocol
 
 ## Success Criteria
 
+- Plan executed by plan-executor agent
 - SUMMARY.md created in plan directory
-- All tasks completed or documented deviations
-- Git commit successful with proper format
-- User presented with completion message and next steps
-
-## Context Strategy
-
-Execution context: ~5-7k tokens (execute-phase.md, summary.md, checkpoints.md if needed)
-Domain context: ~10-15k tokens (BRIEF, ROADMAP, codebase files)
-Total overhead: <30% context, reserving 70%+ for workspace and implementation
+- Git commit successful
+- User receives completion report with next steps

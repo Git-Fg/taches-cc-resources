@@ -4,20 +4,9 @@ argument-hint: [task description]
 allowed-tools: [Read, Write, Glob, AskUserQuestion]
 ---
 
-<!--
-CREATION COMMANDS GUIDE:
-- Use /create-plan for building projects (hierarchical planning)
-- Use /create-meta-prompt for Claude→Claude pipelines (staged workflows)
-- Use /create-prompt for single prompts (simple, one-off)
-- Use /create-agent-skill for creating new skills
-- Use /create-subagent for creating specialized agents
-- Use /create-slash-command for creating commands
-- Use /create-hook for automation
--->
-
 ## Context
 
-Before generating prompts, use the Glob tool to check `./prompts/*.md` to:
+Before generating prompts, use the Glob tool to check `.prompts/prompts/*.md` to:
 1. Determine if the prompts directory exists
 2. Find the highest numbered prompt to determine next sequence number
 
@@ -176,24 +165,43 @@ Create the prompt(s) and save to the prompts folder.
 
 For single prompts:
 - Generate one prompt file following the patterns below
-- Save as `./prompts/[number]-[name].md`
+- Save as `.prompts/prompts/[number]-[name].md`
 
 For multiple prompts:
 - Determine how many prompts are needed (typically 2-4)
 - Generate each prompt with clear, focused objectives
-- Save sequentially: `./prompts/[N]-[name].md`, `./prompts/[N+1]-[name].md`, etc.
+- Save sequentially: `.prompts/prompts/[N]-[name].md`, `.prompts/prompts/[N+1]-[name].md`, etc.
 - Each prompt should be self-contained and executable independently
 
 ### Prompt Construction Rules
 
 Always Include:
 - XML tag structure with clear, semantic tags like `<objective>`, `<context>`, `<requirements>`, `<constraints>`, `<output>`
+- **Context Loading section as the first step** - See below
 - Contextual information: Why this task matters, what it's for, who will use it, end goal
 - Explicit, specific instructions: Tell Claude exactly what to do with clear, unambiguous language
 - Sequential steps: Use numbered lists for clarity
 - File output instructions using relative paths: `./filename` or `./subfolder/filename`
 - Reference to reading the CLAUDE.md for project conventions
 - Explicit success criteria within `<success_criteria>` or `<verification>` tags
+
+### Context Loading Section (REQUIRED)
+
+Every generated prompt MUST start with a "Context Compilation" step. The generated prompt must explicitly instruct the AI to:
+
+1. **Read specific files involved in the task** - List the exact files to read
+2. **Read configuration files** - Include tsconfig, pyproject.toml, package.json, etc. to understand the environment
+3. **Read project conventions** - Reference CLAUDE.md or README.md if available
+4. **Understand architecture before coding** - Do not start implementation until context is loaded
+
+**The prompt should explicitly state:**
+> "Do not start coding until you have read these files and confirmed you understand the architecture, patterns, and constraints."
+
+**Why this matters:**
+- Prompts are executed in fresh contexts with ZERO project knowledge
+- Without context loading, the AI will make wrong assumptions
+- Configuration files reveal critical environment details
+- Reading existing code prevents style/pattern mismatches
 
 Conditionally Include (based on analysis):
 - Extended thinking triggers for complex reasoning
@@ -210,10 +218,10 @@ Conditionally Include (based on analysis):
 ### Output Format
 
 1. Generate prompt content with XML structure
-2. Save to: `./prompts/[number]-[descriptive-name].md`
-   - Number format: 001, 002, 003, etc. (check existing files in ./prompts/ to determine next number)
+2. Save to: `.prompts/prompts/[number]-[descriptive-name].md`
+   - Number format: 001, 002, 003, etc. (check existing files in .prompts/prompts/ to determine next number)
    - Name format: lowercase, hyphen-separated, max 5 words describing the task
-   - Example: `./prompts/001-implement-user-authentication.md`
+   - Example: `.prompts/prompts/001-implement-user-authentication.md`
 3. File should contain ONLY the prompt, no explanations or metadata
 
 ## Prompt Patterns
@@ -221,6 +229,27 @@ Conditionally Include (based on analysis):
 ### For Coding Tasks
 
 ```xml
+<context_loading>
+CRITICAL: Before starting implementation, load project context:
+
+1. Read configuration files to understand the environment:
+   - @package.json (Node.js) or @pyproject.toml (Python) or @Cargo.toml (Rust)
+   - @tsconfig.json or equivalent for type/configuration rules
+
+2. Read project conventions:
+   - @CLAUDE.md (if exists) for project-specific rules
+   - @README.md for overview and architecture
+
+3. Read relevant existing code:
+   - Read 2-3 similar files to understand patterns used in this codebase
+   - Check imports and dependencies to understand architectural patterns
+
+4. Confirm understanding before proceeding:
+   "I have read the configuration, project conventions, and existing code patterns. I understand: [brief summary of architecture, patterns, constraints]."
+
+Do NOT start coding until this step is complete.
+</context_loading>
+
 <objective>
 [Clear statement of what needs to be built/fixed/refactored]
 Explain the end goal and why this matters.
@@ -262,6 +291,24 @@ Before declaring complete, verify your work:
 ### For Analysis Tasks
 
 ```xml
+<context_loading>
+CRITICAL: Before starting analysis, load context:
+
+1. Understand the codebase structure:
+   - @README.md for project overview
+   - Examine directory structure to understand organization
+
+2. Read relevant configuration:
+   - @package.json, @pyproject.toml, or equivalent
+   - Configuration files for frameworks/tools used
+
+3. Read files being analyzed:
+   - Read complete files, not just snippets
+   - Understand imports and dependencies
+
+Confirm: "I have loaded context and understand the codebase structure."
+</context_loading>
+
 <objective>
 [What needs to be analyzed and why]
 [What the analysis will be used for]
@@ -291,6 +338,24 @@ Save analysis to: `./analyses/[descriptive-name].md`
 ### For Research Tasks
 
 ```xml
+<context_loading>
+CRITICAL: Before starting research, load project context:
+
+1. Understand what already exists:
+   - Search for existing documentation on this topic
+   - Check if there are previous research findings
+
+2. Understand the goal:
+   - Read relevant requirements or specs if available
+   - Understand constraints (time, scope, resources)
+
+3. Understand the technical environment:
+   - What tech stack are we using?
+   - What are the constraints/requirements?
+
+Confirm: "I understand the research goal and technical context."
+</context_loading>
+
 <research_objective>
 [What information needs to be gathered]
 [Intended use of the research]
@@ -358,9 +423,9 @@ Prompt(s) created successfully!
 
 ### Single Prompt Scenario
 
-If you created ONE prompt (e.g., `./prompts/005-implement-feature.md`):
+If you created ONE prompt (e.g., `.prompts/prompts/005-implement-feature.md`):
 
-✓ Saved prompt to ./prompts/005-implement-feature.md
+✓ Saved prompt to .prompts/prompts/005-implement-feature.md
 
 What's next?
 
@@ -378,9 +443,9 @@ If user chooses #1, invoke via SlashCommand tool: `/run-prompt 005`
 If you created MULTIPLE prompts that CAN run in parallel (e.g., independent modules, no shared files):
 
 ✓ Saved prompts:
-  - ./prompts/005-implement-auth.md
-  - ./prompts/006-implement-api.md
-  - ./prompts/007-implement-ui.md
+  - .prompts/prompts/005-implement-auth.md
+  - .prompts/prompts/006-implement-api.md
+  - .prompts/prompts/007-implement-ui.md
 
 Execution strategy: These prompts can run in PARALLEL (independent tasks, no shared files)
 
@@ -401,9 +466,9 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005 006 007 --seq
 If you created MULTIPLE prompts that MUST run sequentially (e.g., dependencies, shared files):
 
 ✓ Saved prompts:
-  - ./prompts/005-setup-database.md
-  - ./prompts/006-create-migrations.md
-  - ./prompts/007-seed-data.md
+  - .prompts/prompts/005-setup-database.md
+  - .prompts/prompts/006-create-migrations.md
+  - .prompts/prompts/007-seed-data.md
 
 Execution strategy: These prompts must run SEQUENTIALLY (dependencies: 005 → 006 → 007)
 
@@ -427,7 +492,7 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 - User selected "Proceed" from decision gate
 - Appropriate depth, structure, and execution strategy determined
 - Prompt(s) generated with proper XML structure following patterns
-- Files saved to ./prompts/[number]-[name].md with correct sequential numbering
+- Files saved to .prompts/prompts/[number]-[name].md with correct sequential numbering
 - Decision tree presented to user based on single/parallel/sequential scenario
 - User choice executed (SlashCommand invoked if user selects run option)
 
@@ -435,8 +500,8 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 
 - Intake first: Complete step_0_intake_gate before generating. Use AskUserQuestion for structured clarification.
 - Decision gate loop: Keep asking questions until user selects "Proceed"
-- Use Glob tool with `./prompts/*.md` to find existing prompts and determine next number in sequence
-- If ./prompts/ doesn't exist, use Write tool to create the first prompt (Write will create parent directories)
+- Use Glob tool with `.prompts/prompts/*.md` to find existing prompts and determine next number in sequence
+- If .prompts/prompts/ doesn't exist, use Write tool to create the first prompt (Write will create parent directories)
 - Keep prompt filenames descriptive but concise
 - Adapt the XML structure to fit the task - not every tag is needed every time
 - Consider the user's working directory as the root for all relative paths

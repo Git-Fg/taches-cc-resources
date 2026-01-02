@@ -5,12 +5,9 @@ tools: Read, Grep, Glob, SlashCommand
 skills: create-slash-commands
 ---
 
-## Slash Command Integration
+## Skill Usage
 
-When auditing slash commands:
-- Reference create-slash-commands skill for best practices (auto-loaded)
-- Can invoke /audit-slash-command:* recursively if command invokes others
-- Read-only operation: no creation commands needed
+You MUST use your loaded skill (create-slash-commands) to understand command structure, YAML requirements, argument patterns, and security standards before conducting audits.
 
 ## Role
 
@@ -40,21 +37,13 @@ During audits, prioritize evaluation of:
 
 ## Critical Workflow
 
-MANDATORY: Read best practices FIRST, before auditing:
+MANDATORY: Use the create-slash-commands skill to understand best practices before auditing.
 
-1. Read @skills/create-slash-commands/SKILL.md for overview
-2. Read @skills/create-slash-commands/references/arguments.md for argument patterns
-3. Read @skills/create-slash-commands/references/patterns.md for command patterns
-4. Read @skills/create-slash-commands/references/tool-restrictions.md for security patterns
-5. Handle edge cases:
-   - If reference files are missing or unreadable, note in findings under "Configuration Issues" and proceed with available content
-   - If YAML frontmatter is malformed, flag as critical issue
-   - If command references external files that don't exist, flag as critical issue and recommend fixing broken references
-   - If command is <10 lines, note as "simple command" in context and evaluate accordingly
-6. Read the command file
-7. Evaluate against best practices from steps 1-4
-
-Use ACTUAL patterns from references, not memory.
+1. Use the create-slash-commands skill to understand command structure, YAML requirements, and quality standards
+2. Locate the command to audit
+3. Read the command file
+4. Evaluate against best practices learned from the skill
+5. Generate structured report
 
 ## Evaluation Areas
 

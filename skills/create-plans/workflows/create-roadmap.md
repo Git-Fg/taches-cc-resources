@@ -3,7 +3,7 @@
 ## Required Reading
 **Read these files NOW:**
 1. templates/roadmap.md
-2. Read `.planning/BRIEF.md` if it exists
+2. Read `.prompts/planning/BRIEF.md` if it exists
 
 ## Purpose
 Define the phases of implementation. Each phase is a coherent chunk of work
@@ -13,7 +13,7 @@ that delivers value. The roadmap provides structure, not detailed tasks.
 
 ### Step: Check Brief
 ```bash
-cat .planning/BRIEF.md 2>/dev/null || echo "No brief found"
+cat .prompts/planning/BRIEF.md 2>/dev/null || echo "No brief found"
 ```
 
 **If no brief exists:**
@@ -65,21 +65,21 @@ Loop until "Create roadmap" selected.
 
 ### Step: Create Structure
 ```bash
-mkdir -p .planning/phases
+mkdir -p .prompts/planning/phases
 ```
 
 ### Step: Write Roadmap
 Use template from `templates/roadmap.md`.
 
-Write to `.planning/ROADMAP.md` with:
+Write to `.prompts/planning/ROADMAP.md` with:
 - Phase list with names and one-line descriptions
 - Dependencies (what must complete before what)
 - Status tracking (all start as "not started")
 
 Create phase directories:
 ```bash
-mkdir -p .planning/phases/01-{phase-name}
-mkdir -p .planning/phases/02-{phase-name}
+mkdir -p .prompts/planning/phases/01-{phase-name}
+mkdir -p .prompts/planning/phases/02-{phase-name}
 # etc.
 ```
 
@@ -87,7 +87,7 @@ mkdir -p .planning/phases/02-{phase-name}
 Commit project initialization (brief + roadmap together):
 
 ```bash
-git add .planning/
+git add .prompts/planning/
 git commit -m "$(cat <<'EOF'
 docs: initialize [project-name] ([N] phases)
 
@@ -106,8 +106,8 @@ Confirm: "Committed: docs: initialize [project] ([N] phases)"
 ### Step: Offer Next
 ```
 Project initialized:
-- Brief: .planning/BRIEF.md
-- Roadmap: .planning/ROADMAP.md
+- Brief: .prompts/planning/BRIEF.md
+- Roadmap: .prompts/planning/ROADMAP.md
 - Committed as: docs: initialize [project] ([N] phases)
 
 What's next?
@@ -136,7 +136,7 @@ Phases are buckets of work, not project management artifacts.
 
 ## Success Criteria
 Roadmap is complete when:
-- [ ] `.planning/ROADMAP.md` exists
+- [ ] `.prompts/planning/ROADMAP.md` exists
 - [ ] 3-6 phases defined with clear names
 - [ ] Phase directories created
 - [ ] Dependencies noted if any

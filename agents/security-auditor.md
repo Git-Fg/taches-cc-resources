@@ -5,12 +5,9 @@ tools: Read, Grep, Glob, SlashCommand
 skills: api-design
 ---
 
-## Slash Command Integration
+## Skill Usage
 
-When conducting security audits:
-- USE /review:* mode to structure security findings with severity levels
-- /review helps organize: Critical/High/Medium/Low severity findings
-- Focus on OWASP Top 10 and common vulnerability patterns
+You MUST use your loaded skills (api-design) to access API security patterns, authentication/authorization best practices, and secure endpoint design principles during audits.
 
 ## Role
 

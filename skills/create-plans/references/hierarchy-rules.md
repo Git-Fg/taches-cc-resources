@@ -20,7 +20,7 @@ prompts/          ← Execution (via create-meta-prompts)
 **Purpose**: Capture vision, goals, constraints
 **Audience**: Human (the user)
 **Contains**: What we're building, why, success criteria, out of scope
-**Creates**: `.planning/BRIEF.md`
+**Creates**: `.prompts/planning/BRIEF.md`
 
 **Requires**: Nothing (can start here)
 **Enables**: Roadmap creation
@@ -31,7 +31,7 @@ This is the ONLY document optimized for human reading.
 **Purpose**: Define phases and sequence
 **Audience**: Both human and Claude
 **Contains**: Phase names, goals, dependencies, progress tracking
-**Creates**: `.planning/ROADMAP.md`, `.planning/phases/` directories
+**Creates**: `.prompts/planning/ROADMAP.md`, `.prompts/planning/phases/` directories
 
 **Requires**: Brief (or quick context if skipping)
 **Enables**: Phase planning
@@ -42,7 +42,7 @@ Roadmap looks UP to Brief for scope, looks DOWN to track phase completion.
 **Purpose**: Define Claude-executable tasks
 **Audience**: Claude (the implementer)
 **Contains**: Tasks with Files/Action/Verification/Done-when
-**Creates**: `.planning/phases/XX-name/PLAN.md`
+**Creates**: `.prompts/planning/phases/XX-name/PLAN.md`
 
 **Requires**: Roadmap (to know phase scope)
 **Enables**: Prompt generation, direct execution
@@ -53,7 +53,7 @@ Phase plan looks UP to Roadmap for scope, produces implementation details.
 **Purpose**: Optimized execution instructions
 **Audience**: Claude (via create-meta-prompts)
 **Contains**: Research/Plan/Do prompts with metadata
-**Creates**: `.planning/phases/XX-name/prompts/`
+**Creates**: `.prompts/planning/phases/XX-name/prompts/`
 
 **Requires**: Phase plan (tasks to execute)
 **Enables**: Autonomous execution
@@ -94,10 +94,10 @@ Options:
 Always offer to create missing pieces rather than skipping.
 
 ## File Locations
-All planning artifacts in `.planning/`:
+All planning artifacts in `.prompts/planning/`:
 
 ```
-.planning/
+.prompts/planning/
 ├── BRIEF.md                    # One per project
 ├── ROADMAP.md                  # One per project
 └── phases/

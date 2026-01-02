@@ -23,6 +23,11 @@ If not a good fit, suggest alternatives (workflow guidance, reference examples).
 ## Step 3: Create Templates Directory
 
 ```bash
+# Use the appropriate location (project or user)
+# For project-level:
+mkdir -p .claude/skills/{skill-name}/templates
+
+# For user-level (if specifically requested):
 mkdir -p ~/.claude/skills/{skill-name}/templates
 ```
 

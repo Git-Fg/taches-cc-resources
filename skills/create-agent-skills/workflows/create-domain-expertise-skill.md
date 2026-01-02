@@ -49,7 +49,17 @@ Get specific: "Python games" or "Python games with Pygame specifically"?
 
 Explain:
 ```
-Domain expertise skills go in: ~/.claude/skills/expertise/{domain-name}/
+Domain expertise skills go in one of these locations:
+
+**Project-level** (default, recommended): .claude/skills/expertise/{domain-name}/
+- Portable with the project
+- Shared with team via version control
+- Available only in this project
+
+**User-level** (if specifically requested): ~/.claude/skills/expertise/{domain-name}/
+- Available across all your projects
+- Use only for personally useful domains
+- Shows as (user) in skill listings
 
 These are comprehensive BUILD skills that:
 - Execute tasks (build, debug, optimize, ship)
@@ -58,8 +68,10 @@ These are comprehensive BUILD skills that:
 - Can be loaded by other skills for domain knowledge
 
 Name suggestion: {suggested-name}
-Location: ~/.claude/skills/expertise/{suggested-name}/
+Default location: .claude/skills/expertise/{suggested-name}/
 ```
+
+Ask user which location they prefer (default to project-level).
 
 Confirm or adjust name.
 
@@ -495,7 +507,13 @@ Test both use cases:
 ## Step 10: Create Directory and Files
 
 ```bash
-# Create structure
+# Create structure (use chosen location from Step 2)
+# For project-level (default):
+mkdir -p .claude/skills/expertise/{domain-name}
+mkdir -p .claude/skills/expertise/{domain-name}/workflows
+mkdir -p .claude/skills/expertise/{domain-name}/references
+
+# For user-level (if specifically requested):
 mkdir -p ~/.claude/skills/expertise/{domain-name}
 mkdir -p ~/.claude/skills/expertise/{domain-name}/workflows
 mkdir -p ~/.claude/skills/expertise/{domain-name}/references
@@ -504,13 +522,19 @@ mkdir -p ~/.claude/skills/expertise/{domain-name}/references
 # Write all workflow files
 # Write all reference files
 
-# Verify structure
+# Verify structure (use appropriate path)
+ls -R .claude/skills/expertise/{domain-name}
+# OR
 ls -R ~/.claude/skills/expertise/{domain-name}
 ```
 
 ## Step 11: Document in create-plans
 
-Update `~/.claude/skills/create-plans/SKILL.md` to reference this new domain:
+If this is a user-level domain expertise skill, update the create-plans skill to reference it:
+
+For project-level skills: create-plans will automatically discover them via `.claude/skills/expertise/` scan.
+
+For user-level skills: Update the appropriate create-plans SKILL.md (plugin or user level) to add to the domain inference table:
 
 Add to the domain inference table:
 ```markdown
@@ -569,8 +593,8 @@ Domain expertise skill is complete when:
 - [ ] Anti-patterns documented throughout
 - [ ] Full lifecycle covered (build → debug → test → optimize → ship)
 - [ ] Platform-specific considerations included
-- [ ] Located in ~/.claude/skills/expertise/{domain-name}/
-- [ ] Referenced in create-plans domain inference table
+- [ ] Located in chosen location (.claude/skills/expertise/{domain-name}/ or ~/.claude/skills/expertise/{domain-name}/)
+- [ ] For user-level skills: Referenced in create-plans domain inference table
 - [ ] Passes dual-purpose test: Can be invoked directly AND loaded for knowledge
 - [ ] User can build something professional from scratch through shipping
 

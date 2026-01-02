@@ -5,8 +5,6 @@ allowed-tools:
   - Read
   - Write
   - Bash
-  - WebSearch
-  - WebFetch
 ---
 
 Create a comprehensive, detailed handoff document that captures all context from the current conversation. This allows continuing the work in a fresh context with complete precision.
@@ -52,7 +50,9 @@ Adapt the level of detail to the task type (coding, research, analysis, writing,
    - Any temporary changes, workarounds, or open questions
    - Current position in the workflow or process
 
-Write to `whats-next.md` in the current working directory using the format below.
+Create directory: `mkdir -p .prompts/handoffs`
+
+Write to `.prompts/handoffs/whats-next.md` using the format below.
 
 ## Output Format
 

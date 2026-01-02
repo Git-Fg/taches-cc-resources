@@ -8,11 +8,11 @@ allowed-tools: [Read, Task, Bash(ls:*), Bash(mv:*), Bash(git add:*), Bash(git st
 ## Context
 
 Git status: ! `git status --short`
-Recent prompts: ! `ls -t ./prompts/*.md | head -5`
+Recent prompts: ! `ls -t .prompts/prompts/*.md | head -5`
 
 ## Objective
 
-Execute one or more prompts from `./prompts/` as delegated sub-tasks with fresh context. Supports single prompt execution, parallel execution of multiple independent prompts, and sequential execution of dependent prompts.
+Execute one or more prompts from `.prompts/prompts/` as delegated sub-tasks with fresh context. Supports single prompt execution, parallel execution of multiple independent prompts, and sequential execution of dependent prompts.
 
 ## Input
 
@@ -45,7 +45,7 @@ Examples:
 ### Step 2: Resolve Files
 
 For each prompt number/name:
-- If empty or "last": Find with `!ls -t ./prompts/*.md | head -1`
+- If empty or "last": Find with `!ls -t .prompts/prompts/*.md | head -1`
 - If a number: Find file matching that zero-padded number (e.g., "5" matches "005-_.md", "42" matches "042-_.md")
 - If text: Find files containing that string in the filename
 
@@ -61,7 +61,7 @@ Matching rules:
 1. Read the complete contents of the prompt file
 2. Delegate as sub-task using Task tool with subagent_type="general-purpose"
 3. Wait for completion
-4. Archive prompt to `./prompts/completed/` with metadata
+4. Archive prompt to `.prompts/prompts/completed/` with metadata
 5. Commit all work:
    - Stage files YOU modified with `git add [file]` (never `git add .`)
    - Determine appropriate commit type based on changes (fix|feat|refactor|style|docs|test|chore)
@@ -104,15 +104,53 @@ Matching rules:
 
 ## Context Strategy
 
-By delegating to a sub-task, the actual implementation work happens in fresh context while the main conversation stays lean for orchestration and iteration.
+**CRITICAL: Subagents need ALL relevant context.**
+
+Subagents are like new hires who started 5 seconds ago. They know NOTHING about:
+- The project structure or tech stack
+- Previous conversation history
+- Decisions made earlier
+- What files exist or where they are located
+
+**When invoking Task tools, you MUST provide:**
+
+1. **Project State:**
+   - What is the tech stack? (Node/Python/Rust/etc.)
+   - What frameworks are in use?
+   - What is the project structure?
+
+2. **Prompt Contents:**
+   - Read the complete prompt file
+   - Include the prompt contents in your Task invocation
+   - The prompt file should contain context loading instructions (via /create-prompt)
+
+3. **Current Working Directory:**
+   - Explicitly state where work should happen
+   - Provide paths relative to working directory
+
+4. **Constraints:**
+   - What should the subagent NOT do?
+   - What patterns must they follow?
+
+**By delegating to a sub-task:** The actual implementation work happens in fresh context while the main conversation stays lean for orchestration and iteration. BUT this only works if you provide complete context in the Task invocation.
+
+**Example Task invocation:**
+```
+Execute this prompt in a fresh context:
+
+**Project:** Node.js/TypeScript project using Express
+**Working Directory:** /path/to/project
+**Prompt Contents:** [paste the full prompt file contents here]
+**Constraints:** Follow existing code patterns in src/, run tests after changes
+```
 
 ## Output
 
 ### Single Prompt Output
 
 ```
-✓ Executed: ./prompts/005-implement-feature.md
-✓ Archived to: ./prompts/completed/005-implement-feature.md
+✓ Executed: .prompts/prompts/005-implement-feature.md
+✓ Archived to: .prompts/prompts/completed/005-implement-feature.md
 
 [Summary of what the sub-task accomplished]
 ```
@@ -122,11 +160,11 @@ By delegating to a sub-task, the actual implementation work happens in fresh con
 ```
 ✓ Executed in PARALLEL:
 
-- ./prompts/005-implement-auth.md
-- ./prompts/006-implement-api.md
-- ./prompts/007-implement-ui.md
+- .prompts/prompts/005-implement-auth.md
+- .prompts/prompts/006-implement-api.md
+- .prompts/prompts/007-implement-ui.md
 
-✓ All archived to ./prompts/completed/
+✓ All archived to .prompts/prompts/completed/
 
 [Consolidated summary of all sub-task results]
 ```
@@ -136,11 +174,11 @@ By delegating to a sub-task, the actual implementation work happens in fresh con
 ```
 ✓ Executed SEQUENTIALLY:
 
-1. ./prompts/005-setup-database.md → Success
-2. ./prompts/006-create-migrations.md → Success
-3. ./prompts/007-seed-data.md → Success
+1. .prompts/prompts/005-setup-database.md → Success
+2. .prompts/prompts/006-create-migrations.md → Success
+3. .prompts/prompts/007-seed-data.md → Success
 
-✓ All archived to ./prompts/completed/
+✓ All archived to .prompts/prompts/completed/
 
 [Consolidated summary showing progression through each step]
 ```

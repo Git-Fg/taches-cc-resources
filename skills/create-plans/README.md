@@ -42,10 +42,10 @@ SUMMARY.md        → Outcome (existence = phase complete)
 
 ## Directory Structure
 
-All planning artifacts go in `.planning/`:
+All planning artifacts go in `.prompts/planning/`:
 
 ```
-.planning/
+.prompts/planning/
 ├── BRIEF.md                    # Project vision
 ├── ROADMAP.md                  # Phase structure + tracking
 └── phases/
@@ -119,8 +119,14 @@ Specific. Executable. Framework-appropriate.
 
 **Structure of domain skills:**
 
+Domain skills can be located in multiple locations:
+- Global: `~/.claude/skills/expertise/[domain]/`
+- Plugin relative: `{plugin_root}/expertise/[domain]/`
+- Project local: `.claude/skills/expertise/[domain]/`
+
+Each domain directory contains:
 ```
-~/.claude/skills/expertise/[domain]/
+[domain]/
 ├── SKILL.md              # Router + essential principles
 ├── workflows/            # build-new-app, add-feature, debug-app, etc.
 └── references/           # Exhaustive domain knowledge (often 10k+ lines)
@@ -142,9 +148,10 @@ Specific. Executable. Framework-appropriate.
 **How it works:**
 
 1. Skill infers domain from your request ("build a macOS app" → build-macos-apps)
-2. Before creating PLAN.md, reads all `~/.claude/skills/build/macos-apps/references/*.md`
-3. Uses that exhaustive knowledge to write framework-specific tasks
-4. Result: Plans that match your actual tech stack with all the details
+2. Scans for domain expertise in: global → plugin relative → project local directories
+3. Before creating PLAN.md, reads all references from the discovered location
+4. Uses that exhaustive knowledge to write framework-specific tasks
+5. Result: Plans that match your actual tech stack with all the details
 
 **What if you don't have domain skills?**
 

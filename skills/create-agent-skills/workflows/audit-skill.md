@@ -6,21 +6,48 @@
 2. references/core-principles.md
 
 ## Process
+
+## Step 0: Intake & Context (MANDATORY)
+
+Before listing skills, understand the audit goal:
+
+**1. Understand the audit purpose:**
+- Why is this skill being audited?
+- Is this for quality assurance, fixing issues, or learning?
+- Are there specific concerns or areas of focus?
+
+**2. Understand the skill's context:**
+- What type of skill is this? (simple, router, domain expertise)
+- What is this skill used for?
+- Who uses this skill and in what context?
+
+**3. Check dependencies and usage:**
+- Is this skill referenced by other skills?
+- Are there slash commands that invoke this skill?
+- What tools/permissions does this skill use?
+
+**Result:** Clear understanding of audit scope, skill context, and what issues would be most critical to flag.
+
 ## Step 1: List Available Skills
 
 **DO NOT use AskUserQuestion** - there may be many skills.
 
 Enumerate skills in chat as numbered list:
 ```bash
-ls ~/.claude/skills/
+# Check project skills first, then user skills
+{ ls .claude/skills/ 2>/dev/null; ls ~/.claude/skills/ 2>/dev/null; } | sort -u
 ```
 
 Present as:
 ```
 Available skills:
-1. create-agent-skills
-2. build-macos-apps
-3. manage-stripe
+(project)
+1. my-custom-skill
+2. domain-expertise
+
+(user)
+3. create-agent-skills
+4. build-macos-apps
 ...
 ```
 
@@ -30,13 +57,14 @@ Ask: "Which skill would you like to audit? (enter number or name)"
 
 After user selects, read the full skill structure:
 ```bash
+# Try project location first, then user location
 # Read main file
-cat ~/.claude/skills/{skill-name}/SKILL.md
+cat .claude/skills/{skill-name}/SKILL.md 2>/dev/null || cat ~/.claude/skills/{skill-name}/SKILL.md
 
 # Check for workflows and references
-ls ~/.claude/skills/{skill-name}/
-ls ~/.claude/skills/{skill-name}/workflows/ 2>/dev/null
-ls ~/.claude/skills/{skill-name}/references/ 2>/dev/null
+ls .claude/skills/{skill-name}/ 2>/dev/null || ls ~/.claude/skills/{skill-name}/
+ls .claude/skills/{skill-name}/workflows/ 2>/dev/null || ls ~/.claude/skills/{skill-name}/workflows/ 2>/dev/null
+ls .claude/skills/{skill-name}/references/ 2>/dev/null || ls ~/.claude/skills/{skill-name}/references/ 2>/dev/null
 ```
 
 ## Step 3: Run Audit Checklist
@@ -126,6 +154,7 @@ If fixing:
 
 ## Success Criteria
 Audit is complete when:
+- [ ] Context intake completed - audit scope and skill context understood
 - [ ] Skill fully read and analyzed
 - [ ] All checklist items evaluated
 - [ ] Report presented to user

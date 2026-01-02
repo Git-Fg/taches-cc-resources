@@ -13,7 +13,7 @@ After loading, DELETE the handoff - it's a parking lot, not permanent storage.
 Context scan already found handoff. Read it:
 
 ```bash
-cat .planning/phases/*/.continue-here.md 2>/dev/null
+cat .prompts/planning/phases/*/.continue-here.md 2>/dev/null
 ```
 
 Parse YAML frontmatter for: phase, task, status, last_updated
@@ -63,7 +63,7 @@ On confirmation:
 After user confirms and context is loaded:
 
 ```bash
-rm .planning/phases/XX-name/.continue-here.md
+rm .prompts/planning/phases/XX-name/.continue-here.md
 ```
 
 Tell user: "Handoff loaded and cleared. Let's continue."

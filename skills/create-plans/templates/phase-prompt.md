@@ -1,6 +1,6 @@
 # Phase Prompt Template
 
-Copy and fill this structure for `.planning/phases/XX-name/{phase}-{plan}-PLAN.md`:
+Copy and fill this structure for `.prompts/planning/phases/XX-name/{phase}-{plan}-PLAN.md`:
 
 **Naming:** Use `{phase}-{plan}-PLAN.md` format (e.g., `01-02-PLAN.md` for Phase 1, Plan 2)
 
@@ -20,17 +20,22 @@ Output: [What artifacts will be created]
 
 ## Execution Context
 
-@~/.claude/skills/create-plans/workflows/execute-phase.md
-@~/.claude/skills/create-plans/templates/summary.md
+Note: Adjust paths below based on where create-plans skill is installed:
+- Plugin: `{CLAUDE_PLUGIN_ROOT}/skills/create-plans/...`
+- User: `~/.claude/skills/create-plans/...`
+- Project: `.claude/skills/create-plans/...`
+
+@{path-to-create-plans}/workflows/execute-phase.md
+@{path-to-create-plans}/templates/summary.md
 [If plan contains checkpoint tasks (type="checkpoint:*"), add:]
-@~/.claude/skills/create-plans/references/checkpoints.md
+@{path-to-create-plans}/references/checkpoints.md
 
 ## Context
 
-@.planning/BRIEF.md
-@.planning/ROADMAP.md
+@.prompts/planning/BRIEF.md
+@.prompts/planning/ROADMAP.md
 [If research exists:]
-@.planning/phases/XX-name/FINDINGS.md
+@.prompts/planning/phases/XX-name/FINDINGS.md
 [Relevant source files:]
 @src/path/to/relevant.ts
 
@@ -108,7 +113,7 @@ Before declaring phase complete:
 </success_criteria>
 
 <output>
-After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`:
+After completion, create `.prompts/planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`:
 
 # Phase [X] Plan [Y]: [Name] Summary
 
@@ -169,13 +174,14 @@ Output: Working Next.js app with JWT auth, protected routes, and user model.
 
 ## Execution Context
 
-@~/.claude/skills/create-plans/workflows/execute-phase.md
-@~/.claude/skills/create-plans/templates/summary.md
+Note: Adjust paths based on where create-plans skill is installed (plugin/user/project)
+@{path-to-create-plans}/workflows/execute-phase.md
+@{path-to-create-plans}/templates/summary.md
 
 ## Context
 
-@.planning/BRIEF.md
-@.planning/ROADMAP.md
+@.prompts/planning/BRIEF.md
+@.prompts/planning/ROADMAP.md
 @src/lib/db.ts
 
 ## Tasks
@@ -214,7 +220,7 @@ Before declaring phase complete:
 </success_criteria>
 
 <output>
-After completion, create `.planning/phases/01-foundation/01-01-SUMMARY.md`
+After completion, create `.prompts/planning/phases/01-foundation/01-01-SUMMARY.md`
 </output>
 ```
 

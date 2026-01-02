@@ -99,7 +99,7 @@ For any statement like "X is not possible" or "Y is the only way":
 </research_quality_assurance>
 
 <output_structure>
-Save to: `.prompts/{num}-{topic}-research/{topic}-research.md`
+Save to: `.prompts/metaprompt/{num}-{topic}-research/{topic}-research.md`
 
 Structure findings using this XML format:
 
@@ -218,7 +218,7 @@ This ensures:
 Step 1 - Initialize structure:
 ```bash
 # Create file with skeleton
-Write: .prompts/{num}-{topic}-research/{topic}-research.md
+Write: .prompts/metaprompt/{num}-{topic}-research/{topic}-research.md
 Content: Basic XML structure with empty sections
 ```
 
@@ -286,7 +286,7 @@ hits token limits. Never generate the full output in memory first.
 - Natural checkpoint recovery (can continue from last finding)
 
 ## Summary Requirements
-Create `.prompts/{num}-{topic}-research/SUMMARY.md`
+Create `.prompts/metaprompt/{num}-{topic}-research/SUMMARY.md`
 
 Load template: [summary-template.md](summary-template.md)
 

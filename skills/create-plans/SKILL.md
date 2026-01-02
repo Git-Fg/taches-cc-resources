@@ -5,6 +5,37 @@ description: Expert guidance for creating hierarchical project plans optimized f
 
 # Essential Principles
 
+## Meta Instructions
+
+These are instructions for how plans should be structured to ensure subagents can execute them successfully:
+
+### Context Management Rule
+
+**Subagents are like new hires who started 5 seconds ago. They know NOTHING about the project, context, or what happened before.**
+
+When creating PLAN.md files that will be executed by subagents:
+
+1. **Every task MUST explicitly list required files:**
+   - Don't just say "update the database" - say "update `src/database/schema.ts`"
+   - Don't assume the subagent knows where files are - provide paths
+   - Include configuration files needed (tsconfig.json, package.json, etc.)
+
+2. **Every plan MUST be self-contained:**
+   - The plan should contain ALL the context the subagent needs
+   - Use `@file` references explicitly: "Read @src/database/schema.ts before modifying"
+   - Include the "why" not just the "what" - subagents need to understand intent
+
+3. **Context is NOT inherited:**
+   - Subagents don't have access to conversation history
+   - Subagents don't know about decisions made earlier
+   - Subagents don't know the project vision unless told explicitly
+
+**Rationale:** Without explicit context in the plan, subagents will:
+- Make wrong assumptions about file locations
+- Miss critical architectural constraints
+- Duplicate existing work
+- Break established patterns
+
 ## Solo Developer Plus Claude
 
 You are planning for ONE person (the user) and ONE implementer (Claude).
@@ -14,13 +45,47 @@ The user is the visionary/product owner. Claude is the builder.
 ## Plans Are Prompts
 
 PLAN.md is not a document that gets transformed into a prompt.
-PLAN.md IS the prompt. It contains:
-- Objective (what and why)
-- Context (@file references)
-- Tasks (type, files, action, verify, done, checkpoints)
-- Verification (overall checks)
-- Success criteria (measurable)
-- Output (SUMMARY.md specification)
+PLAN.md IS the prompt. It MUST use strict Markdown structure to be machine-readable.
+
+**Required Structure:**
+1. `# Objective` - The single clear goal
+2. `## Execution Context` - Critical files to read *before* starting
+3. `## Tasks` - The step-by-step instructions with explicit file references
+4. `## Success Criteria` - Measurable definitions of done
+
+**Example Plan:**
+```markdown
+# Objective
+Implement JWT Authentication
+
+## Execution Context
+Before starting, read these files to understand the project:
+- .prompts/planning/BRIEF.md
+- .prompts/planning/ROADMAP.md
+- package.json
+- tsconfig.json
+
+## Tasks
+- [ ] Install `jsonwebtoken` package: `bun add jsonwebtoken`
+- [ ] Create `src/utils/auth.ts` with JWT generation functions
+  - Reference: Read @src/utils/logger.ts to understand logging patterns
+  - Reference: Read @src/types/user.ts to understand User interface
+- [ ] Add authentication endpoint to `src/api/routes.ts`
+  - Read the existing file first to understand route structure
+- [ ] **[CHECKPOINT:human-verify]** Verify token generation works: run `node test-token.js`
+
+## Success Criteria
+- JWT tokens can be generated and verified
+- Authentication endpoint accepts credentials and returns tokens
+- Tokens include user ID and expiration
+```
+
+**Critical Requirements:**
+- Use Markdown headers (`#`, `##`) not XML tags
+- Every task MUST explicitly list files to read or modify
+- Use `@file` references to indicate required reading
+- Include configuration files in Execution Context
+- Make the plan self-contained - subagents won't have conversation history
 
 When planning a phase, you are writing the prompt that will execute it.
 
@@ -178,15 +243,15 @@ See: references/git-integration.md
 git rev-parse --git-dir 2>/dev/null || echo "NO_GIT_REPO"
 
 # Check for planning structure
-ls -la .planning/ 2>/dev/null
-ls -la .planning/phases/ 2>/dev/null
+ls -la .prompts/planning/ 2>/dev/null
+ls -la .prompts/planning/phases/ 2>/dev/null
 
 # Find any continue-here files
 find . -name ".continue-here.md" -type f 2>/dev/null
 
 # Check for existing artifacts
-[ -f .planning/BRIEF.md ] && echo "BRIEF: exists"
-[ -f .planning/ROADMAP.md ] && echo "ROADMAP: exists"
+[ -f .prompts/planning/BRIEF.md ] && echo "BRIEF: exists"
+[ -f .prompts/planning/ROADMAP.md ] && echo "ROADMAP: exists"
 ```
 
 **If NO_GIT_REPO detected:**
@@ -197,14 +262,18 @@ If yes: `git init`
 
 ## Domain Expertise
 
-Domain expertise lives in `~/.claude/skills/expertise/`
+Domain expertise lives in:
+- Global: `~/.claude/skills/expertise/`
+- Plugin relative: `{plugin_root}/expertise/`
+- Project local: `.claude/skills/expertise/`
 
 Before creating roadmap or phase plans, determine if domain expertise should be loaded.
 
 ### Scan Domains
 
 ```bash
-ls ~/.claude/skills/expertise/ 2>/dev/null
+# Scan global, plugin relative, and project local directories
+{ ls ~/.claude/skills/expertise/ 2>/dev/null; ls {plugin_root}/expertise/ 2>/dev/null; ls .claude/skills/expertise/ 2>/dev/null; } | sort -u
 ```
 
 This reveals available domain expertise (e.g., macos-apps, iphone-apps, unity-games, nextjs-ecommerce).
@@ -245,7 +314,7 @@ Available domain expertise:
 4. swift-midi-apps - MIDI/audio apps
 5. with-agent-sdk - Claude Agent SDK apps
 6. ui-design - Stunning UI/UX design & frontend development
-[... any others found in expertise/]
+[... any others found in global, plugin, or project expertise/]
 
 N. None - proceed without domain expertise
 C. Create domain skill first
@@ -257,9 +326,15 @@ Select:
 
 When domain selected, use intelligent loading:
 
-Step 1: Read domain SKILL.md
+Step 1: Find domain SKILL.md (search in order: global → plugin → project local)
 ```bash
-cat ~/.claude/skills/expertise/[domain]/SKILL.md 2>/dev/null
+# Search for domain skill in all locations
+DOMAIN_SKILL=$(
+  cat ~/.claude/skills/expertise/[domain]/SKILL.md 2>/dev/null && echo "global" || \
+  cat {plugin_root}/expertise/[domain]/SKILL.md 2>/dev/null && echo "plugin" || \
+  cat .claude/skills/expertise/[domain]/SKILL.md 2>/dev/null && echo "local" || \
+  echo "not_found"
+)
 ```
 
 This loads core principles and routing guidance (~5k tokens).
@@ -284,8 +359,9 @@ Based on the phase being planned (from ROADMAP), load ONLY the references mentio
 
 ```bash
 # Example: Planning a database phase
-cat ~/.claude/skills/expertise/macos-apps/references/core-data.md
-cat ~/.claude/skills/expertise/macos-apps/references/swift-conventions.md
+# Read from the location where SKILL.md was found
+cat {discovered_location}/references/core-data.md
+cat {discovered_location}/references/swift-conventions.md
 ```
 
 Context efficiency:
@@ -316,7 +392,7 @@ Based on scan results, present context-aware options:
 
 **If handoff found:**
 ```
-Found handoff: .planning/phases/XX/.continue-here.md
+Found handoff: .prompts/planning/phases/XX/.continue-here.md
 [Summary of state from handoff]
 
 1. Resume from handoff
@@ -399,10 +475,10 @@ Rules:
 
 ## Output Structure
 
-All planning artifacts go in `.planning/`:
+All planning artifacts go in `.prompts/planning/`:
 
 ```
-.planning/
+.prompts/planning/
 ├── BRIEF.md                    # Human vision
 ├── ROADMAP.md                  # Phase structure + tracking
 └── phases/
@@ -491,6 +567,9 @@ Planning skill succeeds when:
 - [ ] Context scan runs before intake
 - [ ] Appropriate workflow selected based on state
 - [ ] PLAN.md IS the executable prompt (not separate)
+- [ ] PLAN.md uses strict Markdown structure (not XML tags)
+- [ ] Every task explicitly lists files to read/modify
+- [ ] Plans are self-contained with Execution Context section
 - [ ] Hierarchy is maintained (brief → roadmap → phase)
 - [ ] Handoffs preserve full context for resumption
 - [ ] Context limits are respected (auto-handoff at 10%)

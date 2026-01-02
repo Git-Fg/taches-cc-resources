@@ -6,12 +6,35 @@
 2. references/workflows-and-validation.md
 
 ## Process
+
+## Step 0: Intake & Context (MANDATORY)
+
+Before selecting a skill, understand the current state:
+
+**1. Understand the goal:**
+- Why is a new workflow being added?
+- What functionality will it provide?
+- Is this modifying an existing skill or creating new capability?
+
+**2. Check what's already in the target skill:**
+- Review existing workflows to avoid duplication
+- Understand the skill's current structure (simple vs router)
+- Note the patterns used in existing workflows
+
+**3. Understand dependencies:**
+- What tools/permissions do existing workflows use?
+- Are there shared references this workflow should use?
+- What patterns should be followed for consistency?
+
+**Result:** Clear understanding of what exists, what's needed, and how to integrate without breaking patterns.
+
 ## Step 1: Select the Skill
 
 **DO NOT use AskUserQuestion** - there may be many skills.
 
 ```bash
-ls ~/.claude/skills/
+# Check project skills first, then user skills
+{ ls .claude/skills/ 2>/dev/null; ls ~/.claude/skills/ 2>/dev/null; } | sort -u
 ```
 
 Present numbered list, ask: "Which skill needs a new workflow?"
@@ -20,8 +43,9 @@ Present numbered list, ask: "Which skill needs a new workflow?"
 
 Read the skill:
 ```bash
-cat ~/.claude/skills/{skill-name}/SKILL.md
-ls ~/.claude/skills/{skill-name}/workflows/ 2>/dev/null
+# Try project location first, then user location
+cat .claude/skills/{skill-name}/SKILL.md 2>/dev/null || cat ~/.claude/skills/{skill-name}/SKILL.md
+ls .claude/skills/{skill-name}/workflows/ 2>/dev/null || ls ~/.claude/skills/{skill-name}/workflows/ 2>/dev/null
 ```
 
 Determine:
@@ -108,6 +132,7 @@ Report results to user.
 
 ## Success Criteria
 Workflow addition is complete when:
+- [ ] Context intake completed - goal and existing patterns understood
 - [ ] Skill upgraded to router pattern (if needed)
 - [ ] Workflow file created with required_reading, process, success_criteria
 - [ ] SKILL.md intake updated with new option

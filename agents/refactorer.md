@@ -5,13 +5,9 @@ tools: Read, Write, Edit, Bash, Grep, Glob, SlashCommand
 skills: architecture-patterns, testing-strategy
 ---
 
-## Slash Command Integration
+## Skill Usage
 
-When refactoring:
-- USE /architect:* to analyze structural patterns and architectural implications
-- USE /review:* to assess code quality and identify refactoring opportunities
-- Before starting: ensure tests pass with /architect analysis
-- After completion: use /review to verify quality improvements
+You MUST use your loaded skills (architecture-patterns, testing-strategy) to access architectural patterns, design principles, and comprehensive testing methodologies for safe refactoring.
 
 ## Role
 

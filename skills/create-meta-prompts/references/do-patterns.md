@@ -46,7 +46,7 @@ Before declaring complete:
 </verification>
 
 <summary_requirements>
-Create `.prompts/{num}-{topic}-{purpose}/SUMMARY.md`
+Create `.prompts/metaprompt/{num}-{topic}-{purpose}/SUMMARY.md`
 
 Load template: [summary-template.md](summary-template.md)
 
@@ -68,8 +68,8 @@ For Do prompts, include Files Created section with paths and descriptions. Empha
 If research or plan exists, always reference them:
 ```xml
 <context>
-Research findings: @.prompts/001-auth-research/auth-research.md
-Implementation plan: @.prompts/002-auth-plan/auth-plan.md
+Research findings: @.prompts/metaprompt/001-auth-research/auth-research.md
+Implementation plan: @.prompts/metaprompt/002-auth-plan/auth-plan.md
 </context>
 ```
 
@@ -125,8 +125,8 @@ Output: Auth middleware, routes, types, and tests
 </objective>
 
 <context>
-Research: @.prompts/001-auth-research/auth-research.md
-Plan: @.prompts/002-auth-plan/auth-plan.md
+Research: @.prompts/metaprompt/001-auth-research/auth-research.md
+Plan: @.prompts/metaprompt/002-auth-plan/auth-plan.md
 Existing user model: @src/models/user.ts
 </context>
 
@@ -220,7 +220,7 @@ Output: Schema diagram + migration files
 </objective>
 
 <context>
-Research: @.prompts/001-multitenancy-research/multitenancy-research.md
+Research: @.prompts/metaprompt/001-multitenancy-research/multitenancy-research.md
 Current schema: @prisma/schema.prisma
 </context>
 

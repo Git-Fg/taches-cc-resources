@@ -7,6 +7,35 @@
 3. references/be-clear-and-direct.md
 
 ## Process
+
+## Step 0: Intake & Context (MANDATORY)
+
+Before gathering requirements, understand the current state:
+
+**1. Check what already exists:**
+```bash
+# Find similar skills that might overlap
+find .claude/skills -name "*.md" -type f
+find ~/.claude/skills -name "*.md" -type f 2>/dev/null || true
+```
+
+**2. Understand established patterns:**
+- Read 2-3 existing SKILL.md files to understand patterns used in this codebase
+- Check how other skills are structured (simple vs router pattern)
+- Note naming conventions and description styles
+
+**3. Check dependencies:**
+- What tools/permissions do similar skills use?
+- Are there MCP servers that skills commonly reference?
+- What slash commands exist for similar functionality?
+
+**4. Understand intent:**
+- Why is this skill being created?
+- What problem will it solve?
+- Is there existing functionality that should be refactored instead?
+
+**Result:** Clear understanding of existing patterns, what's already built, and how the new skill should fit into the ecosystem.
+
 ## Step 1: Adaptive Requirements Gathering
 
 **If user provided context** (e.g., "build a skill for X"):
@@ -87,14 +116,23 @@ See references/recommended-structure.md for templates.
 
 ## Step 4: Create Directory
 
+**Default: Project-level** (recommended for portability)
+
+```bash
+mkdir -p .claude/skills/{skill-name}
+# If complex:
+mkdir -p .claude/skills/{skill-name}/workflows
+mkdir -p .claude/skills/{skill-name}/references
+# If needed:
+mkdir -p .claude/skills/{skill-name}/templates  # for output structures
+mkdir -p .claude/skills/{skill-name}/scripts    # for reusable code
+```
+
+**Alternative: User-level** (only if specifically requested for global availability)
+
 ```bash
 mkdir -p ~/.claude/skills/{skill-name}
-# If complex:
-mkdir -p ~/.claude/skills/{skill-name}/workflows
-mkdir -p ~/.claude/skills/{skill-name}/references
-# If needed:
-mkdir -p ~/.claude/skills/{skill-name}/templates  # for output structures
-mkdir -p ~/.claude/skills/{skill-name}/scripts    # for reusable code
+# Follow same structure above
 ```
 
 ## Step 5: Write SKILL.md
@@ -151,6 +189,22 @@ Check:
 
 ## Step 9: Create Slash Command
 
+**Default: Project-level**
+
+```bash
+cat > .claude/commands/{skill-name}.md << 'EOF'
+---
+description: {Brief description}
+argument-hint: [{argument hint}]
+allowed-tools: Skill({skill-name})
+---
+
+Invoke the {skill-name} skill for: $ARGUMENTS
+EOF
+```
+
+**Alternative: User-level** (only if specifically requested)
+
 ```bash
 cat > ~/.claude/commands/{skill-name}.md << 'EOF'
 ---
@@ -175,6 +229,7 @@ Iterate based on real usage, not assumptions.
 
 ## Success Criteria
 Skill is complete when:
+- [ ] Context intake completed - existing patterns understood
 - [ ] Requirements gathered with appropriate questions
 - [ ] API research done if external service involved
 - [ ] Directory structure correct

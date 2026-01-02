@@ -79,7 +79,23 @@ Based on mode from step 1:
 Auto-detect mode:
 Use Task tool with subagent_type='general-purpose' and model='opus':
 ```
-Invoke the brainstormer agent to analyze the current context and apply appropriate strategic thinking frameworks.
+Apply strategic thinking frameworks to analyze this situation:
+
+**User Request:** $ARGUMENTS
+
+**Context:**
+You are a fresh instance with no prior conversation history.
+Use your loaded strategic-thinking skills to:
+1. Analyze the user's request
+2. Detect which framework(s) would be most helpful
+3. Apply those frameworks to provide fresh perspectives
+
+**Available Skills:**
+- strategic-thinking: first-principles, inversion, second-order, swot, 10-10-10
+- prioritization: pareto, one-thing, eisenhower-matrix
+- problem-analysis: 5-whys, opportunity-cost, occams-razor, via-negativa
+
+Provide actionable recommendations based on your analysis.
 ```
 
 Specific framework mode:

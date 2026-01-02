@@ -18,8 +18,8 @@ When existing research/plan files found:
 header: "Reference"
 question: "Should this prompt reference any existing research or plans?"
 options:
-  - "{file1}" - Found in .prompts/{folder1}/
-  - "{file2}" - Found in .prompts/{folder2}/
+  - "{file1}" - Found in .prompts/metaprompt/{folder1}/
+  - "{file2}" - Found in .prompts/metaprompt/{folder2}/
   - "None" - Start fresh without referencing existing files
 multiSelect: true
 ```
@@ -208,8 +208,8 @@ When multiple outputs exist:
 header: "Target"
 question: "Which output should be refined?"
 options:
-  - "{file1}" - In .prompts/{folder1}/
-  - "{file2}" - In .prompts/{folder2}/
+  - "{file1}" - In .prompts/metaprompt/{folder1}/
+  - "{file2}" - In .prompts/metaprompt/{folder2}/
   # List existing research/plan outputs
 ```
 

@@ -14,11 +14,11 @@ Find the next plan to execute:
 - Identify first plan without corresponding SUMMARY
 
 ```bash
-cat .planning/ROADMAP.md
+cat .prompts/planning/ROADMAP.md
 # Look for phase with "In progress" status
 # Then find plans in that phase
-ls .planning/phases/XX-name/*-PLAN.md 2>/dev/null | sort
-ls .planning/phases/XX-name/*-SUMMARY.md 2>/dev/null | sort
+ls .prompts/planning/phases/XX-name/*-PLAN.md 2>/dev/null | sort
+ls .prompts/planning/phases/XX-name/*-SUMMARY.md 2>/dev/null | sort
 ```
 
 **Logic:**
@@ -45,7 +45,7 @@ Plans are divided into segments by checkpoints. Each segment is routed to optima
 **1. Check for checkpoints:**
 ```bash
 # Find all checkpoints and their types
-grep -n "type=\"checkpoint" .planning/phases/XX-name/{phase}-{plan}-PLAN.md
+grep -n "type=\"checkpoint" .prompts/planning/phases/XX-name/{phase}-{plan}-PLAN.md
 ```
 
 **2. Analyze execution strategy:**
@@ -115,11 +115,20 @@ No segmentation benefit - execute entirely in main
 ```
 Use Task tool with subagent_type="general-purpose":
 
-Prompt: "Execute plan at .planning/phases/{phase}-{plan}-PLAN.md
+Prompt: "Execute plan at .prompts/planning/phases/{phase}-{plan}-PLAN.md
 
-This is an autonomous plan (no checkpoints). Execute all tasks, create SUMMARY.md in phase directory, commit with message following plan's commit guidance.
+**CRITICAL: Context Loading (MANDATORY - Do This First):**
+You are a fresh instance with ZERO context. Before executing ANY tasks, you MUST:
+1. Read .prompts/planning/BRIEF.md for project vision and constraints
+2. Read .prompts/planning/ROADMAP.md for architecture and phase structure
+3. Read the target PLAN.md for your specific tasks
 
-Follow all deviation rules and authentication gate protocols from the plan.
+**Execution:**
+- This is an autonomous plan (no checkpoints)
+- Execute all tasks following the plan's deviation rules and authentication gate protocols
+- Perform Context Hydration: read files mentioned in the plan before coding
+- Create SUMMARY.md in phase directory when complete
+- Commit with message following plan's commit guidance
 
 When complete, report: plan name, tasks completed, SUMMARY path, commit hash."
 ```
@@ -129,7 +138,22 @@ When complete, report: plan name, tasks completed, SUMMARY path, commit hash."
 Execute segment-by-segment:
 
 For each autonomous segment:
-  Spawn subagent with prompt: "Execute tasks [X-Y] from plan at .planning/phases/{phase}-{plan}-PLAN.md. Read the plan for full context and deviation rules. Do NOT create SUMMARY or commit - just execute these tasks and report results."
+  Spawn subagent with prompt: "Execute tasks [X-Y] from plan at .prompts/planning/phases/{phase}-{plan}-PLAN.md
+
+**CRITICAL: Context Loading (MANDATORY):**
+You are a fresh instance with ZERO context. Before executing ANY tasks, you MUST:
+1. Read .prompts/planning/BRIEF.md for project vision
+2. Read .prompts/planning/ROADMAP.md for architecture
+3. Read the target PLAN.md for full context and deviation rules
+
+**Your Responsibilities:**
+- Execute only tasks [X-Y] (this is a SEGMENT of the plan)
+- Perform Context Hydration: read files mentioned before coding
+- Follow all deviation rules and authentication gate protocols
+- DO NOT create SUMMARY.md (will be created after all segments complete)
+- DO NOT commit (will be done after all segments complete)
+
+Report back: tasks completed, files created/modified, deviations encountered."
 
   Wait for subagent completion
 
@@ -303,7 +327,7 @@ Committing...
 
 Read the plan prompt:
 ```bash
-cat .planning/phases/XX-name/{phase}-{plan}-PLAN.md
+cat .prompts/planning/phases/XX-name/{phase}-{plan}-PLAN.md
 ```
 
 This IS the execution instructions. Follow it exactly.
@@ -314,7 +338,7 @@ Before executing, check if previous phase had issues:
 
 ```bash
 # Find previous phase summary
-ls .planning/phases/*/SUMMARY.md 2>/dev/null | sort -r | head -2 | tail -1
+ls .prompts/planning/phases/*/SUMMARY.md 2>/dev/null | sort -r | head -2 | tail -1
 ```
 
 If previous phase SUMMARY.md has "Issues Encountered" != "None" or "Next Phase Readiness" mentions blockers:
@@ -631,7 +655,7 @@ Proceed with proposed change? (yes / different approach / defer)
 
 **Trigger:** Improvement that would enhance code but isn't essential now
 
-**Action:** Add to .planning/ISSUES.md automatically, continue task
+**Action:** Add to .prompts/planning/ISSUES.md automatically, continue task
 
 **Examples:**
 - Performance optimization (works correctly, just slower than ideal)
@@ -644,7 +668,7 @@ Proceed with proposed change? (yes / different approach / defer)
 - Accessibility enhancements beyond minimum
 
 **Process:**
-1. Create .planning/ISSUES.md if doesn't exist (use template)
+1. Create .prompts/planning/ISSUES.md if doesn't exist (use template)
 2. Add entry with ISS-XXX number (auto-increment)
 3. Brief notification: `📋 Logged enhancement: [brief] (ISS-XXX)`
 4. Continue task without implementing
@@ -749,7 +773,7 @@ None - plan executed exactly as written.
 
 ### Deferred Enhancements
 
-Logged to .planning/ISSUES.md for future consideration:
+Logged to .prompts/planning/ISSUES.md for future consideration:
 - ISS-001: Refactor UserService into smaller modules (discovered in Task 3)
 - ISS-002: Add connection pooling for Redis (discovered in Task 6)
 - ISS-003: Improve error messages for validation failures (discovered in Task 2)
@@ -866,7 +890,7 @@ If user chose "Skip", note it in SUMMARY.md under "Issues Encountered".
 Create `{phase}-{plan}-SUMMARY.md` as specified in the prompt's `<output>` section.
 Use templates/summary.md for structure.
 
-**File location:** `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
+**File location:** `.prompts/planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 
 **Title format:** `# Phase [X] Plan [Y]: [Name] Summary`
 
@@ -919,9 +943,9 @@ Update ROADMAP.md:
 Commit plan completion (PLAN + SUMMARY + code):
 
 ```bash
-git add .planning/phases/XX-name/{phase}-{plan}-PLAN.md
-git add .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
-git add .planning/ROADMAP.md
+git add .prompts/planning/phases/XX-name/{phase}-{plan}-PLAN.md
+git add .prompts/planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+git add .prompts/planning/ROADMAP.md
 git add src/  # or relevant code directories
 git commit -m "$(cat <<'EOF'
 feat({phase}-{plan}): [one-liner from SUMMARY.md]
@@ -945,7 +969,7 @@ Confirm: "Committed: feat({phase}-{plan}): [what shipped]"
 **If more plans in this phase:**
 ```
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+Summary: .prompts/planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 
 [X] of [Y] plans complete for Phase Z.
 
@@ -958,7 +982,7 @@ What's next?
 **If phase complete (last plan done):**
 ```
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+Summary: .prompts/planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 
 Phase [Z]: [Name] COMPLETE - all [Y] plans finished.
 

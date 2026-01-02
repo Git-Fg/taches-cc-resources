@@ -11,11 +11,13 @@ Create effective slash commands for Claude Code that enable users to trigger reu
 
 ## Workflow
 
-1. Create `.claude/commands/` directory (project) or use `~/.claude/commands/` (personal)
+1. Create `.claude/commands/` directory in project (for portability)
 2. Create `command-name.md` file
 3. Add YAML frontmatter (at minimum: `description`)
 4. Write command prompt
 5. Test with `/command-name [args]`
+
+**Note**: Use `~/.claude/commands/` (personal) only if specifically requested for global availability.
 
 ## Example
 
@@ -228,13 +230,15 @@ Review PR #$1 with priority $2 and assign to $3.
 
 # File Structure
 
-**Project commands**: `.claude/commands/`
+**Project commands** (default, recommended): `.claude/commands/`
 - Shared with team via version control
 - Shows `(project)` in `/help` list
+- Portable with the project
 
-**Personal commands**: `~/.claude/commands/`
+**Personal commands** (only if specifically requested): `~/.claude/commands/`
 - Available across all your projects
 - Shows `(user)` in `/help` list
+- Use only for globally useful commands
 
 **File naming**: `command-name.md` → invoked as `/command-name`
 
@@ -573,8 +577,8 @@ See references/patterns.md for more examples.
    - Don't under-specify complex commands
 
 6. **Save the file**:
-   - Project: `.claude/commands/command-name.md`
-   - Personal: `~/.claude/commands/command-name.md`
+   - **Default**: `.claude/commands/command-name.md` (project, portable)
+   - **Alternative**: `~/.claude/commands/command-name.md` (only if specifically requested)
 
 # Success Criteria
 

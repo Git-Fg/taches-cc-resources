@@ -3,13 +3,30 @@ name: create-meta-prompts
 description: Create optimized prompts for Claude-to-Claude pipelines with research, planning, and execution stages. Use when building prompts that produce outputs for other prompts to consume, or when running multi-stage workflows (research -> plan -> implement).
 ---
 
+# Path Resolution
+
+This skill can be installed in multiple locations. Before reading any references, locate the skill directory:
+
+```bash
+# Search in priority order (project → plugin → user)
+SKILL_PATH="$(
+  find .claude/skills/create-meta-prompts -maxdepth 0 2>/dev/null && echo "project" ||
+  find ~/.claude/skills/create-meta-prompts -maxdepth 0 2>/dev/null && echo "user" ||
+  find {plugin_root}/skills/create-meta-prompts -maxdepth 0 2>/dev/null && echo "plugin"
+)"
+
+# Use absolute path when reading internal reference files
+```
+
+All references to `references/` files must use the discovered absolute path.
+
 # Objective
 
 Create prompts optimized for Claude-to-Claude communication in multi-stage workflows. Outputs are structured with XML and metadata for efficient parsing by subsequent prompts.
 
 Every execution produces a `SUMMARY.md` for quick human scanning without reading full outputs.
 
-Each prompt gets its own folder in `.prompts/` with its output artifacts, enabling clear provenance and chain detection.
+Each prompt gets its own folder in `.prompts/metaprompt/` with its output artifacts, enabling clear provenance and chain detection.
 
 # Quick Start
 
@@ -18,7 +35,7 @@ Each prompt gets its own folder in `.prompts/` with its output artifacts, enabli
 1. **Intake**: Determine purpose (Do/Plan/Research/Refine), gather requirements
 2. **Chain detection**: Check for existing research/plan files to reference
 3. **Generate**: Create prompt using purpose-specific patterns
-4. **Save**: Create folder in `.prompts/{number}-{topic}-{purpose}/`
+4. **Save**: Create folder in `.prompts/metaprompt/{number}-{topic}-{purpose}/`
 5. **Present**: Show decision tree for running
 6. **Execute**: Run prompt(s) with dependency-aware execution engine
 7. **Summarize**: Create SUMMARY.md for human scanning
@@ -35,7 +52,7 @@ Each creates SUMMARY.md for quick scanning.
 ## Folder Structure
 
 ```
-.prompts/
+.prompts/metaprompt/
 ├── 001-auth-research/
 │   ├── completed/
 │   │   └── 001-auth-research.md    # Prompt (archived after run)
@@ -62,7 +79,7 @@ Each creates SUMMARY.md for quick scanning.
 
 Prompts directory: ! `[ -d ./.prompts ] && echo "exists" || echo "missing"`
 Existing research/plans: ! `find ./.prompts -name "*-research.md" -o -name "*-plan.md" 2>/dev/null | head -10`
-Next prompt number: ! `ls -d ./.prompts/*/ 2>/dev/null | wc -l | xargs -I {} expr {} + 1`
+Next prompt number: ! `ls -d ./.prompts/metaprompt/*/ 2>/dev/null | wc -l | xargs -I {} expr {} + 1`
 
 # Automated Workflow
 
@@ -111,11 +128,11 @@ If topic identifier not obvious, ask:
 - Let user provide via "Other" option
 - Enforce kebab-case (convert spaces/underscores to hyphens)
 
-For Refine purpose, also identify target output from `.prompts/*/` to improve.
+For Refine purpose, also identify target output from `.prompts/metaprompt/*/` to improve.
 
 ### Chain Detection
 
-Scan `.prompts/*/` for existing `*-research.md` and `*-plan.md` files.
+Scan `.prompts/metaprompt/*/` for existing `*-research.md` and `*-plan.md` files.
 
 If found:
 1. List them: "Found existing files: auth-research.md (in 001-auth-research/), stripe-plan.md (in 005-stripe-plan/)"
@@ -157,7 +174,7 @@ Loop until "Proceed" selected.
 After "Proceed" selected, state confirmation:
 
 "Creating a {purpose} prompt for: {topic}
-Folder: .prompts/{number}-{topic}-{purpose}/
+Folder: .prompts/metaprompt/{number}-{topic}-{purpose}/
 References: {list any chained files}"
 
 Then proceed to generation.
@@ -201,10 +218,10 @@ All prompts must create `SUMMARY.md` with:
 
 ### File Creation
 
-1. Create folder: `.prompts/{number}-{topic}-{purpose}/`
+1. Create folder: `.prompts/metaprompt/{number}-{topic}-{purpose}/`
 2. Create `completed/` subfolder
-3. Write prompt to: `.prompts/{number}-{topic}-{purpose}/{number}-{topic}-{purpose}.md`
-4. Prompt instructs output to: `.prompts/{number}-{topic}-{purpose}/{topic}-{purpose}.md`
+3. Write prompt to: `.prompts/metaprompt/{number}-{topic}-{purpose}/{number}-{topic}-{purpose}.md`
+4. Prompt instructs output to: `.prompts/metaprompt/{number}-{topic}-{purpose}/{topic}-{purpose}.md`
 
 ## Step 2: Present
 
@@ -213,7 +230,7 @@ All prompts must create `SUMMARY.md` with:
 After saving prompt(s), present inline (not AskUserQuestion):
 
 ```
-Prompt created: .prompts/{number}-{topic}-{purpose}/{number}-{topic}-{purpose}.md
+Prompt created: .prompts/metaprompt/{number}-{topic}-{purpose}/{number}-{topic}-{purpose}.md
 
 What's next?
 
@@ -229,9 +246,9 @@ Choose (1-4): _
 
 ```
 Prompts created:
-- .prompts/001-auth-research/001-auth-research.md
-- .prompts/002-auth-plan/002-auth-plan.md
-- .prompts/003-auth-implement/003-auth-implement.md
+- .prompts/metaprompt/001-auth-research/001-auth-research.md
+- .prompts/metaprompt/002-auth-plan/002-auth-plan.md
+- .prompts/metaprompt/003-auth-implement/003-auth-implement.md
 
 Detected execution order: Sequential (002 references 001 output, 003 references 002 output)
 
@@ -257,7 +274,7 @@ Straightforward execution of one prompt.
 2. Spawn Task agent with subagent_type="general-purpose"
 3. Include in task prompt:
    - The complete prompt contents
-   - Output location: `.prompts/{number}-{topic}-{purpose}/{topic}-{purpose}.md`
+   - Output location: `.prompts/metaprompt/{number}-{topic}-{purpose}/{topic}-{purpose}.md`
 4. Wait for completion
 5. Validate output
 6. Archive prompt to `completed/` subfolder
@@ -328,7 +345,7 @@ Layer 3 (after layer 2): 004-implement
 
 Scan prompt contents for @ references to determine dependencies:
 
-1. Parse each prompt for `@.prompts/{number}-{topic}/` patterns
+1. Parse each prompt for `@.prompts/metaprompt/{number}-{topic}/` patterns
 2. Build dependency graph
 3. Detect cycles (error if found)
 4. Determine execution order
@@ -343,7 +360,7 @@ Override with explicit references when present.
 If a prompt references output that doesn't exist:
 
 1. Check if it's another prompt in this session (will be created)
-2. Check if it exists in `.prompts/*/` (already completed)
+2. Check if it exists in `.prompts/metaprompt/*/` (already completed)
 3. If truly missing:
    - Warn user: "002-auth-plan references auth-research.md which doesn't exist"
    - Offer: Create the missing research prompt first? / Continue anyway? / Cancel?
@@ -420,8 +437,8 @@ What's next?
 
 Move prompt file to completed subfolder:
 ```bash
-mv .prompts/{number}-{topic}-{purpose}/{number}-{topic}-{purpose}.md \
-   .prompts/{number}-{topic}-{purpose}/completed/
+mv .prompts/metaprompt/{number}-{topic}-{purpose}/{number}-{topic}-{purpose}.md \
+   .prompts/metaprompt/{number}-{topic}-{purpose}/completed/
 ```
 
 Output file stays in place (not moved).
@@ -432,7 +449,7 @@ Output file stays in place (not moved).
 
 ```
 ✓ Executed: 001-auth-research
-✓ Created: .prompts/001-auth-research/SUMMARY.md
+✓ Created: .prompts/metaprompt/001-auth-research/SUMMARY.md
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Auth Research Summary
@@ -483,7 +500,7 @@ Decisions: Approve 15-min token expiry • Blockers: None
 Decisions: Review before Phase 2 • Blockers: None
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-All prompts archived. Full summaries in .prompts/*/SUMMARY.md
+All prompts archived. Full summaries in .prompts/metaprompt/*/SUMMARY.md
 
 What's next?
 1. Review implementation
@@ -558,7 +575,7 @@ If a prompt's output includes instructions to create more prompts:
 - Intake gate completed with purpose and topic identified
 - Chain detection performed, relevant files referenced
 - Prompt generated with correct structure for purpose
-- Folder created in `.prompts/` with correct naming
+- Folder created in `.prompts/metaprompt/` with correct naming
 - Output file location specified in prompt
 - SUMMARY.md requirement included in prompt
 - Metadata requirements included for Research/Plan outputs

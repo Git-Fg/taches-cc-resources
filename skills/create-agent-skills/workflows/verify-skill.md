@@ -13,7 +13,8 @@ Skills contain claims about external things: APIs, CLI tools, frameworks, servic
 ## Step 1: Select the Skill
 
 ```bash
-ls ~/.claude/skills/
+# Check project skills first, then user skills
+{ ls .claude/skills/ 2>/dev/null; ls ~/.claude/skills/ 2>/dev/null; } | sort -u
 ```
 
 Present numbered list, ask: "Which skill should I verify for accuracy?"
@@ -22,9 +23,10 @@ Present numbered list, ask: "Which skill should I verify for accuracy?"
 
 Read the entire skill (SKILL.md + workflows/ + references/):
 ```bash
-cat ~/.claude/skills/{skill-name}/SKILL.md
-cat ~/.claude/skills/{skill-name}/workflows/*.md 2>/dev/null
-cat ~/.claude/skills/{skill-name}/references/*.md 2>/dev/null
+# Try project location first, then user location
+cat .claude/skills/{skill-name}/SKILL.md 2>/dev/null || cat ~/.claude/skills/{skill-name}/SKILL.md
+cat .claude/skills/{skill-name}/workflows/*.md 2>/dev/null || cat ~/.claude/skills/{skill-name}/workflows/*.md 2>/dev/null
+cat .claude/skills/{skill-name}/references/*.md 2>/dev/null || cat ~/.claude/skills/{skill-name}/references/*.md 2>/dev/null
 ```
 
 Categorize by primary dependency type:

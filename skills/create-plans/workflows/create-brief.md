@@ -43,7 +43,7 @@ mkdir -p .planning
 ### Step: Write Brief
 Use the template from `templates/brief.md`.
 
-Write to `.planning/BRIEF.md` with:
+Write to `.prompts/planning/BRIEF.md` with:
 - Project name
 - One-line description
 - Problem statement (why this exists)
@@ -57,7 +57,7 @@ Write to `.planning/BRIEF.md` with:
 After creating brief, present options:
 
 ```
-Brief created: .planning/BRIEF.md
+Brief created: .prompts/planning/BRIEF.md
 
 NOTE: Brief is NOT committed yet. It will be committed with the roadmap as project initialization.
 
@@ -78,7 +78,7 @@ Keep it focused: What, Why, Success, Constraints.
 
 ## Success Criteria
 Brief is complete when:
-- [ ] `.planning/BRIEF.md` exists
+- [ ] `.prompts/planning/BRIEF.md` exists
 - [ ] Contains: name, description, problem, success criteria
 - [ ] Under 50 lines
 - [ ] User knows what's next

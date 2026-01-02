@@ -3,7 +3,7 @@
 ## Required Reading
 
 **Read these files NOW:**
-1. `.planning/ROADMAP.md`
+1. `.prompts/planning/ROADMAP.md`
 2. Current phase's plan files (`*-PLAN.md`)
 3. Current phase's summary files (`*-SUMMARY.md`)
 
@@ -21,8 +21,8 @@ where progress tracking happens - implicit via forward motion.
 Check current phase has all plan summaries:
 
 ```bash
-ls .planning/phases/XX-current/*-PLAN.md 2>/dev/null | sort
-ls .planning/phases/XX-current/*-SUMMARY.md 2>/dev/null | sort
+ls .prompts/planning/phases/XX-current/*-PLAN.md 2>/dev/null | sort
+ls .prompts/planning/phases/XX-current/*-SUMMARY.md 2>/dev/null | sort
 ```
 
 **Verification logic:**
@@ -55,7 +55,7 @@ Wait for user decision.
 Check for lingering handoffs:
 
 ```bash
-ls .planning/phases/XX-current/.continue-here*.md 2>/dev/null
+ls .prompts/planning/phases/XX-current/.continue-here*.md 2>/dev/null
 ```
 
 If found, delete them - phase is complete, handoffs are stale.
@@ -66,7 +66,7 @@ Pattern matches:
 
 ### Step: Update Roadmap
 
-Update `.planning/ROADMAP.md`:
+Update `.prompts/planning/ROADMAP.md`:
 - Mark current phase: `[x] Complete`
 - Add completion date
 - Update plan count to final (e.g., "3/3 plans complete")

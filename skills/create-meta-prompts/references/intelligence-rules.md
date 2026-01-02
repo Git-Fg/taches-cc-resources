@@ -104,8 +104,8 @@ run in parallel.
 ```xml
 <context>
 <!-- Chained artifacts -->
-Research: @.prompts/001-auth-research/auth-research.md
-Plan: @.prompts/002-auth-plan/auth-plan.md
+Research: @.prompts/metaprompt/001-auth-research/auth-research.md
+Plan: @.prompts/metaprompt/002-auth-plan/auth-plan.md
 
 <!-- Existing code to modify -->
 Current implementation: @src/auth/middleware.ts

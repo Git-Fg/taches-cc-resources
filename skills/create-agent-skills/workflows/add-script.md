@@ -23,6 +23,11 @@ If not a good fit, suggest alternatives (inline code in workflow, reference exam
 ## Step 3: Create Scripts Directory
 
 ```bash
+# Use the appropriate location (project or user)
+# For project-level:
+mkdir -p .claude/skills/{skill-name}/scripts
+
+# For user-level (if specifically requested):
 mkdir -p ~/.claude/skills/{skill-name}/scripts
 ```
 
@@ -57,6 +62,11 @@ set -euo pipefail
 ## Step 6: Make Executable (if bash)
 
 ```bash
+# Use the appropriate location (project or user)
+# For project-level:
+chmod +x .claude/skills/{skill-name}/scripts/{script-name}.sh
+
+# For user-level (if specifically requested):
 chmod +x ~/.claude/skills/{skill-name}/scripts/{script-name}.sh
 ```
 

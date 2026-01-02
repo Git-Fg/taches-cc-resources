@@ -3,6 +3,24 @@ name: create-agent-skills
 description: Expert guidance for creating, writing, building, and refining AI agent skills. MUST USE when working with SKILL.md files, authoring new skills, improving existing skills, or understanding skill structure and best practices.
 ---
 
+# Path Resolution
+
+This skill can be installed in multiple locations. Before reading any workflows or references, locate the skill directory:
+
+```bash
+# Search in priority order (project → plugin → user)
+SKILL_PATH="$(
+  find .claude/skills/create-agent-skills -maxdepth 0 2>/dev/null && echo "project" ||
+  find ~/.claude/skills/create-agent-skills -maxdepth 0 2>/dev/null && echo "user" ||
+  find {plugin_root}/skills/create-agent-skills -maxdepth 0 2>/dev/null && echo "plugin"
+)"
+
+# Use absolute path when reading internal files
+# Example: ${SKILL_PATH}/workflows/create-new-skill.md
+```
+
+All references to `workflows/` or `references/` files must use the discovered absolute path.
+
 # Essential Principles
 
 ## Overview
@@ -202,6 +220,36 @@ description: ...          # What it does AND when to use it (third person)
 
 Name conventions: `create-*`, `manage-*`, `setup-*`, `generate-*`, `build-*`
 
+## Meta Instructions
+
+These are instructions for how the workflows in this skill should operate:
+
+### Context Rule
+
+All workflows MUST start with an "Intake & Context" step that gathers:
+
+1. **What already exists:**
+   - Read existing agent/skill/command files before creating or modifying
+   - Understand current state before making changes
+
+2. **What dependencies are involved:**
+   - Check imports, tools, permissions
+   - Understand what other components might be affected
+
+3. **What patterns are in use:**
+   - Find similar agents/skills/commands in the codebase
+   - Follow established conventions and patterns
+
+4. **Why this change is being made:**
+   - Understand user intent and use case
+   - Clarify the goal before proceeding
+
+**Rationale:** Without context intake, workflows make assumptions that lead to:
+- Duplicating existing functionality
+- Breaking established patterns
+- Missing critical dependencies
+- Creating inconsistent interfaces
+
 ## Success Criteria
 
 A well-structured skill:
@@ -212,3 +260,4 @@ A well-structured skill:
 - Keeps SKILL.md under 500 lines
 - Asks minimal clarifying questions only when truly needed
 - Has been tested with real usage
+- Workflows include context intake steps before creating or modifying content

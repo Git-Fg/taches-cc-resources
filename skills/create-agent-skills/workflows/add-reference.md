@@ -9,7 +9,8 @@
 ## Step 1: Select the Skill
 
 ```bash
-ls ~/.claude/skills/
+# Check project skills first, then user skills
+{ ls .claude/skills/ 2>/dev/null; ls ~/.claude/skills/ 2>/dev/null; } | sort -u
 ```
 
 Present numbered list, ask: "Which skill needs a new reference?"
@@ -17,8 +18,9 @@ Present numbered list, ask: "Which skill needs a new reference?"
 ## Step 2: Analyze Current Structure
 
 ```bash
-cat ~/.claude/skills/{skill-name}/SKILL.md
-ls ~/.claude/skills/{skill-name}/references/ 2>/dev/null
+# Try project location first, then user location
+cat .claude/skills/{skill-name}/SKILL.md 2>/dev/null || cat ~/.claude/skills/{skill-name}/SKILL.md
+ls .claude/skills/{skill-name}/references/ 2>/dev/null || ls ~/.claude/skills/{skill-name}/references/ 2>/dev/null
 ```
 
 Determine:

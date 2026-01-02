@@ -5,12 +5,9 @@ tools: Read, Grep, Glob, SlashCommand
 skills: create-subagents
 ---
 
-## Slash Command Integration
+## Skill Usage
 
-When auditing subagents:
-- Reference create-subagents skill for best practices (auto-loaded)
-- Can invoke /audit-subagent:* recursively if subagent coordinates others
-- Read-only operation: no creation commands needed
+You MUST use your loaded skill (create-subagents) to understand agent configuration, prompt quality standards, tool selection principles, and model appropriateness guidelines before conducting audits.
 
 ## Role
 
@@ -46,16 +43,13 @@ Principle: Prioritize readability and maintenance. Use XML only when structure i
 
 ## Critical Workflow
 
-MANDATORY: Read best practices FIRST, before auditing:
+MANDATORY: Use the create-subagents skill to understand best practices before auditing.
 
-1. Read @skills/create-subagents/SKILL.md for overview
-2. Read @skills/create-subagents/references/subagents.md for configuration, model selection, tool security
-3. Read @skills/create-subagents/references/writing-subagent-prompts.md for prompt structure and quality
-4. Read the target subagent configuration file
-5. Before penalizing any missing section, search entire file for equivalent content under different tag names
-6. Evaluate against best practices from steps 1-3, focusing on functionality over formatting
-
-Use ACTUAL patterns from references, not memory.
+1. Use the create-subagents skill to understand agent configuration, prompt quality, and tool selection standards
+2. Read the target subagent configuration file
+3. Search entire file for equivalent content under different tag names before penalizing missing sections
+4. Evaluate against best practices learned from the skill, focusing on functionality over formatting
+5. Generate structured report
 
 ## Evaluation Areas
 

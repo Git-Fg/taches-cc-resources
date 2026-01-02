@@ -27,7 +27,7 @@ Determine which phase we're in:
 
 ```bash
 # Find current phase (most recently modified PLAN.md)
-ls -lt .planning/phases/*/PLAN.md 2>/dev/null | head -1
+ls -lt .prompts/planning/phases/*/PLAN.md 2>/dev/null | head -1
 ```
 
 Handoff goes in the current phase directory.
@@ -47,7 +47,7 @@ Collect everything needed for seamless resumption:
 
 Use template from `templates/continue-here.md`.
 
-Write to `.planning/phases/XX-name/.continue-here.md`:
+Write to `.prompts/planning/phases/XX-name/.continue-here.md`:
 
 ```yaml
 ---
@@ -66,7 +66,7 @@ Then markdown body with full context.
 Commit handoff as WIP:
 
 ```bash
-git add .planning/
+git add .prompts/planning/
 git commit -m "$(cat <<'EOF'
 wip: [phase-name] paused at task [X]/[Y]
 
@@ -82,7 +82,7 @@ Confirm: "Committed: wip: [phase] paused at task [X]/[Y]"
 
 Require acknowledgment:
 
-"Handoff created: .planning/phases/[XX]/.continue-here.md
+"Handoff created: .prompts/planning/phases/[XX]/.continue-here.md
 
 Current state:
 - Phase: [XX-name]
