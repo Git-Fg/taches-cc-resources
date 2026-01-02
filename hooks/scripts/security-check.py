@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
 Pre-commit security check hook.
-Blocks commits that might contain secrets or security issues.
+Warns about edits that might contain secrets or security issues.
+All edits are allowed but warnings are shown to Claude.
+
+Uses JSON output with permissionDecision: "allow" to warn without blocking.
 """
 import json
 import re
@@ -19,10 +22,7 @@ SECRET_PATTERNS = [
     (r"sk-ant-[a-zA-Z0-9-]{90,}", "Anthropic API Key"),
     (r"-----BEGIN (?:RSA |EC |DSA )?PRIVATE KEY-----", "Private key"),
     (r"(?i)aws[_-]?access[_-]?key[_-]?id\s*[:=]\s*[A-Z0-9]{20}", "AWS Access Key"),
-    (
-        r"(?i)aws[_-]?secret[_-]?access[_-]?key\s*[:=]\s*[a-zA-Z0-9/+=]{40}",
-        "AWS Secret Key",
-    ),
+    (r"(?i)aws[_-]?secret[_-]?access[_-]?key\s*[:=]\s*[a-zA-Z0-9/+=]{40}", "AWS Secret Key"),
 ]
 
 # Files to always skip
@@ -36,8 +36,8 @@ SKIP_FILES = {
 }
 
 
-def check_for_secrets(content, file_path):
-    """Check content for potential secrets."""
+def check_for_secrets(content: str, file_path: str) -> list[str]:
+    """Check content for potential secrets. Returns list of detected issues."""
     issues = []
 
     # Skip certain files
@@ -71,17 +71,27 @@ def main():
         issues = check_for_secrets(content, file_path)
 
         if issues:
-            print(f"🚫 BLOCKED - Security issue detected in {file_path}:")
-            for issue in issues:
-                print(f"  - {issue}")
-            print("\nThis edit has been BLOCKED to prevent committing secrets.")
-            print(
-                "If this is a false positive, review and adjust the patterns in security-check.py"
+            issues_text = "\n".join(f"  - {issue}" for issue in issues)
+            warning = (
+                f"[security-check] WARNING: Potential security issue detected in {file_path}:\n"
+                f"{issues_text}\n"
+                f"[security-check]   Please verify this is not a real secret before committing.\n"
+                f"[security-check]   If this is a false positive, review and adjust patterns in security-check.py"
             )
-            # Exit 2 to block the edit
-            sys.exit(2)
+            output = {
+                "hookSpecificOutput": {
+                    "hookEventName": "PreToolUse",
+                    "permissionDecision": "allow",
+                    "permissionDecisionReason": warning
+                }
+            }
+            print(json.dumps(output))
+            sys.exit(0)
 
-    except Exception as e:
+    except json.JSONDecodeError:
+        # Invalid JSON input, don't block
+        sys.exit(0)
+    except Exception:
         # Don't block on errors
         sys.exit(0)
 
