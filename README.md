@@ -1,4 +1,4 @@
-# TÂCHES AI Agent Resources
+# THE CAT TOOLKIT
 
 **Version:** 1.0.2 | **License:** MIT | **Author:** Git-Fg
 
