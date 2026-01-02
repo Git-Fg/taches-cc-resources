@@ -119,35 +119,39 @@ def main():
             sys.exit(0)
 
         formatter_info = get_formatter_command(file_path)
-        context_messages = []
 
         if formatter_info:
             cmd, formatter_name = formatter_info
             full_cmd = cmd + [file_path]
             try:
                 result = subprocess.run(full_cmd, capture_output=True, timeout=10)
-                # Report formatting action to AI via stderr (visible in Claude Code output)
-                msg = f"[format-on-edit] Ran {formatter_name} on {file_path}"
-                print(msg, file=sys.stderr)
-                context_messages.append(msg)
 
-                if result.stdout:
-                    # Show formatter output for transparency
-                    output = result.stdout.decode('utf-8', errors='ignore').strip()
-                    if output:
-                        output_msg = f"[format-on-edit] {formatter_name} output:\n{output}"
-                        print(output_msg, file=sys.stderr)
-                        context_messages.append(f"{formatter_name} output: {output[:200]}")
+                # Only report if there's meaningful output (errors or changes)
+                context_msg = None
+                if result.stdout or result.stderr:
+                    stdout = result.stdout.decode('utf-8', errors='ignore').strip()
+                    stderr = result.stderr.decode('utf-8', errors='ignore').strip()
 
-                # Provide JSON output for AI context
-                context = "\n".join(context_messages)
-                output = {
-                    "hookSpecificOutput": {
-                        "hookEventName": "PostToolUse",
-                        "additionalContext": f"File formatted: {formatter_name} was run on {file_path}. {context}"
-                    }
-                }
-                print(json.dumps(output))
+                    # Filter out boilerplate (version info, "Finding:", "Linting:")
+                    meaningful_lines = []
+                    for line in (stdout + '\n' + stderr).split('\n'):
+                        line = line.strip()
+                        # Skip common boilerplate
+                        if not line or line.startswith(('Finding:', 'Linting:', 'All checks passed', 'Summary: 0 error')):
+                            continue
+                        # Skip version lines (e.g. "markdownlint-cli2 v0.20.0")
+                        if any(word in line.lower() for word in ['v0.', 'v1.', 'v2.', 'version', 'formatting']):
+                            continue
+                        meaningful_lines.append(line)
+
+                    if meaningful_lines:
+                        context_msg = ' | '.join(meaningful_lines[:3])  # Max 3 lines
+
+                # Build output - only include additionalContext if there's something to say
+                output_data = {"hookSpecificOutput": {"hookEventName": "PostToolUse"}}
+                if context_msg:
+                    output_data["hookSpecificOutput"]["additionalContext"] = f"[{formatter_name}] {file_path}: {context_msg}"
+                print(json.dumps(output_data))
 
             except subprocess.TimeoutExpired:
                 msg = f"[format-on-edit] {formatter_name} timed out on {file_path}"
