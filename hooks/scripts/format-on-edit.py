@@ -38,6 +38,21 @@ def try_command(cmd: list[str], timeout: int = 5) -> bool:
         return False
 
 
+def has_markdownlint_config(file_path: str) -> bool:
+    """Check if .markdownlint.jsonc exists in the project."""
+    path = Path(file_path).resolve()
+    seen = set()
+
+    while path != path.parent and str(path) not in seen:
+        seen.add(str(path))
+        config = path / ".markdownlint.jsonc"
+        if config.exists():
+            return True
+        path = path.parent
+
+    return False
+
+
 def get_formatter_command(file_path: str) -> Optional[Tuple[list[str], str]]:
     """
     Return the formatter command for a given file type.
@@ -56,11 +71,11 @@ def get_formatter_command(file_path: str) -> Optional[Tuple[list[str], str]]:
             return (['ruff', 'check', '--fix', '--exit-zero'], 'ruff')
         return None
 
-    # Markdown: markdownlint-cli2 -> prettier
+    # Markdown: only use markdownlint-cli2 if .markdownlint.jsonc exists
     if ext == '.md':
-        # Try markdownlint-cli2 first (better for markdown linting)
         if check_command_available('npx'):
-            if try_command(['npx', 'markdownlint-cli2', '--version']):
+            # Only use markdownlint if config is present
+            if has_markdownlint_config(file_path) and try_command(['npx', 'markdownlint-cli2', '--version']):
                 return (['npx', 'markdownlint-cli2', '--fix'], 'markdownlint-cli2')
             # Fallback to prettier for markdown
             if try_command(['npx', 'prettier', '--version']):
