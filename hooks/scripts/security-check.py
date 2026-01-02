@@ -7,9 +7,12 @@ All edits are allowed but warnings are shown to Claude.
 Uses JSON output with permissionDecision: "allow" to warn without blocking.
 """
 import json
+import logging
+import os
 import re
 import sys
-import os
+
+logger = logging.getLogger(__name__)
 
 # Patterns that indicate potential secrets
 SECRET_PATTERNS = [
@@ -34,6 +37,17 @@ SKIP_FILES = {
     "yarn.lock",
     "pnpm-lock.yaml",
 }
+
+
+def contains_path_traversal(file_path: str) -> bool:
+    """Check if file path contains path traversal attempts."""
+    # Check for .. in path components
+    if '..' in file_path.split(os.sep):
+        return True
+    # Also check for URL-encoded traversal
+    if '%2e%2e' in file_path.lower() or '%2E%2E' in file_path.lower():
+        return True
+    return False
 
 
 def check_for_secrets(content: str, file_path: str) -> list[str]:
@@ -65,7 +79,13 @@ def main():
         file_path = tool_input.get("file_path", "")
         content = tool_input.get("content", "") or tool_input.get("new_string", "")
 
+        # Input validation
         if not file_path or not content:
+            sys.exit(0)
+
+        # Security: Check for path traversal attempts
+        if contains_path_traversal(file_path):
+            logger.debug("[security-check] Path traversal detected: %s", file_path)
             sys.exit(0)
 
         issues = check_for_secrets(content, file_path)
@@ -91,8 +111,9 @@ def main():
     except json.JSONDecodeError:
         # Invalid JSON input, don't block
         sys.exit(0)
-    except Exception:
-        # Don't block on errors
+    except Exception as e:
+        # Don't block on errors, but log for debugging
+        logger.debug("[security-check] Unexpected error: %s", e, exc_info=True)
         sys.exit(0)
 
 

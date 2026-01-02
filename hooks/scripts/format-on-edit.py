@@ -14,17 +14,22 @@ If a formatter is not available, the hook will skip silently.
 Results are reported to stderr for AI visibility.
 """
 import json
-import subprocess
-import sys
+import logging
 import os
 import shutil
-from typing import List, Optional, Tuple
+import subprocess
+import sys
+from typing import Optional, Tuple
+
+logger = logging.getLogger(__name__)
+
 
 def check_command_available(cmd: str) -> bool:
     """Check if a command is available on the system."""
     return shutil.which(cmd) is not None
 
-def try_command(cmd: List[str], timeout: int = 5) -> bool:
+
+def try_command(cmd: list[str], timeout: int = 5) -> bool:
     """Try running a command to check availability. Returns True if successful."""
     try:
         result = subprocess.run(cmd, capture_output=True, timeout=timeout)
@@ -32,7 +37,8 @@ def try_command(cmd: List[str], timeout: int = 5) -> bool:
     except (subprocess.TimeoutExpired, FileNotFoundError):
         return False
 
-def get_formatter_command(file_path: str) -> Optional[Tuple[List[str], str]]:
+
+def get_formatter_command(file_path: str) -> Optional[Tuple[list[str], str]]:
     """
     Return the formatter command for a given file type.
     Returns (command, description) tuple or None if unavailable.
@@ -82,12 +88,34 @@ def get_formatter_command(file_path: str) -> Optional[Tuple[List[str], str]]:
 
     return None
 
+
+def contains_path_traversal(file_path: str) -> bool:
+    """Check if file path contains path traversal attempts."""
+    # Check for .. in path components
+    if '..' in file_path.split(os.sep):
+        return True
+    # Also check for URL-encoded traversal
+    if '%2e%2e' in file_path.lower() or '%2E%2E' in file_path.lower():
+        return True
+    return False
+
+
 def main():
     try:
         input_data = json.load(sys.stdin)
         file_path = input_data.get('tool_input', {}).get('file_path', '')
 
-        if not file_path or not os.path.exists(file_path):
+        # Input validation
+        if not file_path:
+            sys.exit(0)
+
+        # Security: Check for path traversal attempts
+        if contains_path_traversal(file_path):
+            logger.debug("[format-on-edit] Path traversal detected: %s", file_path)
+            sys.exit(0)
+
+        # Check if file exists (avoid processing non-existent files)
+        if not os.path.exists(file_path):
             sys.exit(0)
 
         formatter_info = get_formatter_command(file_path)
@@ -110,11 +138,15 @@ def main():
         else:
             ext = os.path.splitext(file_path)[1].lower()
             print(f"[format-on-edit] No formatter available for {ext} files", file=sys.stderr)
+
     except json.JSONDecodeError:
         # Invalid JSON input, skip silently
         sys.exit(0)
     except Exception as e:
-        print(f"[format-on-edit] Error: {e}", file=sys.stderr)
+        # Log error for debugging
+        logger.debug("[format-on-edit] Unexpected error: %s", e, exc_info=True)
+        sys.exit(0)
+
 
 if __name__ == '__main__':
     main()
