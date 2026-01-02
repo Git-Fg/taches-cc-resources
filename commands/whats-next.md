@@ -56,12 +56,13 @@ Write to `.prompts/handoffs/whats-next.md` using the format below.
 
 ## Output Format
 
-```xml
-<original_task>
-[The specific task that was initially requested - be precise about scope]
-</original_task>
+```markdown
+# Original Task
 
-<work_completed>
+[The specific task that was initially requested - be precise about scope]
+
+# Work Completed
+
 [Comprehensive detail of everything accomplished:
 - Artifacts created/modified/analyzed (with specific references)
 - Specific changes, additions, or findings (with details and locations)
@@ -69,40 +70,39 @@ Write to `.prompts/handoffs/whats-next.md` using the format below.
 - Key discoveries or insights
 - Decisions made and reasoning
 - Side tasks completed]
-</work_completed>
 
-<work_remaining>
+# Work Remaining
+
 [Detailed breakdown of what needs to be done:
 - Specific tasks with precise locations or references
 - Exact targets to create, modify, or analyze
 - Dependencies and ordering
 - Validation or verification steps needed]
-</work_remaining>
 
-<attempted_approaches>
+# Attempted Approaches
+
 [Everything tried, including failures:
 - Approaches that didn't work and why
 - Errors, blockers, or limitations encountered
 - Dead ends to avoid
 - Alternative approaches considered but not pursued]
-</attempted_approaches>
 
-<critical_context>
+# Critical Context
+
 [All essential knowledge for continuing:
 - Key decisions and trade-offs
 - Constraints, requirements, or boundaries
-- Important discoveries, gotcas, or edge cases
+- Important discoveries, gotchas, or edge cases
 - Environment, configuration, or setup details
 - Assumptions requiring validation
 - References to documentation, sources, or resources]
-</critical_context>
 
-<current_state>
+# Current State
+
 [Exact state of the work:
 - Status of deliverables (complete/in-progress/not started)
 - What's finalized vs. what's temporary or draft
 - Temporary changes or workarounds in place
 - Current position in workflow or process
 - Any open questions or pending decisions]
-</current_state>
 ```

@@ -1,5 +1,5 @@
 ---
-description: Create optimized prompts with XML structure for AI agents. MUST USE when creating prompts that will be executed by Claude or other AI agents.
+description: Create optimized prompts with Markdown structure for AI agents. MUST USE when creating prompts that will be executed by Claude or other AI agents.
 argument-hint: [task description]
 allowed-tools: [Read, Write, Glob, AskUserQuestion]
 ---
@@ -12,7 +12,7 @@ Before generating prompts, use the Glob tool to check `.prompts/prompts/*.md` to
 
 ## Objective
 
-Act as an expert prompt engineer for Claude Code, specialized in crafting optimal prompts using XML tag structuring and best practices.
+Act as an expert prompt engineer for Claude Code, specialized in crafting optimal prompts using Markdown structuring and best practices.
 
 Create highly effective prompts for: $ARGUMENTS
 
@@ -176,14 +176,14 @@ For multiple prompts:
 ### Prompt Construction Rules
 
 Always Include:
-- XML tag structure with clear, semantic tags like `<objective>`, `<context>`, `<requirements>`, `<constraints>`, `<output>`
+- **Markdown structure with clear, semantic headings** like `## Objective`, `## Context`, `## Requirements`, `## Constraints`, `## Output`
 - **Context Loading section as the first step** - See below
 - Contextual information: Why this task matters, what it's for, who will use it, end goal
 - Explicit, specific instructions: Tell Claude exactly what to do with clear, unambiguous language
 - Sequential steps: Use numbered lists for clarity
 - File output instructions using relative paths: `./filename` or `./subfolder/filename`
 - Reference to reading the CLAUDE.md for project conventions
-- Explicit success criteria within `<success_criteria>` or `<verification>` tags
+- Explicit success criteria within `## Success Criteria` or `## Verification` sections
 
 ### Context Loading Section (REQUIRED)
 
@@ -209,15 +209,15 @@ Conditionally Include (based on analysis):
 - WHY explanations for constraints and requirements
 - Parallel tool calling for agentic/multi-step workflows
 - Reflection after tool use for complex agentic tasks
-- `<research>` tags when codebase exploration is needed
-- `<validation>` tags for tasks requiring verification
-- `<examples>` tags for complex or ambiguous requirements
+- `## Research` sections when codebase exploration is needed
+- `## Validation` sections for tasks requiring verification
+- `## Examples` sections for complex or ambiguous requirements
 - Bash command execution with "!" prefix when system state matters
 - MCP server references when specifically requested or obviously beneficial
 
 ### Output Format
 
-1. Generate prompt content with XML structure
+1. Generate prompt content with Markdown structure
 2. Save to: `.prompts/prompts/[number]-[descriptive-name].md`
    - Number format: 001, 002, 003, etc. (check existing files in .prompts/prompts/ to determine next number)
    - Name format: lowercase, hyphen-separated, max 5 words describing the task
@@ -228,8 +228,9 @@ Conditionally Include (based on analysis):
 
 ### For Coding Tasks
 
-```xml
-<context_loading>
+```markdown
+## Context Loading
+
 CRITICAL: Before starting implementation, load project context:
 
 1. Read configuration files to understand the environment:
@@ -248,50 +249,50 @@ CRITICAL: Before starting implementation, load project context:
    "I have read the configuration, project conventions, and existing code patterns. I understand: [brief summary of architecture, patterns, constraints]."
 
 Do NOT start coding until this step is complete.
-</context_loading>
 
-<objective>
+## Objective
+
 [Clear statement of what needs to be built/fixed/refactored]
 Explain the end goal and why this matters.
-</objective>
 
-<context>
+## Context
+
 [Project type, tech stack, relevant constraints]
 [Who will use this, what it's for]
 @[relevant files to examine]
-</context>
 
-<requirements>
+## Requirements
+
 [Specific functional requirements]
 [Performance or quality requirements]
 Be explicit about what Claude should do.
-</requirements>
 
-<implementation>
+## Implementation
+
 [Any specific approaches or patterns to follow]
 [What to avoid and WHY - explain the reasoning behind constraints]
-</implementation>
 
-<output>
+## Output
+
 Create/modify files with relative paths:
 - `./path/to/file.ext` - [what this file should contain]
-</output>
 
-<verification>
+## Verification
+
 Before declaring complete, verify your work:
 - [Specific test or check to perform]
 - [How to confirm the solution works]
-</verification>
 
-<success_criteria>
+## Success Criteria
+
 [Clear, measurable criteria for success]
-</success_criteria>
 ```
 
 ### For Analysis Tasks
 
-```xml
-<context_loading>
+```markdown
+## Context Loading
+
 CRITICAL: Before starting analysis, load context:
 
 1. Understand the codebase structure:
@@ -307,38 +308,38 @@ CRITICAL: Before starting analysis, load context:
    - Understand imports and dependencies
 
 Confirm: "I have loaded context and understand the codebase structure."
-</context_loading>
 
-<objective>
+## Objective
+
 [What needs to be analyzed and why]
 [What the analysis will be used for]
-</objective>
 
-<data_sources>
+## Data Sources
+
 @[files or data to analyze]
 ![relevant commands to gather data]
-</data_sources>
 
-<analysis_requirements>
+## Analysis Requirements
+
 [Specific metrics or patterns to identify]
 [Depth of analysis needed - use "thoroughly analyze" for complex tasks]
 [Any comparisons or benchmarks]
-</analysis_requirements>
 
-<output_format>
+## Output Format
+
 [How results should be structured]
 Save analysis to: `./analyses/[descriptive-name].md`
-</output_format>
 
-<verification>
+## Verification
+
 [How to validate the analysis is complete and accurate]
-</verification>
 ```
 
 ### For Research Tasks
 
-```xml
-<context_loading>
+```markdown
+## Context Loading
+
 CRITICAL: Before starting research, load project context:
 
 1. Understand what already exists:
@@ -354,36 +355,35 @@ CRITICAL: Before starting research, load project context:
    - What are the constraints/requirements?
 
 Confirm: "I understand the research goal and technical context."
-</context_loading>
 
-<research_objective>
+## Research Objective
+
 [What information needs to be gathered]
 [Intended use of the research]
 For complex research, include: "Thoroughly explore multiple sources and consider various perspectives"
-</research_objective>
 
-<scope>
+## Scope
+
 [Boundaries of the research]
 [Sources to prioritize or avoid]
 [Time period or version constraints]
-</scope>
 
-<deliverables>
+## Deliverables
+
 [Format of research output]
 [Level of detail needed]
 Save findings to: `./research/[topic].md`
-</deliverables>
 
-<evaluation_criteria>
+## Evaluation Criteria
+
 [How to assess quality/relevance of sources]
 [Key questions that must be answered]
-</evaluation_criteria>
 
-<verification>
+## Verification
+
 Before completing, verify:
 - [All key questions are answered]
 - [Sources are credible and relevant]
-</verification>
 ```
 
 ## Intelligence Rules
@@ -491,7 +491,7 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 - Intake gate completed (AskUserQuestion used for clarification if needed)
 - User selected "Proceed" from decision gate
 - Appropriate depth, structure, and execution strategy determined
-- Prompt(s) generated with proper XML structure following patterns
+- Prompt(s) generated with proper Markdown structure following patterns
 - Files saved to .prompts/prompts/[number]-[name].md with correct sequential numbering
 - Decision tree presented to user based on single/parallel/sequential scenario
 - User choice executed (SlashCommand invoked if user selects run option)
@@ -503,7 +503,7 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 - Use Glob tool with `.prompts/prompts/*.md` to find existing prompts and determine next number in sequence
 - If .prompts/prompts/ doesn't exist, use Write tool to create the first prompt (Write will create parent directories)
 - Keep prompt filenames descriptive but concise
-- Adapt the XML structure to fit the task - not every tag is needed every time
+- Adapt the Markdown structure to fit the task - not every section is needed every time
 - Consider the user's working directory as the root for all relative paths
 - Each prompt file should contain ONLY the prompt content, no preamble or explanation
 - After saving, present the decision tree as inline text (not AskUserQuestion)

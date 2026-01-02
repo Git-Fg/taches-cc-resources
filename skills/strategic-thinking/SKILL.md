@@ -1,11 +1,11 @@
 ---
 name: strategic-thinking
-description: Strategic thinking frameworks for long-term perspective, big-picture analysis, and temporal impact. PROACTIVELY USE when making strategic decisions, business planning, or major life choices.
+description: Strategic thinking frameworks for long-term perspective, big-picture analysis, and understanding temporal impact. PROACTIVELY USE for any decision requiring strategic thought, from technical architecture to business planning.
 ---
 
 # Objective
 
-Provide strategic thinking frameworks that help with long-term perspective, big-picture analysis, and understanding temporal impact.
+Provide strategic thinking frameworks that help with long-term perspective, big-picture analysis, and understanding temporal impact for any problem or decision.
 
 These frameworks help you think beyond immediate concerns and consider broader implications and time horizons.
 
@@ -27,48 +27,33 @@ The strategic thinking skill includes these frameworks:
 
 When to use each framework:
 
-- Use first-principles when: You need to challenge assumptions, avoid "we've always done it this way" thinking, or rebuild understanding from fundamental truths.
+- Use **first-principles** when: You need to challenge assumptions about a system's core components, designing from scratch (e.g., a new data structure), understanding fundamental concepts (e.g., event loops, type systems), or breaking down any complex idea to its irreducible minimum.
 
-- Use inversion when: You need to identify risks, find failure modes before they occur, or build success by avoiding obvious mistakes.
+- Use **inversion** when: Identifying potential failure points in a design (e.g., 'what would make this API break?'), anticipating bugs in a new feature, building robust systems by avoiding known pitfalls, or preventing a project from going off track.
 
-- Use second-order when: Making decisions with cascading effects, implementing policies with ripple impacts, or evaluating long-term consequences.
+- Use **second-order** when: Making decisions with cascading effects, implementing policies with ripple impacts, evaluating the long-term consequences of a technical choice (e.g., adopting a new framework), or understanding how a bug fix might create new problems elsewhere.
 
-- Use swot when: Analyzing strategic positioning, assessing competitive landscape, or evaluating internal/external factors comprehensively.
+- Use **swot** when: Analyzing the strategic positioning of a new product feature, assessing the competitive landscape, evaluating internal/external factors for a project's success, or understanding the overall context of a problem.
 
-- Use 10-10-10 when: Facing short-term vs long-term conflicts, overcoming present bias, or clarifying what actually matters over time.
+- Use **10-10-10** when: Facing short-term vs long-term conflicts (e.g., quick fix vs. proper refactor), overcoming present bias in architectural decisions, clarifying what actually matters over time in a career path, or evaluating the lasting impact of a design choice.
 
 Multiple frameworks can be combined:
-- first-principles + inversion: Rebuild fundamentals while avoiding failure modes
-- second-order + 10-10-10: Understand ripple effects across time horizons
-- swot + first-principles: Strategic analysis based on fundamental truths
-
-# Usage Patterns
-
-When invoked without specific framework:
-
-1. Analyze the context and determine which framework(s) apply
-2. Present your framework selection with reasoning
-3. Apply the framework(s) systematically
-4. Provide structured, actionable output
-
-When invoked with specific framework name:
-
-1. Apply only the requested framework
-2. Follow its process steps exactly
-3. Present output in the prescribed format
+- **first-principles + inversion**: Rebuilding a core system component while systematically avoiding potential failure modes.
+- **second-order + 10-10-10**: Understanding the cascading impacts of a platform change across different time horizons.
+- **swot + first-principles**: Strategic analysis based on fundamental truths, challenging existing assumptions about the market or technology.
 
 # Integration Notes
 
-This skill is commonly used with:
-- prioritization skill: After strategic analysis, determine where to focus resources
-- problem-analysis skill: Combine strategic thinking with deep problem understanding
-
-Agent integration:
-- Strategic Thinker agent (opus model) for complex strategic decisions requiring deep reasoning
+This framework is a core component of the `brainstormer` agent, enabling it to provide structured thinking for diverse problem types.
 
 ## Example Applications
 
 **Business decision**: Should we expand to new market? (Use swot for positioning, second-order for consequences)
-**Product strategy**: Build vs buy? (Use first-principles to rebuild from fundamentals, inversion to identify failure modes)
-**Career choice**: Job offer evaluation? (Use 10-10-10 for temporal perspective, swot for comprehensive analysis)
-**Technical architecture**: Microservices vs monolith? (Use first-principles to challenge assumptions, inversion for risks)
+
+**Product strategy**: Build vs buy for a critical component? (Use first-principles to rebuild from fundamentals, inversion to identify failure modes)
+
+**Technical architecture**: Microservices vs monolith for a new platform? (Use first-principles to challenge assumptions about scale and coupling, inversion for identifying critical points of failure in each approach).
+
+**Personal growth**: How to learn a new programming language effectively? (Use first-principles for core concepts, inversion for common pitfalls to avoid).
+
+**System design**: Designing a caching layer for high-traffic API? (Use first-principles to understand what caching actually needs to accomplish, inversion to identify what would make caching fail or worsen performance).

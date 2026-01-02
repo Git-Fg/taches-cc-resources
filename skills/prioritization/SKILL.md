@@ -23,36 +23,30 @@ The prioritization skill includes these frameworks:
 
 When to use each framework:
 
-- Use pareto when: Overwhelmed with many options/tasks, need to identify what truly moves the needle, or doing resource allocation.
+- Use **pareto** when: Overwhelmed with many technical issues (e.g., bugs, performance bottlenecks, tech debt) and needing to identify the 20% that cause 80% of the problems. Applicable to prioritizing test cases, refactoring tasks, or security vulnerabilities. Also useful for feature prioritization and resource allocation.
 
-- Use one-thing when: Facing a complex goal with many possible actions, need to identify leverage points, or want to find the domino that knocks down others.
+- Use **one-thing** when: A complex technical goal requires a 'domino' action, such as identifying the single most impactful refactoring, the crucial first step in a large migration, or the core component that unlocks multiple features. Also applicable to personal productivity and identifying leverage points.
 
-- Use eisenhower-matrix when: Drowning in tasks, struggling with urgency vs important distinctions, or need clear triage decisions.
+- Use **eisenhower-matrix** when: Categorizing a backlog of tasks (bugs, features, chores) by urgency and importance to decide what to 'Do First', 'Schedule', 'Delegate', or 'Eliminate'. Useful for sprint planning, issue triage, and managing incoming support requests.
 
 Multiple frameworks can be combined:
-- pareto + one-thing: Identify vital few, then find highest leverage action
-- eisenhower-matrix + pareto: Categorize tasks, then apply 80/20 within Q1 and Q2
-
-# Usage Patterns
-
-When invoked without specific framework:
-
-1. Analyze the context and determine which framework(s) apply
-2. Present your framework selection with reasoning
-3. Apply the framework(s) systematically
-4. Provide structured, actionable output
-
-When invoked with specific framework name:
-
-1. Apply only the requested framework
-2. Follow its process steps exactly
-3. Present output in the prescribed format
+- **pareto + one-thing**: Identifying the critical technical debt items and then pinpointing the single refactoring that provides the most leverage.
+- **eisenhower-matrix + pareto**: Categorize tasks into quadrants, then apply 80/20 within the "Do First" and "Schedule" quadrants to identify the highest-impact items.
 
 # Integration Notes
 
-This skill is commonly used with:
-- strategic-thinking skill: After strategic analysis, prioritize what to act on first
-- problem-analysis skill: Before tackling problems, ensure you're prioritizing the right ones
+This framework is a core component of the `brainstormer` agent, enabling it to provide structured thinking for diverse problem types.
 
-Agent integration:
-- Priority Strategist agent (sonnet model) for efficient prioritization decisions
+## Example Applications
+
+**Technical debt prioritization**: Which refactoring will give the biggest bang for buck? (Use pareto to identify the 20% of code issues causing 80% of problems, one-thing to find the domino refactoring).
+
+**Bug triage**: Drowning in bug reports? (Use eisenhower-matrix to categorize by urgency/importance, then pareto within Q1 to find highest-impact fixes).
+
+**Feature planning**: Too many feature requests for MVP? (Use pareto to identify 20% of features that deliver 80% of value to users).
+
+**Performance optimization**: Where to focus optimization efforts? (Use pareto to identify the 20% of code paths consuming 80% of resources).
+
+**Test coverage**: Writing tests for large codebase? (Use pareto to identify 20% of functionality that covers 80% of user flows, one-thing to find which test gives the most confidence).
+
+**Sprint planning**: Team overwhelmed with backlog? (Use eisenhower-matrix for task categorization, one-thing to identify the story that unblocks others).

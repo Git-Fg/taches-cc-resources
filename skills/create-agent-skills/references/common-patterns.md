@@ -8,11 +8,11 @@ Provide templates for output format. Match the level of strictness to your needs
 ## Strict Requirements
 Use when output format must be exact and consistent:
 
-```xml
-<report_structure>
+```markdown
+## Report Structure
+
 ALWAYS use this exact template structure:
 
-```markdown
 # [Analysis Title]
 
 ## Executive summary
@@ -27,19 +27,17 @@ ALWAYS use this exact template structure:
 1. Specific actionable recommendation
 2. Specific actionable recommendation
 ```
-</report_structure>
-```
 
 **When to use**: Compliance reports, standardized formats, automated processing
 
 ## Flexible Guidance
 Use when Claude should adapt the format based on context:
 
-```xml
-<report_structure>
+```markdown
+## Report Structure
+
 Here is a sensible default format, but use your best judgment:
 
-```markdown
 # [Analysis Title]
 
 ## Executive summary
@@ -50,10 +48,8 @@ Here is a sensible default format, but use your best judgment:
 
 ## Recommendations
 [Tailor to the specific context]
-```
 
 Adjust sections as needed for the specific analysis type.
-</report_structure>
 ```
 
 **When to use**: Exploratory analysis, context-dependent formatting, creative tasks
@@ -63,38 +59,34 @@ Adjust sections as needed for the specific analysis type.
 For skills where output quality depends on seeing examples, provide input/output pairs.
 
 ## Commit Messages Example
-```xml
-<objective>
-Generate commit messages following conventional commit format.
-</objective>
+```markdown
+## Objective
 
-<commit_message_format>
+Generate commit messages following conventional commit format.
+
+## Commit Message Format
+
 Generate commit messages following these examples:
 
-<example number="1">
-<input>Added user authentication with JWT tokens</input>
-<output>
-```
-feat(auth): implement JWT-based authentication
+**Example 1**:
+- **Input**: Added user authentication with JWT tokens
+- **Output**:
+  ```
+  feat(auth): implement JWT-based authentication
 
-Add login endpoint and token validation middleware
-```
-</output>
-</example>
+  Add login endpoint and token validation middleware
+  ```
 
-<example number="2">
-<input>Fixed bug where dates displayed incorrectly in reports</input>
-<output>
-```
-fix(reports): correct date formatting in timezone conversion
+**Example 2**:
+- **Input**: Fixed bug where dates displayed incorrectly in reports
+- **Output**:
+  ```
+  fix(reports): correct date formatting in timezone conversion
 
-Use UTC timestamps consistently across report generation
-```
-</output>
-</example>
+  Use UTC timestamps consistently across report generation
+  ```
 
 Follow this style: type(scope): brief description, then detailed explanation.
-</commit_message_format>
 ```
 
 ## When To Use
@@ -113,38 +105,38 @@ Consistent usage:
 - Always "field" (not mixing with "box", "element", "control")
 - Always "extract" (not mixing with "pull", "get", "retrieve")
 
-```xml
-<objective>
-Extract data from API endpoints using field mappings.
-</objective>
+```markdown
+## Objective
 
-<quick_start>
+Extract data from API endpoints using field mappings.
+
+## Quick Start
+
 1. Identify the API endpoint
 2. Map response fields to your schema
 3. Extract field values
-</quick_start>
 ```
 
 ## Bad Example
 Inconsistent usage creates confusion:
 
-```xml
-<objective>
-Pull data from API routes using element mappings.
-</objective>
+```markdown
+## Objective
 
-<quick_start>
+Pull data from API routes using element mappings.
+
+## Quick Start
+
 1. Identify the URL
 2. Map response boxes to your schema
 3. Retrieve control values
-</quick_start>
 ```
 
 Claude must now interpret: Are "API routes" and "URLs" the same? Are "fields", "boxes", "elements", and "controls" the same?
 
 ## Implementation
 1. Choose terminology early in skill development
-2. Document key terms in `<objective>` or `<context>`
+2. Document key terms in `## Objective` or `## Context` sections
 3. Use find/replace to enforce consistency
 4. Review reference files for consistent usage
 
@@ -155,8 +147,9 @@ Provide a default approach with an escape hatch for special cases, not a list of
 ## Good Example
 Clear default with escape hatch:
 
-```xml
-<quick_start>
+```markdown
+## Quick Start
+
 Use pdfplumber for text extraction:
 
 ```python
@@ -166,14 +159,14 @@ with pdfplumber.open("file.pdf") as pdf:
 ```
 
 For scanned PDFs requiring OCR, use pdf2image with pytesseract instead.
-</quick_start>
 ```
 
 ## Bad Example
 Too many options creates decision paralysis:
 
-```xml
-<quick_start>
+```markdown
+## Quick Start
+
 You can use any of these libraries:
 
 - **pypdf**: Good for basic extraction
@@ -184,7 +177,6 @@ You can use any of these libraries:
 - **tabula-py**: Table-focused
 
 Choose based on your needs.
-</quick_start>
 ```
 
 Claude must now research and compare all options before starting. This wastes tokens and time.
@@ -439,23 +431,22 @@ Use pdfplumber...
 Keep SKILL.md concise by linking to detailed reference files. Claude loads reference files only when needed.
 
 ## Implementation
-```xml
-<objective>
+```markdown
+## Objective
+
 Manage Facebook Ads campaigns, ad sets, and ads via the Marketing API.
-</objective>
 
-<quick_start>
-<basic_operations>
+## Quick Start
+
+**Basic operations**:
 See [basic-operations.md](basic-operations.md) for campaign creation and management.
-</basic_operations>
-</quick_start>
 
-<advanced_features>
-**Custom audiences**: See [audiences.md](audiences.md)
-**Conversion tracking**: See [conversions.md](conversions.md)
-**Budget optimization**: See [budgets.md](budgets.md)
-**API reference**: See [api-reference.md](api-reference.md)
-</advanced_features>
+## Advanced Features
+
+- **Custom audiences**: See [audiences.md](audiences.md)
+- **Conversion tracking**: See [conversions.md](conversions.md)
+- **Budget optimization**: See [budgets.md](budgets.md)
+- **API reference**: See [api-reference.md](api-reference.md)
 ```
 
 **Benefits**:
@@ -469,8 +460,9 @@ See [basic-operations.md](basic-operations.md) for campaign creation and managem
 For skills with validation steps, make validation scripts verbose and specific.
 
 ## Implementation
-```xml
-<validation>
+```markdown
+## Validation
+
 After making changes, validate immediately:
 
 ```bash
@@ -484,7 +476,6 @@ If validation fails, fix errors before continuing. Validation errors include:
 - **Missing required field**: "Required field 'customer_name' is missing"
 
 Only proceed when validation passes with zero errors.
-</validation>
 ```
 
 **Why verbose errors help**:
@@ -497,8 +488,9 @@ Only proceed when validation passes with zero errors.
 For complex multi-step workflows, provide a checklist Claude can copy and track progress.
 
 ## Implementation
-```xml
-<workflow>
+```markdown
+## Workflow
+
 Copy this checklist and check off items as you complete them:
 
 ```
@@ -510,42 +502,31 @@ Task Progress:
 - [ ] Step 5: Verify output (run verify_output.py)
 ```
 
-<step_1>
-**Analyze the form**
+### Step 1: Analyze the form
 
 Run: `python scripts/analyze_form.py input.pdf`
 
 This extracts form fields and their locations, saving to `fields.json`.
-</step_1>
 
-<step_2>
-**Create field mapping**
+### Step 2: Create field mapping
 
 Edit `fields.json` to add values for each field.
-</step_2>
 
-<step_3>
-**Validate mapping**
+### Step 3: Validate mapping
 
 Run: `python scripts/validate_fields.py fields.json`
 
 Fix any validation errors before continuing.
-</step_3>
 
-<step_4>
-**Fill the form**
+### Step 4: Fill the form
 
 Run: `python scripts/fill_form.py input.pdf fields.json output.pdf`
-</step_4>
 
-<step_5>
-**Verify output**
+### Step 5: Verify output
 
 Run: `python scripts/verify_output.py output.pdf`
 
 If verification fails, return to Step 2.
-</step_5>
-</workflow>
 ```
 
 **Benefits**:

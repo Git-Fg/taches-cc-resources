@@ -2,127 +2,125 @@
 Prompt patterns for creating approaches, roadmaps, and strategies that will be consumed by subsequent prompts.
 
 ## Prompt Template
-```xml
-<objective>
+```markdown
+## Objective
+
 Create a {plan type} for {topic}.
 
-Purpose: {What decision/implementation this enables}
-Input: {Research or context being used}
-Output: {topic}-plan.md with actionable phases/steps
-</objective>
+**Purpose**: {What decision/implementation this enables}
+**Input**: {Research or context being used}
+**Output**: {topic}-plan.md with actionable phases/steps
 
-<context>
+## Context
+
 Research findings: @.prompts/metaprompt/{num}-{topic}-research/{topic}-research.md
 {Additional context files}
-</context>
 
-<planning_requirements>
+## Planning Requirements
+
 {What the plan needs to address}
 {Constraints to work within}
 {Success criteria for the planned outcome}
-</planning_requirements>
 
-<output_structure>
+## Output Structure
+
 Save to: `.prompts/metaprompt/{num}-{topic}-plan/{topic}-plan.md`
 
-Structure the plan using this XML format:
+Structure the plan using this Markdown format:
 
-```xml
-<plan>
-  <summary>
-    {One paragraph overview of the approach}
-  </summary>
+```markdown
+# Summary
 
-  <phases>
-    <phase number="1" name="{phase-name}">
-      <objective>{What this phase accomplishes}</objective>
-      <tasks>
-        <task priority="high">{Specific actionable task}</task>
-        <task priority="medium">{Another task}</task>
-      </tasks>
-      <deliverables>
-        <deliverable>{What's produced}</deliverable>
-      </deliverables>
-      <dependencies>{What must exist before this phase}</dependencies>
-    </phase>
-    <!-- Additional phases -->
-  </phases>
+{One paragraph overview of the approach}
 
-  <metadata>
-    <confidence level="{high|medium|low}">
-      {Why this confidence level}
-    </confidence>
-    <dependencies>
-      {External dependencies needed}
-    </dependencies>
-    <open_questions>
-      {Uncertainties that may affect execution}
-    </open_questions>
-    <assumptions>
-      {What was assumed in creating this plan}
-    </assumptions>
-  </metadata>
-</plan>
+# Phases
+
+## Phase 1: {phase-name}
+
+**Objective**: {What this phase accomplishes}
+
+**Tasks**:
+- [ ] {Specific actionable task} (priority: high)
+- [ ] {Another task} (priority: medium)
+
+**Deliverables**:
+- {What's produced}
+
+**Dependencies**: {What must exist before this phase}
+
+## Phase 2: {phase-name}
+...
+
+# Metadata
+
+**Confidence**: high|medium|low
+{Why this confidence level}
+
+**Dependencies**:
+- {External dependencies needed}
+
+**Open Questions**:
+- {Uncertainties that may affect execution}
+
+**Assumptions**:
+- {What was assumed in creating this plan}
 ```
-</output_structure>
 
-<summary_requirements>
+## Summary Requirements
+
 Create `.prompts/metaprompt/{num}-{topic}-plan/SUMMARY.md`
 
 Load template: [summary-template.md](summary-template.md)
 
 For plans, emphasize phase breakdown with objectives and assumptions needing validation. Next step typically: Execute first phase.
-</summary_requirements>
 
-<success_criteria>
+## Success Criteria
+
 - Plan addresses all requirements
 - Phases are sequential and logical
 - Tasks are specific and actionable
 - Metadata captures uncertainties
 - SUMMARY.md created with phase overview
 - Ready for implementation prompts to consume
-</success_criteria>
 ```
-</prompt_template>
 
 ## Key Principles
 
 ### Reference Research
 Plans should build on research findings:
-```xml
-<context>
+```markdown
+## Context
+
 Research findings: @.prompts/metaprompt/001-auth-research/auth-research.md
 
 Key findings to incorporate:
 - Recommended approach from research
 - Constraints identified
 - Best practices to follow
-</context>
 ```
 
 ### Prompt-Sized Phases
 Each phase should be executable by a single prompt:
-```xml
-<phase number="1" name="setup-infrastructure">
-  <objective>Create base auth structure and types</objective>
-  <tasks>
-    <task>Create auth module directory</task>
-    <task>Define TypeScript types for tokens</task>
-    <task>Set up test infrastructure</task>
-  </tasks>
-</phase>
+```markdown
+## Phase 1: setup-infrastructure
+
+**Objective**: Create base auth structure and types
+
+**Tasks**:
+- [ ] Create auth module directory
+- [ ] Define TypeScript types for tokens
+- [ ] Set up test infrastructure
 ```
 
 ### Execution Hints
 Help the next Claude understand how to proceed:
-```xml
-<phase number="2" name="implement-jwt">
-  <execution_notes>
-    This phase modifies files from phase 1.
-    Reference the types created in phase 1.
-    Run tests after each major change.
-  </execution_notes>
-</phase>
+```markdown
+## Phase 2: implement-jwt
+
+**Execution Notes**:
+This phase modifies files from phase 1.
+Reference the types created in phase 1.
+Run tests after each major change.
 ```
 
 ## Plan Types
@@ -130,125 +128,129 @@ Help the next Claude understand how to proceed:
 ### Implementation Roadmap
 For breaking down how to build something:
 
-```xml
-<objective>
+```markdown
+## Objective
+
 Create implementation roadmap for user authentication system.
 
-Purpose: Guide phased implementation with clear milestones
-Input: Authentication research findings
-Output: auth-plan.md with 4-5 implementation phases
-</objective>
+**Purpose**: Guide phased implementation with clear milestones
+**Input**: Authentication research findings
+**Output**: auth-plan.md with 4-5 implementation phases
 
-<context>
+## Context
+
 Research: @.prompts/metaprompt/001-auth-research/auth-research.md
-</context>
 
-<planning_requirements>
+## Planning Requirements
+
 - Break into independently testable phases
 - Each phase builds on previous
 - Include testing at each phase
 - Consider rollback points
-</planning_requirements>
 ```
 
 ### Decision Framework
 For choosing between options:
 
-```xml
-<objective>
+```markdown
+## Objective
+
 Create decision framework for selecting database technology.
 
-Purpose: Make informed choice between PostgreSQL, MongoDB, and DynamoDB
-Input: Database research findings
-Output: database-plan.md with criteria, analysis, recommendation
-</objective>
+**Purpose**: Make informed choice between PostgreSQL, MongoDB, and DynamoDB
+**Input**: Database research findings
+**Output**: database-plan.md with criteria, analysis, recommendation
 
-<output_structure>
+## Output Structure
+
 Structure as decision framework:
 
-```xml
-<decision_framework>
-  <options>
-    <option name="PostgreSQL">
-      <pros>{List}</pros>
-      <cons>{List}</cons>
-      <fit_score criteria="scalability">8/10</fit_score>
-      <fit_score criteria="flexibility">6/10</fit_score>
-    </option>
-    <!-- Other options -->
-  </options>
+# Options
 
-  <recommendation>
-    <choice>{Selected option}</choice>
-    <rationale>{Why this choice}</rationale>
-    <risks>{What could go wrong}</risks>
-    <mitigations>{How to address risks}</mitigations>
-  </recommendation>
+## PostgreSQL
 
-  <metadata>
-    <confidence level="high">
-      Clear winner based on requirements
-    </confidence>
-    <assumptions>
-      - Expected data volume: 10M records
-      - Team has SQL experience
-    </assumptions>
-  </metadata>
-</decision_framework>
-```
-</output_structure>
+**Pros**:
+- {List}
+
+**Cons**:
+- {List}
+
+**Fit Scores**:
+- Scalability: 8/10
+- Flexibility: 6/10
+
+## MongoDB
+...
+
+# Recommendation
+
+**Choice**: {Selected option}
+
+**Rationale**: {Why this choice}
+
+**Risks**: {What could go wrong}
+
+**Mitigations**: {How to address risks}
+
+# Metadata
+
+**Confidence**: high
+Clear winner based on requirements
+
+**Assumptions**:
+- Expected data volume: 10M records
+- Team has SQL experience
 ```
 
 ### Process Definition
 For defining workflows or methodologies:
 
-```xml
-<objective>
+```markdown
+## Objective
+
 Create deployment process for production releases.
 
-Purpose: Standardize safe, repeatable deployments
-Input: Current infrastructure research
-Output: deployment-plan.md with step-by-step process
-</objective>
+**Purpose**: Standardize safe, repeatable deployments
+**Input**: Current infrastructure research
+**Output**: deployment-plan.md with step-by-step process
 
-<output_structure>
+## Output Structure
+
 Structure as process:
 
-```xml
-<process>
-  <overview>{High-level flow}</overview>
+# Overview
 
-  <steps>
-    <step number="1" name="pre-deployment">
-      <actions>
-        <action>Run full test suite</action>
-        <action>Create database backup</action>
-        <action>Notify team in #deployments</action>
-      </actions>
-      <checklist>
-        <item>Tests passing</item>
-        <item>Backup verified</item>
-        <item>Team notified</item>
-      </checklist>
-      <rollback>N/A - no changes yet</rollback>
-    </step>
-    <!-- Additional steps -->
-  </steps>
+{High-level flow}
 
-  <metadata>
-    <dependencies>
-      - CI/CD pipeline configured
-      - Database backup system
-      - Slack webhook for notifications
-    </dependencies>
-    <open_questions>
-      - Blue-green vs rolling deployment?
-      - Automated rollback triggers?
-    </open_questions>
-  </metadata>
-</process>
-```
-</output_structure>
+# Steps
+
+## Step 1: Pre-deployment
+
+**Actions**:
+- Run full test suite
+- Create database backup
+- Notify team in #deployments
+
+**Checklist**:
+- [ ] Tests passing
+- [ ] Backup verified
+- [ ] Team notified
+
+**Rollback**: N/A - no changes yet
+
+## Step 2: Deploy
+...
+
+# Metadata
+
+**Dependencies**:
+- CI/CD pipeline configured
+- Database backup system
+- Slack webhook for notifications
+
+**Open Questions**:
+- Blue-green vs rolling deployment?
+- Automated rollback triggers?
 ```
 
 ## Metadata Guidelines

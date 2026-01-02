@@ -3,7 +3,6 @@ name: plan-executor
 description: Specialized agent for executing project plans. Automatically loads project context (BRIEF, ROADMAP) before execution to ensure architectural alignment.
 tools: Read, Write, Edit, Bash, Grep, Glob, SlashCommand
 skills: create-plans
-permissionMode: default
 ---
 
 ## Skill Usage

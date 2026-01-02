@@ -2,7 +2,6 @@
 name: code-reviewer
 description: Expert code review specialist. Use PROACTIVELY after writing or modifying code, before commits, or when asked to review changes. Focuses on quality, security, performance, and maintainability.
 tools: Read, Grep, Glob, Bash, SlashCommand
-permissionMode: default
 skills: git-workflow, testing-strategy
 ---
 

@@ -22,7 +22,7 @@ All references to `references/` files must use the discovered absolute path.
 
 # Objective
 
-Create prompts optimized for Claude-to-Claude communication in multi-stage workflows. Outputs are structured with XML and metadata for efficient parsing by subsequent prompts.
+Create prompts optimized for Claude-to-Claude communication in multi-stage workflows. Outputs are structured with Markdown and YAML metadata for efficient parsing by subsequent prompts.
 
 Every execution produces a `SUMMARY.md` for quick human scanning without reading full outputs.
 
@@ -197,15 +197,25 @@ All generated prompts include:
 2. **Context**: Referenced files (@), dynamic context (!)
 3. **Requirements**: Specific instructions for the task
 4. **Output specification**: Where to save, what structure
-5. **Metadata requirements**: For research/plan outputs, specify XML metadata structure
+5. **Metadata requirements**: For research/plan outputs, specify YAML frontmatter structure
 6. **SUMMARY.md requirement**: All prompts must create a SUMMARY.md file
 7. **Success criteria**: How to know it worked
 
-For Research and Plan prompts, output must include:
-- `<confidence>` - How confident in findings
-- `<dependencies>` - What's needed to proceed
-- `<open_questions>` - What remains uncertain
-- `<assumptions>` - What was assumed
+For Research and Plan prompts, output must include YAML frontmatter with:
+```yaml
+---
+confidence: high|medium|low
+dependencies:
+  - [item 1]
+  - [item 2]
+open_questions:
+  - [question 1]
+  - [question 2]
+assumptions:
+  - [assumption 1]
+  - [assumption 2]
+---
+```
 
 All prompts must create `SUMMARY.md` with:
 - **One-liner** - Substantive description of outcome
@@ -371,11 +381,11 @@ After each prompt completes, verify success:
 
 1. **File exists**: Check output file was created
 2. **Not empty**: File has content (> 100 chars)
-3. **Metadata present** (for research/plan): Check for required XML tags
-   - `<confidence>`
-   - `<dependencies>`
-   - `<open_questions>`
-   - `<assumptions>`
+3. **Metadata present** (for research/plan): Check for YAML frontmatter with required keys
+   - `confidence`
+   - `dependencies`
+   - `open_questions`
+   - `assumptions`
 4. **SUMMARY.md exists**: Check SUMMARY.md was created
 5. **SUMMARY.md complete**: Has required sections (Key Findings, Decisions Needed, Blockers, Next Step)
 6. **One-liner is substantive**: Not generic like "Research completed"
@@ -418,7 +428,7 @@ Continue others, report all results:
 Parallel execution completed with errors:
 
 ✓ 001-api-research (archived)
-✗ 002-db-research: Validation failed - missing <confidence> tag
+✗ 002-db-research: Validation failed - missing confidence field in YAML frontmatter
 ✓ 003-ui-research (archived)
 
 What's next?

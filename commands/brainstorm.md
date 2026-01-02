@@ -1,122 +1,62 @@
 ---
-description: Apply strategic thinking frameworks for decision-making, prioritization, and problem analysis
-argument-hint: [framework name or skill name, optional]
-allowed-tools: Skill(strategic-thinking), Skill(prioritization), Skill(problem-analysis), Task
+description: Apply strategic thinking and problem-solving frameworks to any query, decision, or problem. Acts as an intelligent scratchpad for structured thought, leveraging powerful mental models.
+argument-hint: [query or framework name, optional]
+allowed-tools: Task
 ---
 
 ## Objective
 
-Apply strategic thinking frameworks to help with decision-making, prioritization, and problem analysis.
-
-This command unifies 12 thinking frameworks into 3 cohesive skills:
-- strategic-thinking: first-principles, inversion, second-order, swot, 10-10-10
-- prioritization: pareto, one-thing, eisenhower-matrix
-- problem-analysis: 5-whys, opportunity-cost, occams-razor, via-negativa
+Delegate any query, problem, or decision to the `brainstormer` subagent for structured thinking using its powerful mental models and frameworks. This command serves as a unified entry point for all thinking processes.
 
 ## Invocation Modes
 
-### Mode 1: Auto-detect (no argument)
+This command supports various ways to engage the `brainstormer` agent:
 
-Invoke without arguments: `/brainstorm`
-Agent analyzes context and suggests appropriate frameworks
+### Mode 1: Auto-detect (no argument or general query)
+**Usage**: `/brainstorm` or `/brainstorm How could I better leverage type safety?`
+The `brainstormer` agent will analyze your request and automatically select the most appropriate framework(s) to apply.
 
 ### Mode 2: Specific Framework
-
-Invoke with framework name: `/brainstorm pareto`
-Applies only that specific framework
+**Usage**: `/brainstorm pareto` or `/brainstorm first-principles What's the core issue here?`
+Applies only the specific framework you name to your query.
 
 Available frameworks:
-- Strategic: first-principles, inversion, second-order, swot, 10-10-10
-- Prioritization: pareto, one-thing, eisenhower-matrix
-- Problem: 5-whys, opportunity-cost, occams-razor, via-negativa
+- **Strategic**: first-principles, inversion, second-order, swot, 10-10-10
+- **Prioritization**: pareto, one-thing, eisenhower-matrix
+- **Problem**: 5-whys, opportunity-cost, occams-razor, via-negativa
 
 ### Mode 3: Skill-level
-
-Invoke with skill name: `/brainstorm strategic`
-Applies frameworks from that skill group:
-- `/brainstorm strategic` → strategic-thinking frameworks
-- `/brainstorm priority` → prioritization frameworks
-- `/brainstorm problem` → problem-analysis frameworks
+**Usage**: `/brainstorm strategic` or `/brainstorm problem How can I simplify this system?`
+Applies frameworks from the specified skill group:
+- `/brainstorm strategic` → Strategic Thinking frameworks
+- `/brainstorm priority` → Prioritization frameworks
+- `/brainstorm problem` → Problem Analysis frameworks
 
 ## Process
 
-### Step 1: Analyze Request
+### Step 1: Delegate to Brainstormer Agent
 
-Analyze $ARGUMENTS to determine invocation mode:
+The `brainstormer` agent is designed to handle all internal logic for framework selection and application. Your role here is to pass the user's `$ARGUMENTS` directly to this agent.
 
-IF $ARGUMENTS is empty:
-→ Use Task tool to launch brainstormer agent with context analysis
+Use Task tool with `subagent_type='brainstormer'`:
 
-IF $ARGUMENTS contains a framework name:
-→ Apply only that specific framework via Skill tool
-
-IF $ARGUMENTS contains a skill keyword:
-→ Apply frameworks from that skill via Skill tool
-
-Valid framework names (case-insensitive):
-- first-principles, principles, fp
-- inversion, invert
-- second-order, 2nd, second
-- swot
-- 10-10-10, 1010, time-horizons
-- pareto, 80-20
-- one-thing, onething, domino
-- eisenhower, matrix
-- 5-whys, whys, 5whys
-- opportunity-cost, opportunity, cost
-- occams-razor, occams, razor
-- via-negativa, negativa, subtraction
-
-Valid skill keywords:
-- strategic, strategy → strategic-thinking
-- priority, prioritize → prioritization
-- problem, analysis → problem-analysis
-
-### Step 2: Execute
-
-Based on mode from step 1:
-
-Auto-detect mode:
-Use Task tool with subagent_type='general-purpose' and model='opus':
 ```
-Apply strategic thinking frameworks to analyze this situation:
+Execute a thinking session:
 
-**User Request:** $ARGUMENTS
+**User Request for Brainstormer:** $ARGUMENTS
 
-**Context:**
-You are a fresh instance with no prior conversation history.
-Use your loaded strategic-thinking skills to:
-1. Analyze the user's request
-2. Detect which framework(s) would be most helpful
-3. Apply those frameworks to provide fresh perspectives
+**Context for Brainstormer Agent:**
+You are acting as the `brainstormer` agent. Your core task is to apply your loaded skills (strategic-thinking, prioritization, problem-analysis) to the user's request.
+- If the user provided a specific framework name (e.g., 'pareto', 'first-principles') within the request, identify and apply only that framework.
+- If the user provided a skill keyword (e.g., 'strategic', 'priority', 'problem') within the request, apply relevant frameworks from that skill.
+- If no specific framework or skill was explicitly mentioned in the request, auto-detect the most helpful framework(s) based on the content of the request.
 
-**Available Skills:**
-- strategic-thinking: first-principles, inversion, second-order, swot, 10-10-10
-- prioritization: pareto, one-thing, eisenhower-matrix
-- problem-analysis: 5-whys, opportunity-cost, occams-razor, via-negativa
-
-Provide actionable recommendations based on your analysis.
+Provide actionable recommendations and insights based on your analysis.
 ```
 
-Specific framework mode:
-Use Skill tool with the appropriate skill and framework reference:
-```
-Apply the [framework] framework to: $ARGUMENTS
-```
+### Step 2: Present Results
 
-Skill mode:
-Use Skill tool with the appropriate skill:
-```
-Apply strategic thinking frameworks from [skill] to: $ARGUMENTS
-```
-
-### Step 3: Present Results
-
-After analysis, present results with:
-- Framework(s) applied
-- Key insights
-- Actionable recommendations
-- Suggestion for additional frameworks if relevant
+The `brainstormer` agent will return a structured output, which you should present directly to the user.
 
 ## Framework Quick Reference
 
@@ -140,27 +80,25 @@ Problem Analysis (4 frameworks):
 
 ## Examples
 
-Example 1 - Auto-detect:
-User: `/brainstorm I'm overwhelmed with too many projects`
-Agent detects need for prioritization
-Applies pareto + one-thing frameworks
+**Example 1 - Auto-detect (Technical Problem):**
+User: `/brainstorm How could I better leverage type safety in my Go application?`
+Agent applies `first-principles` (what are the core truths of type safety?) + `inversion` (what would cause type safety to fail?) to generate insights.
 
-Example 2 - Specific framework:
-User: `/brainstorm pareto`
-Applies only pareto framework to current context
+**Example 2 - Auto-detect (Problem Solving):**
+User: `/brainstorm We are frequently seeing performance regressions after new deployments.`
+Agent applies `5-whys` (root cause analysis) + `second-order` (ripple effects of deployments) + `occams-razor` (simplest explanation) to diagnose.
 
-Example 3 - Skill mode:
-User: `/brainstorm strategic`
-Agent suggests and applies strategic-thinking frameworks
+**Example 3 - Specific framework with context:**
+User: `/brainstorm pareto What are the 20% of features that deliver 80% of value in our new mobile app MVP?`
+Agent applies the Pareto framework to identify high-impact features.
 
-Example 4 - Framework with context:
-User: `/brainstorm first-principles Should I switch careers?`
-Applies first-principles framework to career decision
+**Example 4 - Skill mode (Strategic Context):**
+User: `/brainstorm strategic Should we pivot our product direction?`
+Agent applies frameworks from the Strategic Thinking skill to guide the decision.
 
 ## Success Criteria
 
-- Correct invocation mode detected
-- Appropriate framework(s) selected and applied
-- Analysis provides fresh perspectives
-- Output includes actionable recommendations
-- User gains clarity on next steps
+- Correct invocation mode detected (explicit framework/skill or auto-detect).
+- Request is successfully delegated to the `brainstormer` subagent.
+- The `brainstormer` agent provides a structured output with insights and recommendations.
+- User receives clarity and a structured approach to their problem.

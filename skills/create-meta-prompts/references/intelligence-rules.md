@@ -54,12 +54,12 @@ Use these phrases to activate deeper reasoning in complex prompts:
 ```
 
 ### Example Usage
-```xml
-<requirements>
+```markdown
+## Requirements
+
 Thoroughly analyze the authentication options and consider multiple
 approaches before selecting an implementation. Deeply consider the
 security implications of each choice.
-</requirements>
 ```
 
 ### When Not to Use
@@ -71,13 +71,13 @@ security implications of each choice.
 ## Parallel Tool Calling
 
 ### When to Include
-```xml
-<efficiency>
+```markdown
+## Efficiency Notes
+
 For maximum efficiency, invoke all independent tool operations
 simultaneously rather than sequentially. Multiple file reads,
 searches, and API calls that don't depend on each other should
 run in parallel.
-</efficiency>
 ```
 
 ### Applicable Scenarios
@@ -101,19 +101,19 @@ run in parallel.
 - Standard patterns without customization
 
 ### Loading Patterns
-```xml
-<context>
-<!-- Chained artifacts -->
+```markdown
+## Context
+
+**Chained artifacts**:
 Research: @.prompts/metaprompt/001-auth-research/auth-research.md
 Plan: @.prompts/metaprompt/002-auth-plan/auth-plan.md
 
-<!-- Existing code to modify -->
+**Existing code to modify**:
 Current implementation: @src/auth/middleware.ts
 Types to extend: @src/types/auth.ts
 
-<!-- Patterns to follow -->
+**Patterns to follow**:
 Similar feature: @src/features/payments/
-</context>
 ```
 
 ## Output Optimization
@@ -122,15 +122,15 @@ Similar feature: @src/features/payments/
 For research and plan outputs that may be large:
 
 **Instruct incremental writing:**
-```xml
-<process>
-1. Create output file with XML skeleton
+```markdown
+## Process
+
+1. Create output file with Markdown skeleton
 2. Write each section as completed:
    - Finding 1 discovered → Append immediately
    - Finding 2 discovered → Append immediately
    - Code example found → Append immediately
 3. Finalize summary and metadata after all sections complete
-</process>
 ```
 
 **Why this matters:**
@@ -151,32 +151,33 @@ For research and plan outputs that may be large:
 ### Claude-to-Claude
 For Claude-to-Claude consumption:
 
-**Use heavy XML structure:**
-```xml
-<findings>
-  <finding category="security">
-    <title>Token Storage</title>
-    <recommendation>httpOnly cookies</recommendation>
-    <rationale>Prevents XSS access</rationale>
-  </finding>
-</findings>
-```
+**Use structured Markdown with YAML frontmatter:**
+```markdown
+## Findings
 
-**Include metadata:**
-```xml
-<metadata>
-  <confidence level="high">Verified in official docs</confidence>
-  <dependencies>Cookie parser middleware</dependencies>
-  <open_questions>SameSite policy for subdomains</open_questions>
-</metadata>
+### Security: Token Storage
+
+**Recommendation**: httpOnly cookies
+
+**Rationale**: Prevents XSS access
+
+---
+
+## Metadata
+
+**Confidence**: High - Verified in official docs
+
+**Dependencies**: Cookie parser middleware
+
+**Open Questions**: SameSite policy for subdomains
 ```
 
 **Be explicit about next steps:**
-```xml
-<next_actions>
-  <action priority="high">Create planning prompt using these findings</action>
-  <action priority="medium">Validate rate limits in sandbox</action>
-</next_actions>
+```markdown
+## Next Actions
+
+- [High priority] Create planning prompt using these findings
+- [Medium priority] Validate rate limits in sandbox
 ```
 
 ### Human Consumption
@@ -215,19 +216,19 @@ Complex task prompts:
 Always explain why constraints matter:
 
 ### Bad Example
-```xml
-<requirements>
+```markdown
+## Requirements
+
 Never store tokens in localStorage.
-</requirements>
 ```
 
 ### Good Example
-```xml
-<requirements>
+```markdown
+## Requirements
+
 Never store tokens in localStorage - it's accessible to any
 JavaScript on the page, making it vulnerable to XSS attacks.
 Use httpOnly cookies instead.
-</requirements>
 ```
 
 This helps the executing Claude make good decisions when facing edge cases.
@@ -235,42 +236,42 @@ This helps the executing Claude make good decisions when facing edge cases.
 ## Verification Patterns
 
 ### For Code
-```xml
-<verification>
+```markdown
+## Verification
+
 1. Run test suite: `npm test`
 2. Type check: `npx tsc --noEmit`
 3. Lint: `npm run lint`
 4. Manual test: [specific flow to test]
-</verification>
 ```
 
 ### For Documents
-```xml
-<verification>
+```markdown
+## Verification
+
 1. Validate structure: [check required sections]
 2. Verify links: [check internal references]
 3. Review completeness: [check against requirements]
-</verification>
 ```
 
 ### For Research
-```xml
-<verification>
+```markdown
+## Verification
+
 1. Sources are current (2024-2025)
 2. All scope questions answered
 3. Metadata captures uncertainties
 4. Actionable recommendations included
-</verification>
 ```
 
 ### For Plans
-```xml
-<verification>
+```markdown
+## Verification
+
 1. Phases are sequential and logical
 2. Tasks are specific and actionable
 3. Dependencies are clear
 4. Metadata captures assumptions
-</verification>
 ```
 
 ## Chain Optimization

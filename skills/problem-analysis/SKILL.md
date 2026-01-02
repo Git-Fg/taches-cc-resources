@@ -25,39 +25,35 @@ The problem-analysis skill includes these frameworks:
 
 When to use each framework:
 
-- Use 5-whys when: Troubleshooting problems, investigating root causes, or preventing recurring issues.
+- Use **5-whys** when: Deep root cause analysis of software bugs, performance regressions, deployment failures, or understanding *why* a particular design choice leads to issues. Also useful for investigating recurring problems and preventing their return.
 
-- Use opportunity-cost when: Making choices with limited resources, comparing alternatives, or evaluating true cost of decisions.
+- Use **opportunity-cost** when: When making choices with limited resources (time, budget, engineering effort), comparing alternative technical solutions, or evaluating the true cost of choosing one framework over another.
 
-- Use occams-razor when: Evaluating competing explanations, debugging issues, or choosing between approaches.
+- Use **occams-razor** when: Evaluating competing solutions to a technical problem (e.g., two different algorithms for the same task), simplifying a complex codebase, or finding the most straightforward explanation for a bug. Useful for debugging and system simplification.
 
-- Use via-negativa when: Simplifying complexity, reducing bloat, streamlining processes, or improving systems by subtraction.
+- Use **via-negativa** when: Simplifying a complex API, refactoring by removing unnecessary code/features, optimizing performance by eliminating bottlenecks, or improving a system by reducing points of failure.
 
 Multiple frameworks can be combined:
-- 5-whys + occams-razor: Find root cause, then identify simplest solution
-- opportunity-cost + via-negativa: Evaluate trade-offs, then consider what to remove
-- occams-razor + via-negativa: Find simplest approach by removing complexity
-
-# Usage Patterns
-
-When invoked without specific framework:
-
-1. Analyze the context and determine which framework(s) apply
-2. Present your framework selection with reasoning
-3. Apply the framework(s) systematically
-4. Provide structured, actionable output
-
-When invoked with specific framework name:
-
-1. Apply only the requested framework
-2. Follow its process steps exactly
-3. Present output in the prescribed format
+- **5-whys + occams-razor**: Drilling down to the true root cause of a bug, then finding the simplest possible fix.
+- **opportunity-cost + via-negativa**: Evaluating trade-offs between solutions, then considering what complexity can be removed.
+- **occams-razor + via-negativa**: Finding the simplest approach by removing unnecessary complexity.
 
 # Integration Notes
 
-This skill is commonly used with:
-- strategic-thinking skill: Deep problem understanding combined with long-term perspective
-- prioritization skill: After analyzing problems, prioritize which ones to tackle first
+This framework is a core component of the `brainstormer` agent, enabling it to provide structured thinking for diverse problem types.
 
-Agent integration:
-- Problem Analyst agent (sonnet model) for efficient problem analysis and root cause investigation
+## Example Applications
+
+**Root cause analysis**: Production outage keeps happening? (Use 5-whys to drill into root cause, occams-razor to find simplest fix).
+
+**Technology selection**: Choosing between React vs Vue for new project? (Use opportunity-cost to evaluate what you give up with each choice).
+
+**Debugging**: Strange intermittent bug? (Use 5-whys to trace root cause, occams-razor to find simplest explanation that fits all symptoms).
+
+**API simplification**: API is too complex and hard to use? (Use via-negativa to identify what can be removed, occams-razor to find simplest design that works).
+
+**Performance optimization**: System is slow, where to focus? (Use pareto to find bottlenecks, via-negativa to identify what can be removed, occams-razor for simplest optimization).
+
+**Refactoring**: Codebase is bloated and hard to maintain? (Use via-negativa to identify what can be removed, opportunity-cost to weigh refactoring vs rewrite).
+
+**Architecture decision**: Monolith vs microservices? (Use 5-whys to understand actual problem being solved, occams-razor to find simplest solution, opportunity-cost to evaluate trade-offs).

@@ -11,7 +11,7 @@ A plan is Claude-executable when Claude can read the PLAN.md and immediately sta
 If Claude has to guess, interpret, or make assumptions - the task is too vague.
 
 ## Prompt Structure
-Every PLAN.md follows this XML structure:
+Every PLAN.md follows this Markdown structure with YAML frontmatter:
 
 ```markdown
 ---
@@ -114,14 +114,16 @@ Tasks have a `type` attribute that determines how they execute:
 **Default task type** - Claude executes autonomously.
 
 **Structure:**
-```xml
-<task type="auto">
-  <name>Task 3: Create login endpoint with JWT</name>
-  <files>src/app/api/auth/login/route.ts</files>
-  <action>POST endpoint accepting {email, password}. Query User by email, compare password with bcrypt. On match, create JWT with jose library, set as httpOnly cookie (15-min expiry). Return 200. On mismatch, return 401.</action>
-  <verify>curl -X POST localhost:3000/api/auth/login returns 200 with Set-Cookie header</verify>
-  <done>Valid credentials → 200 + cookie. Invalid → 401.</done>
-</task>
+```markdown
+### Task 3: Create login endpoint with JWT
+
+**Files**: `src/app/api/auth/login/route.ts`
+
+**Action**: POST endpoint accepting {email, password}. Query User by email, compare password with bcrypt. On match, create JWT with jose library, set as httpOnly cookie (15-min expiry). Return 200. On mismatch, return 401.
+
+**Verify**: `curl -X POST localhost:3000/api/auth/login` returns 200 with Set-Cookie header
+
+**Done**: Valid credentials → 200 + cookie. Invalid → 401.
 ```
 
 Use for: Everything Claude can do independently (code, tests, builds, file operations).
@@ -130,16 +132,18 @@ Use for: Everything Claude can do independently (code, tests, builds, file opera
 **RARELY USED** - Only for actions with NO CLI/API. Claude automates everything possible first.
 
 **Structure:**
-```xml
-<task type="checkpoint:human-action" gate="blocking">
-  <action>[Unavoidable manual step - email link, 2FA code]</action>
-  <instructions>
-    [What Claude already automated]
-    [The ONE thing requiring human action]
-  </instructions>
-  <verification>[What Claude can check afterward]</verification>
-  <resume-signal>[How to continue]</resume-signal>
-</task>
+```markdown
+### Checkpoint: Human Action (Blocking)
+
+**Action**: [Unavoidable manual step - email link, 2FA code]
+
+**Instructions**:
+- [What Claude already automated]
+- [The ONE thing requiring human action]
+
+**Verification**: [What Claude can check afterward]
+
+**Resume Signal**: [How to continue]
 ```
 
 Use ONLY for: Email verification links, SMS 2FA codes, manual approvals with no API, 3D Secure payment flows.
@@ -154,19 +158,20 @@ See: references/cli-automation.md for what Claude can automate.
 **Human must verify Claude's work** - Visual checks, UX testing.
 
 **Structure:**
-```xml
-<task type="checkpoint:human-verify" gate="blocking">
-  <what-built>Responsive dashboard layout</what-built>
-  <how-to-verify>
-    1. Run: npm run dev
-    2. Visit: http://localhost:3000/dashboard
-    3. Desktop (>1024px): Verify sidebar left, content right
-    4. Tablet (768px): Verify sidebar collapses to hamburger
-    5. Mobile (375px): Verify single column, bottom nav
-    6. Check: No layout shift, no horizontal scroll
-  </how-to-verify>
-  <resume-signal>Type "approved" or describe issues</resume-signal>
-</task>
+```markdown
+### Checkpoint: Human Verification (Blocking)
+
+**What Built**: Responsive dashboard layout
+
+**How to Verify**:
+1. Run: `npm run dev`
+2. Visit: `http://localhost:3000/dashboard`
+3. Desktop (>1024px): Verify sidebar left, content right
+4. Tablet (768px): Verify sidebar collapses to hamburger
+5. Mobile (375px): Verify single column, bottom nav
+6. Check: No layout shift, no horizontal scroll
+
+**Resume Signal**: Type "approved" or describe issues
 ```
 
 Use for: UI/UX verification, visual design checks, animation smoothness, accessibility testing.
@@ -177,29 +182,27 @@ Use for: UI/UX verification, visual design checks, animation smoothness, accessi
 **Human must make implementation choice** - Direction-setting decisions.
 
 **Structure:**
-```xml
-<task type="checkpoint:decision" gate="blocking">
-  <decision>Select authentication provider</decision>
-  <context>We need user authentication. Three approaches with different tradeoffs:</context>
-  <options>
-    <option id="supabase">
-      <name>Supabase Auth</name>
-      <pros>Built-in with Supabase, generous free tier</pros>
-      <cons>Less customizable UI, tied to ecosystem</cons>
-    </option>
-    <option id="clerk">
-      <name>Clerk</name>
-      <pros>Beautiful pre-built UI, best DX</pros>
-      <cons>Paid after 10k MAU</cons>
-    </option>
-    <option id="nextauth">
-      <name>NextAuth.js</name>
-      <pros>Free, self-hosted, maximum control</pros>
-      <cons>More setup, you manage security</cons>
-    </option>
-  </options>
-  <resume-signal>Select: supabase, clerk, or nextauth</resume-signal>
-</task>
+```markdown
+### Checkpoint: Decision (Blocking)
+
+**Decision**: Select authentication provider
+
+**Context**: We need user authentication. Three approaches with different tradeoffs:
+
+**Options**:
+- **Supabase Auth**
+  - Pros: Built-in with Supabase, generous free tier
+  - Cons: Less customizable UI, tied to ecosystem
+
+- **Clerk**
+  - Pros: Beautiful pre-built UI, best DX
+  - Cons: Paid after 10k MAU
+
+- **NextAuth.js**
+  - Pros: Free, self-hosted, maximum control
+  - Cons: More setup, you manage security
+
+**Resume Signal**: Select: supabase, clerk, or nextauth
 ```
 
 Use for: Technology selection, architecture decisions, design choices, feature prioritization.
@@ -280,27 +283,31 @@ After completion, create `.prompts/planning/phases/XX-name/SUMMARY.md`:
 ## Specificity Levels
 
 ### Too Vague
-```xml
-<task type="auto">
-  <name>Task 1: Add authentication</name>
-  <files>???</files>
-  <action>Implement auth</action>
-  <verify>???</verify>
-  <done>Users can authenticate</done>
-</task>
+```markdown
+### Task 1: Add authentication
+
+**Files**: ??? (unknown)
+
+**Action**: Implement auth (vague - how?)
+
+**Verify**: ??? (unclear how to verify)
+
+**Done**: Users can authenticate (subjective)
 ```
 
 Claude: "How? What type? What library? Where?"
 
 ### Just Right
-```xml
-<task type="auto">
-  <name>Task 1: Create login endpoint with JWT</name>
-  <files>src/app/api/auth/login/route.ts</files>
-  <action>POST endpoint accepting {email, password}. Query User by email, compare password with bcrypt. On match, create JWT with jose library, set as httpOnly cookie (15-min expiry). Return 200. On mismatch, return 401. Use jose instead of jsonwebtoken (CommonJS issues with Edge).</action>
-  <verify>curl -X POST localhost:3000/api/auth/login -H "Content-Type: application/json" -d '{"email":"test@test.com","password":"test123"}' returns 200 with Set-Cookie header containing JWT</verify>
-  <done>Valid credentials → 200 + cookie. Invalid → 401. Missing fields → 400.</done>
-</task>
+```markdown
+### Task 1: Create login endpoint with JWT
+
+**Files**: `src/app/api/auth/login/route.ts`
+
+**Action**: POST endpoint accepting {email, password}. Query User by email, compare password with bcrypt. On match, create JWT with jose library, set as httpOnly cookie (15-min expiry). Return 200. On mismatch, return 401. Use jose instead of jsonwebtoken (CommonJS issues with Edge).
+
+**Verify**: `curl -X POST localhost:3000/api/auth/login -H "Content-Type: application/json" -d '{"email":"test@test.com","password":"test123"}'` returns 200 with Set-Cookie header containing JWT
+
+**Done**: Valid credentials → 200 + cookie. Invalid → 401. Missing fields → 400.
 ```
 
 Claude can implement this immediately.
