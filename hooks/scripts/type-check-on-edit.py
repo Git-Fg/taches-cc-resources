@@ -167,7 +167,15 @@ def main():
         # Get type checker command
         cmd_info = get_type_checker_command(checker, project_root)
         if not cmd_info:
-            print(f"[type-check-on-edit] {checker} is configured but not available. Install it or add it to your project.", file=sys.stderr)
+            msg = f"[type-check-on-edit] {checker} is configured but not available. Install it or add it to your project."
+            print(msg, file=sys.stderr)
+            output = {
+                "hookSpecificOutput": {
+                    "hookEventName": "PostToolUse",
+                    "additionalContext": f"Type checker {checker} configured but not available"
+                }
+            }
+            print(json.dumps(output))
             sys.exit(0)
 
         cmd, checker_name = cmd_info
@@ -177,7 +185,7 @@ def main():
         try:
             result = subprocess.run(full_cmd, capture_output=True, timeout=30)
 
-            # Report results to AI via stderr
+            # Report results to stderr and provide JSON for AI context
             if result.returncode != 0:
                 print(f"[type-check-on-edit] {checker_name} found issues in {file_path}:", file=sys.stderr)
 
@@ -190,13 +198,55 @@ def main():
                         print(f"  {line}", file=sys.stderr)
                     if len(lines) > 10:
                         print(f"  ... ({len(lines)} total issues)", file=sys.stderr)
+
+                    # Provide JSON with issues summary for AI
+                    summary = f"Found {len(lines)} type checking issues. First few: " + "; ".join(lines[:3])
+                    json_output = {
+                        "hookSpecificOutput": {
+                            "hookEventName": "PostToolUse",
+                            "additionalContext": f"Type check failed: {checker_name} found {len(lines)} issues in {file_path}. {summary}"
+                        }
+                    }
+                    print(json.dumps(json_output))
+                else:
+                    json_output = {
+                        "hookSpecificOutput": {
+                            "hookEventName": "PostToolUse",
+                            "additionalContext": f"Type check failed: {checker_name} reported errors in {file_path}"
+                        }
+                    }
+                    print(json.dumps(json_output))
             else:
-                print(f"[type-check-on-edit] {checker_name} passed for {file_path}", file=sys.stderr)
+                msg = f"[type-check-on-edit] {checker_name} passed for {file_path}"
+                print(msg, file=sys.stderr)
+                json_output = {
+                    "hookSpecificOutput": {
+                        "hookEventName": "PostToolUse",
+                        "additionalContext": f"Type check passed: {checker_name} validated {file_path} successfully"
+                    }
+                }
+                print(json.dumps(json_output))
 
         except subprocess.TimeoutExpired:
-            print(f"[type-check-on-edit] {checker_name} timed out on {file_path}", file=sys.stderr)
+            msg = f"[type-check-on-edit] {checker_name} timed out on {file_path}"
+            print(msg, file=sys.stderr)
+            json_output = {
+                "hookSpecificOutput": {
+                    "hookEventName": "PostToolUse",
+                    "additionalContext": f"Type check timeout: {checker_name} timed out on {file_path}"
+                }
+            }
+            print(json.dumps(json_output))
         except FileNotFoundError as e:
-            print(f"[type-check-on-edit] {checker_name} not found: {e}", file=sys.stderr)
+            msg = f"[type-check-on-edit] {checker_name} not found: {e}"
+            print(msg, file=sys.stderr)
+            json_output = {
+                "hookSpecificOutput": {
+                    "hookEventName": "PostToolUse",
+                    "additionalContext": f"Type checker not found: {checker_name} - {e}"
+                }
+            }
+            print(json.dumps(json_output))
 
     except json.JSONDecodeError:
         # Invalid JSON input, skip silently

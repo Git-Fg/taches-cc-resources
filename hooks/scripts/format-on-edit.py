@@ -11,7 +11,7 @@ Formatter priority order:
 - Rust: rustfmt
 
 If a formatter is not available, the hook will skip silently.
-Results are reported to stderr for AI visibility.
+Results are reported to stderr for AI visibility and via JSON for AI context.
 """
 import json
 import logging
@@ -119,25 +119,67 @@ def main():
             sys.exit(0)
 
         formatter_info = get_formatter_command(file_path)
+        context_messages = []
+
         if formatter_info:
             cmd, formatter_name = formatter_info
             full_cmd = cmd + [file_path]
             try:
                 result = subprocess.run(full_cmd, capture_output=True, timeout=10)
                 # Report formatting action to AI via stderr (visible in Claude Code output)
-                print(f"[format-on-edit] Ran {formatter_name} on {file_path}", file=sys.stderr)
+                msg = f"[format-on-edit] Ran {formatter_name} on {file_path}"
+                print(msg, file=sys.stderr)
+                context_messages.append(msg)
+
                 if result.stdout:
                     # Show formatter output for transparency
                     output = result.stdout.decode('utf-8', errors='ignore').strip()
                     if output:
-                        print(f"[format-on-edit] {formatter_name} output:\n{output}", file=sys.stderr)
+                        output_msg = f"[format-on-edit] {formatter_name} output:\n{output}"
+                        print(output_msg, file=sys.stderr)
+                        context_messages.append(f"{formatter_name} output: {output[:200]}")
+
+                # Provide JSON output for AI context
+                context = "\n".join(context_messages)
+                output = {
+                    "hookSpecificOutput": {
+                        "hookEventName": "PostToolUse",
+                        "additionalContext": f"File formatted: {formatter_name} was run on {file_path}. {context}"
+                    }
+                }
+                print(json.dumps(output))
+
             except subprocess.TimeoutExpired:
-                print(f"[format-on-edit] {formatter_name} timed out on {file_path}", file=sys.stderr)
+                msg = f"[format-on-edit] {formatter_name} timed out on {file_path}"
+                print(msg, file=sys.stderr)
+                output = {
+                    "hookSpecificOutput": {
+                        "hookEventName": "PostToolUse",
+                        "additionalContext": f"Formatter timeout: {formatter_name} timed out on {file_path}"
+                    }
+                }
+                print(json.dumps(output))
             except FileNotFoundError as e:
-                print(f"[format-on-edit] {formatter_name} not found: {e}", file=sys.stderr)
+                msg = f"[format-on-edit] {formatter_name} not found: {e}"
+                print(msg, file=sys.stderr)
+                output = {
+                    "hookSpecificOutput": {
+                        "hookEventName": "PostToolUse",
+                        "additionalContext": f"Formatter not found: {formatter_name} - {e}"
+                    }
+                }
+                print(json.dumps(output))
         else:
             ext = os.path.splitext(file_path)[1].lower()
-            print(f"[format-on-edit] No formatter available for {ext} files", file=sys.stderr)
+            msg = f"[format-on-edit] No formatter available for {ext} files"
+            print(msg, file=sys.stderr)
+            output = {
+                "hookSpecificOutput": {
+                    "hookEventName": "PostToolUse",
+                    "additionalContext": f"No formatter configured for {ext} files"
+                }
+            }
+            print(json.dumps(output))
 
     except json.JSONDecodeError:
         # Invalid JSON input, skip silently

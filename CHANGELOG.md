@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-01-02
+
+### AI Context Awareness for Hooks
+
+This release adds AI context awareness to PostToolUse hooks, allowing Claude to understand what happened during formatting and type-checking operations.
+
+### Added
+
+**AI Context via JSON Output**
+
+- `format-on-edit.py` - Now outputs JSON with `additionalContext` informing Claude about:
+  - Which formatter was run (ruff, prettier, markdownlint, etc.)
+  - Whether formatting was successful
+  - Any formatter output/errors
+- `type-check-on-edit.py` - Now outputs JSON with `additionalContext` informing Claude about:
+  - Type check results (passed/failed)
+  - Number of issues found
+  - Summary of first few errors when issues exist
+  - Type checker timeouts or errors
+
+### Changed
+
+**Hook Output Behavior**
+
+- Hooks now output BOTH:
+  - stderr messages for user visibility (shown in verbose mode with ctrl+o)
+  - JSON with `hookSpecificOutput.additionalContext` for AI awareness
+- Claude agents now automatically know when:
+  - A file was formatted successfully
+  - Type checking found issues
+  - A formatter timed out or wasn't available
+
+### Benefits
+
+**Better AI Awareness:** Claude now knows the results of formatting and type-checking without manual checking
+
+**Automatic Feedback Loop:** When type-checking fails, Claude sees the error summary and can fix issues immediately
+
+**Transparent to Users:** stderr output still provides visibility in verbose mode
+
+### Technical Details
+
+Hooks use the `hookSpecificOutput.additionalContext` field from the [PostToolUse JSON output schema](https://code.claude.com/docs/hooks#posttooluse-decision-control). This context is added to Claude's conversation context, allowing the AI to respond to hook results autonomously.
+
 ## [1.1.0] - 2026-01-02
 
 ### Security & Code Quality Improvements
