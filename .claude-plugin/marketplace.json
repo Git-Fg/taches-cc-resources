@@ -1,0 +1,20 @@
+{
+  "name": "thecattoolkit",
+  "owner": {
+    "name": "Git-Fg",
+    "email": "git@gitfg"
+  },
+  "metadata": {
+    "description": "Curated Claude Code skills and commands for prompt engineering and productivity",
+    "version": "1.0.2"
+  },
+  "plugins": [
+    {
+      "name": "thecattoolkit",
+      "source": "./",
+      "description": "Skills and commands for prompt engineering, MCP servers, subagents, hooks, and productivity workflows",
+      "version": "1.0.2",
+      "strict": true
+    }
+  ]
+}
