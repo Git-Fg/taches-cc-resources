@@ -1,6 +1,6 @@
 # THE CAT TOOLKIT
 
-**Version:** 1.1.6 | **License:** MIT | **Author:** Git-Fg
+**Version:** 1.1.7 | **License:** MIT | **Author:** Git-Fg
 
 A comprehensive collection of AI agent resources (primarily for Claude Code,
 adaptable to other AI assistants) built for real workflows.
@@ -62,7 +62,7 @@ Dream big. Happy building.
 
 ## What's Inside
 
-**[Commands](#commands)** (18 total) - Slash commands that expand into structured workflows
+**[Commands](#commands)** (21 total) - Slash commands that expand into structured workflows
 
 - **Meta-Prompting**: Separate planning from execution with staged prompts
 - **Strategic Thinking**: Unified mental models framework with 12 thinking patterns
@@ -228,6 +228,7 @@ Invoke auditor subagents.
 ### Self-Improvement
 
 - [`/heal-skill`](./commands/heal-skill.md) - Fix skills based on execution issues
+- [`/uprules`](./commands/uprules.md) - Audit and update AI rule files to synchronize with code changes
 
 ### Strategic Thinking
 
@@ -678,7 +679,7 @@ Event-driven automation that triggers during Claude Code operations. All hooks u
 | subagent-auditor | Agent prompt quality audit | Read, Grep, Glob, SlashCommand | create-subagents |
 | test-architect | Testing strategy specialist | - | - |
 
-### All Commands (20)
+### All Commands (21)
 
 | Command | Purpose | Type |
 |---------|---------|------|
@@ -701,6 +702,7 @@ Event-driven automation that triggers during Claude Code operations. All hooks u
 | /thecattoolkit:review | Strict code review mode | Output Mode |
 | /thecattoolkit:run-prompt | Execute saved prompts | Meta-Prompting |
 | /thecattoolkit:run-plan | Execute generated plans | Planning |
+| /thecattoolkit:uprules | Audit and update AI rule files | Self-Improvement |
 | /thecattoolkit:whats-next | Create handoff documents | Context Handoff |
 
 ### All Hooks (4)
