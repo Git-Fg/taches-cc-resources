@@ -1,10 +1,10 @@
 # Using Templates in Skills
 
-<purpose>
+## Purpose
 Templates are reusable output structures that Claude copies and fills in. They ensure consistent, high-quality outputs without regenerating structure each time.
-</purpose>
 
-<when_to_use>
+
+## When to Use
 Use templates when:
 - Output should have consistent structure across invocations
 - The structure matters more than creative generation
@@ -17,9 +17,9 @@ Common template types:
 - **Documents** - Reports, proposals, summaries
 - **Configurations** - Config files, settings, environment setups
 - **Scaffolds** - File structures, boilerplate code
-</when_to_use>
 
-<template_structure>
+
+## Template Structure
 Templates live in `templates/` within the skill directory:
 
 ```
@@ -38,9 +38,9 @@ A template file contains:
 2. Placeholder indicators (use `{{placeholder}}` or `[PLACEHOLDER]`)
 3. Inline guidance for what goes where
 4. Example content where helpful
-</template_structure>
 
-<template_example>
+
+## Template Example
 ```markdown
 # {{PROJECT_NAME}} Implementation Plan
 
@@ -78,9 +78,9 @@ A template file contains:
 |------|------------|--------|------------|
 | {{Risk}} | {{H/M/L}} | {{H/M/L}} | {{Strategy}} |
 ```
-</template_example>
 
-<workflow_integration>
+
+## Workflow Integration
 Workflows reference templates like this:
 
 ```xml
@@ -95,9 +95,9 @@ Workflows reference templates like this:
 ```
 
 The workflow tells Claude WHEN to use the template. The template provides WHAT structure to produce.
-</workflow_integration>
 
-<best_practices>
+
+## Best Practices
 **Do:**
 - Keep templates focused on structure, not content
 - Use clear placeholder syntax consistently
@@ -109,4 +109,4 @@ The workflow tells Claude WHEN to use the template. The template provides WHAT s
 - Create templates for outputs that genuinely need creative generation
 - Over-constrain with too many required sections
 - Forget to update templates when requirements change
-</best_practices>
+

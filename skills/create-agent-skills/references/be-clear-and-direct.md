@@ -1,13 +1,13 @@
-<golden_rule>
+## Golden Rule
 Show your skill to someone with minimal context and ask them to follow the instructions. If they're confused, Claude will likely be too.
-</golden_rule>
 
-<overview>
+
+## Overview
 Clarity and directness are fundamental to effective skill authoring. Clear instructions reduce errors, improve execution quality, and minimize token waste.
-</overview>
 
-<guidelines>
-<contextual_information>
+
+## Guidelines
+### Contextual Information
 Give Claude contextual information that frames the task:
 
 - What the task results will be used for
@@ -17,16 +17,16 @@ Give Claude contextual information that frames the task:
 
 Context helps Claude make better decisions and produce more appropriate outputs.
 
-<example>
+#### Example
 ```xml
 <context>
 This analysis will be presented to investors who value transparency and actionable insights. Focus on financial metrics and clear recommendations.
 </context>
 ```
-</example>
-</contextual_information>
 
-<specificity>
+
+
+### Specificity
 Be specific about what you want Claude to do. If you want code only and nothing else, say so.
 
 **Vague**: "Help with the report"
@@ -36,9 +36,9 @@ Be specific about what you want Claude to do. If you want code only and nothing 
 **Specific**: "Extract customer names and email addresses from the CSV file, removing duplicates, and save to JSON format"
 
 Specificity eliminates ambiguity and reduces iteration cycles.
-</specificity>
 
-<sequential_steps>
+
+### Sequential Steps
 Provide instructions as sequential steps. Use numbered lists or bullet points.
 
 ```xml
@@ -52,11 +52,11 @@ Provide instructions as sequential steps. Use numbered lists or bullet points.
 ```
 
 Sequential steps create clear expectations and reduce the chance Claude skips important operations.
-</sequential_steps>
-</guidelines>
 
-<example_comparison>
-<unclear_example>
+
+
+## Example Comparison
+### Unclear Example
 ```xml
 <quick_start>
 Please remove all personally identifiable information from these customer feedback messages: {{FEEDBACK_DATA}}
@@ -69,9 +69,9 @@ Please remove all personally identifiable information from these customer feedba
 - What format should the output be?
 - What if no PII is found?
 - Should product names be redacted?
-</unclear_example>
 
-<clear_example>
+
+### Clear Example
 ```xml
 <objective>
 Anonymize customer feedback for quarterly review presentation.
@@ -90,12 +90,12 @@ Anonymize customer feedback for quarterly review presentation.
 Data to process: {{FEEDBACK_DATA}}
 </quick_start>
 
-<success_criteria>
+## Success Criteria
 - All customer names replaced with IDs
 - All emails and phones redacted
 - Product names preserved
 - Output format matches specification
-</success_criteria>
+
 ```
 
 **Why this is better**:
@@ -104,10 +104,10 @@ Data to process: {{FEEDBACK_DATA}}
 - Defines output format clearly
 - Specifies edge cases (product names, no PII found)
 - Defines success criteria
-</clear_example>
-</example_comparison>
 
-<key_differences>
+
+
+## Key Differences
 The clear version:
 - States the purpose (quarterly review)
 - Provides explicit step-by-step rules
@@ -116,22 +116,22 @@ The clear version:
 - Includes success criteria
 
 The unclear version leaves all these decisions to Claude, increasing the chance of misalignment with expectations.
-</key_differences>
 
-<show_dont_just_tell>
-<principle>
+
+## Show, Don't Just Tell
+### Principle
 When format matters, show an example rather than just describing it.
-</principle>
 
-<telling_example>
+
+#### Telling Example
 ```xml
 <commit_messages>
 Generate commit messages in conventional format with type, scope, and description.
 </commit_messages>
 ```
-</telling_example>
 
-<showing_example>
+
+#### Showing Example
 ```xml
 <commit_message_format>
 Generate commit messages following these examples:
@@ -145,7 +145,7 @@ feat(auth): implement JWT-based authentication
 Add login endpoint and token validation middleware
 ```
 </output>
-</example>
+
 
 <example number="2">
 <input>Fixed bug where dates displayed incorrectly in reports</input>
@@ -156,14 +156,14 @@ fix(reports): correct date formatting in timezone conversion
 Use UTC timestamps consistently across report generation
 ```
 </output>
-</example>
+
 
 Follow this style: type(scope): brief description, then detailed explanation.
 </commit_message_format>
 ```
-</showing_example>
 
-<why_showing_works>
+
+### Why Showing Works
 Examples communicate nuances that text descriptions can't:
 - Exact formatting (spacing, capitalization, punctuation)
 - Tone and style
@@ -171,15 +171,15 @@ Examples communicate nuances that text descriptions can't:
 - Pattern across multiple cases
 
 Claude learns patterns from examples more reliably than from descriptions.
-</why_showing_works>
-</show_dont_just_tell>
 
-<avoid_ambiguity>
-<principle>
+
+
+## Avoid Ambiguity
+### Principle
 Eliminate words and phrases that create ambiguity or leave decisions open.
-</principle>
 
-<ambiguous_phrases>
+
+### Ambiguous Phrases
 ❌ **"Try to..."** - Implies optional
 ✅ **"Always..."** or **"Never..."** - Clear requirement
 
@@ -191,9 +191,9 @@ Eliminate words and phrases that create ambiguity or leave decisions open.
 
 ❌ **"Consider..."** - Should Claude always do this or only sometimes?
 ✅ **"If X, then Y"** or **"Always..."** - Clear conditions
-</ambiguous_phrases>
 
-<example>
+
+#### Example
 ❌ **Ambiguous**:
 ```xml
 <validation>
@@ -213,15 +213,15 @@ python scripts/validate.py output_dir/
 If validation fails, fix errors and re-validate. Only proceed when validation passes with zero errors.
 </validation>
 ```
-</example>
-</avoid_ambiguity>
 
-<define_edge_cases>
-<principle>
+
+
+## Define Edge Cases
+### Principle
 Anticipate edge cases and define how to handle them. Don't leave Claude guessing.
-</principle>
 
-<without_edge_cases>
+
+### Without Edge Cases
 ```xml
 <quick_start>
 Extract email addresses from the text file and save to a JSON array.
@@ -233,9 +233,9 @@ Extract email addresses from the text file and save to a JSON array.
 - What if the same email appears multiple times?
 - What if emails are malformed?
 - What JSON format exactly?
-</without_edge_cases>
 
-<with_edge_cases>
+
+### With Edge Cases
 ```xml
 <quick_start>
 Extract email addresses from the text file and save to a JSON array.
@@ -257,23 +257,23 @@ Extract email addresses from the text file and save to a JSON array.
 </example_output>
 </quick_start>
 ```
-</with_edge_cases>
-</define_edge_cases>
 
-<output_format_specification>
-<principle>
+
+
+## Output Format Specification
+### Principle
 When output format matters, specify it precisely. Show examples.
-</principle>
 
-<vague_format>
+
+### Vague Format
 ```xml
 <output>
 Generate a report with the analysis results.
 </output>
 ```
-</vague_format>
 
-<specific_format>
+
+### Specific Format
 ```xml
 <output_format>
 Generate a markdown report with this exact structure:
@@ -305,15 +305,15 @@ Generate a markdown report with this exact structure:
 - Include appendix with source data
 </output_format>
 ```
-</specific_format>
-</output_format_specification>
 
-<decision_criteria>
-<principle>
+
+
+## Decision Criteria
+### Principle
 When Claude must make decisions, provide clear criteria.
-</principle>
 
-<no_criteria>
+
+### No Criteria
 ```xml
 <workflow>
 Analyze the data and decide which visualization to use.
@@ -321,14 +321,14 @@ Analyze the data and decide which visualization to use.
 ```
 
 **Problem**: What factors should guide this decision?
-</no_criteria>
 
-<with_criteria>
+
+### With Criteria
 ```xml
 <workflow>
 Analyze the data and select appropriate visualization:
 
-<decision_criteria>
+## Decision Criteria
 **Use bar chart when**:
 - Comparing quantities across categories
 - Fewer than 10 categories
@@ -343,20 +343,20 @@ Analyze the data and select appropriate visualization:
 - Showing relationship between two variables
 - Looking for correlations
 - Individual data points matter
-</decision_criteria>
+
 </workflow>
 ```
 
 **Benefits**: Claude has objective criteria for making the decision rather than guessing.
-</with_criteria>
-</decision_criteria>
 
-<constraints_and_requirements>
-<principle>
+
+
+## Constraints and Requirements
+### Principle
 Clearly separate "must do" from "nice to have" from "must not do".
-</principle>
 
-<unclear_requirements>
+
+### Unclear Requirements
 ```xml
 <requirements>
 The report should include financial data, customer metrics, and market analysis. It would be good to have visualizations. Don't make it too long.
@@ -367,9 +367,9 @@ The report should include financial data, customer metrics, and market analysis.
 - Are all three content types required?
 - Are visualizations optional or required?
 - How long is "too long"?
-</unclear_requirements>
 
-<clear_requirements>
+
+### Clear Requirements
 ```xml
 <requirements>
 <must_have>
@@ -394,15 +394,15 @@ The report should include financial data, customer metrics, and market analysis.
 ```
 
 **Benefits**: Clear priorities and constraints prevent misalignment.
-</clear_requirements>
-</constraints_and_requirements>
 
-<success_criteria>
-<principle>
+
+
+## Success Criteria
+### Principle
 Define what success looks like. How will Claude know it succeeded?
-</principle>
 
-<without_success_criteria>
+
+### Without Success Criteria
 ```xml
 <objective>
 Process the CSV file and generate a report.
@@ -410,34 +410,34 @@ Process the CSV file and generate a report.
 ```
 
 **Problem**: When is this task complete? What defines success?
-</without_success_criteria>
 
-<with_success_criteria>
+
+### With Success Criteria
 ```xml
 <objective>
 Process the CSV file and generate a summary report.
 </objective>
 
-<success_criteria>
+## Success Criteria
 - All rows in CSV successfully parsed
 - No data validation errors
 - Report generated with all required sections
 - Report saved to output/report.md
 - Output file is valid markdown
 - Process completes without errors
-</success_criteria>
+
 ```
 
 **Benefits**: Clear completion criteria eliminate ambiguity about when the task is done.
-</with_success_criteria>
-</success_criteria>
 
-<testing_clarity>
-<principle>
+
+
+## Testing Clarity
+### Principle
 Test your instructions by asking: "Could I hand these instructions to a junior developer and expect correct results?"
-</principle>
 
-<testing_process>
+
+### Testing Process
 1. Read your skill instructions
 2. Remove context only you have (project knowledge, unstated assumptions)
 3. Identify ambiguous terms or vague requirements
@@ -446,11 +446,11 @@ Test your instructions by asking: "Could I hand these instructions to a junior d
 6. Iterate based on their questions and confusion
 
 If a human with minimal context struggles, Claude will too.
-</testing_process>
-</testing_clarity>
 
-<practical_examples>
-<example domain="data_processing">
+
+
+## Practical Examples
+### Data Processing Example
 ❌ **Unclear**:
 ```xml
 <quick_start>
@@ -469,18 +469,18 @@ Clean the data and remove bad entries.
 5. Save cleaned data to output/cleaned_data.csv
 </data_cleaning>
 
-<success_criteria>
+## Success Criteria
 - No empty required fields
 - All dates in YYYY-MM-DD format
 - No duplicate emails
 - All emails valid format
 - Output file created successfully
-</success_criteria>
+
 </quick_start>
 ```
-</example>
 
-<example domain="code_generation">
+
+### Code Generation Example
 ❌ **Unclear**:
 ```xml
 <quick_start>
@@ -518,14 +518,14 @@ def process_user_input(raw_input: str) -> dict:
 - Include docstring and type hints
 </function_specification>
 
-<success_criteria>
+## Success Criteria
 - Function signature matches specification
 - All validation checks implemented
 - Proper error handling for invalid input
 - Type hints included
 - Docstring included
-</success_criteria>
+
 </quick_start>
 ```
-</example>
-</practical_examples>
+
+
