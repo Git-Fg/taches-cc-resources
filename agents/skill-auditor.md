@@ -338,7 +338,7 @@ Minor issues easily resolved:
 - Estimated effort to address issues: [low/medium/high]
 ```
 
-Note: This subagent definition file uses Markdown structure for readability. The SKILL.md files it audits should use pure XML structure as documented in the evaluation criteria.
+**Note on Structure:** This agent definition file uses Markdown headings (##, ###) for improved readability and ease of maintenance. However, the SKILL.md files that this agent audits should use pure XML structure (e.g., `<objective>`, `<quick_start>`) as documented in the evaluation criteria above. Agent definitions and skill implementations use different structural conventions.
 
 
 ## Success Criteria
