@@ -4,26 +4,26 @@ argument-hint: [task description]
 allowed-tools: [Read, Write, Glob, SlashCommand, AskUserQuestion]
 ---
 
-<context>
+## Context
+
 Before generating prompts, use the Glob tool to check `./prompts/*.md` to:
 1. Determine if the prompts directory exists
 2. Find the highest numbered prompt to determine next sequence number
-</context>
 
-<objective>
+## Objective
+
 Act as an expert prompt engineer for Claude Code, specialized in crafting optimal prompts using XML tag structuring and best practices.
 
 Create highly effective prompts for: $ARGUMENTS
 
 Your goal is to create prompts that get things done accurately and efficiently.
-</objective>
 
-<process>
+## Process
 
-<step_0_intake_gate>
-<title>Adaptive Requirements Gathering</title>
+### Step 0: Intake Gate - Adaptive Requirements Gathering
 
-<critical_first_action>
+#### Critical First Action
+
 **BEFORE analyzing anything**, check if $ARGUMENTS contains a task description.
 
 IF $ARGUMENTS is empty or vague (user just ran `/create-prompt` without details):
@@ -40,9 +40,9 @@ After selection, ask: "Describe what you want to accomplish" (they select "Other
 
 IF $ARGUMENTS contains a task description:
 → Skip this handler. Proceed directly to adaptive_analysis.
-</critical_first_action>
 
-<adaptive_analysis>
+#### Adaptive Analysis
+
 Analyze the user's description to extract and infer:
 
 - **Task type**: Coding, analysis, or research (from context or explicit mention)
@@ -56,12 +56,12 @@ Inference rules:
 - Bug fix with clear location → single prompt, simple
 - "Optimize" or "refactor" → needs specificity about what/where
 - Authentication, payments, complex features → complex, needs context
-</adaptive_analysis>
 
-<contextual_questioning>
+#### Contextual Questioning
+
 Generate 2-4 questions using AskUserQuestion based ONLY on genuine gaps.
 
-<question_templates>
+##### Question Templates
 
 **For ambiguous scope** (e.g., "build a dashboard"):
 - header: "Dashboard type"
@@ -103,18 +103,16 @@ Generate 2-4 questions using AskUserQuestion based ONLY on genuine gaps.
   - "Prototype/POC" - Quick validation, can be rough
   - "Internal tooling" - Team use, moderate polish
 
-</question_templates>
+##### Question Rules
 
-<question_rules>
 - Only ask about genuine gaps - don't ask what's already stated
 - Each option needs a description explaining implications
 - Prefer options over free-text when choices are knowable
 - User can always select "Other" for custom input
 - 2-4 questions max per round
-</question_rules>
-</contextual_questioning>
 
-<decision_gate>
+#### Decision Gate
+
 After receiving answers, present decision gate using AskUserQuestion:
 
 - header: "Ready"
@@ -127,21 +125,19 @@ After receiving answers, present decision gate using AskUserQuestion:
 If "Ask more questions" → generate 2-4 NEW questions based on remaining gaps, then present gate again
 If "Let me add context" → receive additional context via "Other" option, then re-evaluate
 If "Proceed" → continue to generation step
-</decision_gate>
 
-<finalization>
+#### Finalization
+
 After "Proceed" selected, state confirmation:
 
 "Creating a [simple/moderate/complex] [single/parallel/sequential] prompt for: [brief summary]"
 
 Then proceed to generation.
-</finalization>
-</step_0_intake_gate>
 
-<step_1_generate_and_save>
-<title>Generate and Save Prompts</title>
+### Step 1: Generate and Save Prompts
 
-<pre_generation_analysis>
+#### Pre-Generation Analysis
+
 Before generating, determine:
 
 1. **Single vs Multiple Prompts**:
@@ -162,7 +158,6 @@ Before generating, determine:
    - "Go beyond basics" for ambitious work?
    - WHY explanations for constraints?
    - Examples for ambiguous requirements?
-</pre_generation_analysis>
 
 Create the prompt(s) and save to the prompts folder.
 
@@ -178,7 +173,7 @@ Create the prompt(s) and save to the prompts folder.
 - Save sequentially: `./prompts/[N]-[name].md`, `./prompts/[N+1]-[name].md`, etc.
 - Each prompt should be self-contained and executable independently
 
-**Prompt Construction Rules**
+#### Prompt Construction Rules
 
 Always Include:
 
@@ -219,7 +214,7 @@ Output Format:
    - Example: `./prompts/001-implement-user-authentication.md`
 3. File should contain ONLY the prompt, no explanations or metadata
 
-<prompt_patterns>
+#### Prompt Patterns
 
 For Coding Tasks:
 
@@ -323,10 +318,7 @@ Before completing, verify:
 - [Sources are credible and relevant]
 </verification>
 ```
-</prompt_patterns>
-</step_1_generate_and_save>
 
-<intelligence_rules>
 
 1. **Clarity First (Golden Rule)**: If anything is unclear, ask before proceeding. A few clarifying questions save time. Test: Would a colleague with minimal context understand this prompt?
 
@@ -354,19 +346,21 @@ Before completing, verify:
 8. **Output Clarity**: Every prompt must specify exactly where to save outputs using relative paths
 
 9. **Verification Always**: Every prompt should include clear success criteria and verification steps
-</intelligence_rules>
 
-<decision_tree>
+## Decision Tree
+
 After saving the prompt(s), present this decision tree to the user:
 
 ---
 
 **Prompt(s) created successfully!**
 
-<single_prompt_scenario>
+### Single Prompt Scenario
+
 If you created ONE prompt (e.g., `./prompts/005-implement-feature.md`):
 
-<presentation>
+#### Presentation
+
 ✓ Saved prompt to ./prompts/005-implement-feature.md
 
 What's next?
@@ -377,17 +371,17 @@ What's next?
 4. Other
 
 Choose (1-4): \_
-</presentation>
 
-<action>
+#### Action
+
 If user chooses #1, invoke via SlashCommand tool: `/run-prompt 005`
-</action>
-</single_prompt_scenario>
 
-<parallel_scenario>
+### Parallel Scenario
+
 If you created MULTIPLE prompts that CAN run in parallel (e.g., independent modules, no shared files):
 
-<presentation>
+#### Presentation
+
 ✓ Saved prompts:
   - ./prompts/005-implement-auth.md
   - ./prompts/006-implement-api.md
@@ -403,18 +397,18 @@ What's next?
 4. Other
 
 Choose (1-4): \_
-</presentation>
 
-<actions>
+#### Actions
+
 If user chooses #1, invoke via SlashCommand tool: `/run-prompt 005 006 007 --parallel`
 If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005 006 007 --sequential`
-</actions>
-</parallel_scenario>
 
-<sequential_scenario>
+### Sequential Scenario
+
 If you created MULTIPLE prompts that MUST run sequentially (e.g., dependencies, shared files):
 
-<presentation>
+#### Presentation
+
 ✓ Saved prompts:
   - ./prompts/005-setup-database.md
   - ./prompts/006-create-migrations.md
@@ -430,20 +424,16 @@ What's next?
 4. Other
 
 Choose (1-4): \_
-</presentation>
 
-<actions>
+#### Actions
+
 If user chooses #1, invoke via SlashCommand tool: `/run-prompt 005 006 007 --sequential`
 If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
-</actions>
-</sequential_scenario>
 
 ---
 
-</decision_tree>
-</process>
+## Success Criteria
 
-<success_criteria>
 - Intake gate completed (AskUserQuestion used for clarification if needed)
 - User selected "Proceed" from decision gate
 - Appropriate depth, structure, and execution strategy determined
@@ -451,9 +441,8 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 - Files saved to ./prompts/[number]-[name].md with correct sequential numbering
 - Decision tree presented to user based on single/parallel/sequential scenario
 - User choice executed (SlashCommand invoked if user selects run option)
-</success_criteria>
 
-<meta_instructions>
+## Meta Instructions
 
 - **Intake first**: Complete step_0_intake_gate before generating. Use AskUserQuestion for structured clarification.
 - **Decision gate loop**: Keep asking questions until user selects "Proceed"
@@ -465,4 +454,3 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 - Each prompt file should contain ONLY the prompt content, no preamble or explanation
 - After saving, present the decision tree as inline text (not AskUserQuestion)
 - Use the SlashCommand tool to invoke /run-prompt when user makes their choice
-</meta_instructions>
