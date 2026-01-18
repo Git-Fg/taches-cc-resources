@@ -5,7 +5,7 @@ description: Expert guidance for creating Claude Code slash commands. Use when w
 
 
 ## Objective
-Create effective slash commands for Claude Code that enable users to trigger reusable prompts with `/command-name` syntax. Slash commands expand as prompts in the current conversation, allowing teams to standardize workflows and operations. This skill teaches you to structure commands with XML tags, YAML frontmatter, dynamic context loading, and intelligent argument handling.
+Create effective slash commands for Claude Code that enable users to trigger reusable prompts with `/command-name` syntax. Slash commands expand as prompts in the current conversation, allowing teams to standardize workflows and operations. This skill teaches you to structure commands with Markdown headings, YAML frontmatter, dynamic context loading, and intelligent argument handling.
 
 
 ## Quick Start
@@ -35,13 +35,13 @@ Analyze the performance of this code and suggest three specific optimizations:
 Claude receives the expanded prompt and analyzes the code in context.
 
 
-## XML Structure
-All generated slash commands should use XML tags in the body (after YAML frontmatter) for clarity and consistency.
+## Markdown Structure
+All generated slash commands should use Markdown headings in the body (after YAML frontmatter) for clarity and consistency.
 
 
-### Required Tags
+### Required Sections
 
-**`<objective>`** - What the command does and why it matters
+**`## Objective`** - What the command does and why it matters
 ```markdown
 
 ## Objective
@@ -49,16 +49,16 @@ What needs to happen and why this matters.
 Context about who uses this and what it accomplishes.
 ```
 
-**`<process>` or `<steps>`** - How to execute the command
+**`## Process` or `## Steps`** - How to execute the command
 ```markdown
-<process>
+## Process
 Sequential steps to accomplish the objective:
 1. First step
 2. Second step
 3. Final step
 ```
 
-**`<success_criteria>`** - How to know the command succeeded
+**`## Success Criteria`** - How to know the command succeeded
 ```markdown
 
 ## Success Criteria
@@ -66,9 +66,9 @@ Clear, measurable criteria for successful completion.
 ```
 
 
-### Conditional Tags
+### Conditional Sections
 
-**`<context>`** - When loading dynamic state or files
+**`## Context`** - When loading dynamic state or files
 ```markdown
 
 ## Context
@@ -77,24 +77,24 @@ Relevant files: @ package.json
 ```
 (Note: Remove the space after @ in actual usage)
 
-**`<verification>`** - When producing artifacts that need checking
+**`## Verification`** - When producing artifacts that need checking
 ```markdown
-<verification>
+## Verification
 Before completing, verify:
 - Specific test or check to perform
 - How to confirm it works
 ```
 
-**`<testing>`** - When running tests is part of the workflow
+**`## Testing`** - When running tests is part of the workflow
 ```markdown
-<testing>
+## Testing
 Run tests: ! `npm test`
 Check linting: ! `npm run lint`
 ```
 
-**`<output>`** - When creating/modifying specific files
+**`## Output`** - When creating/modifying specific files
 ```markdown
-<output>
+## Output
 Files created/modified:
 - `./path/to/file.ext` - Description
 ```
@@ -120,7 +120,7 @@ This helps [who] achieve [outcome].
 Current state: ! `relevant command`
 Files: @ relevant/files
 
-<process>
+## Process
 1. Parse $ARGUMENTS
 2. Execute operation
 3. Verify results
@@ -135,26 +135,26 @@ Files: @ relevant/files
 ### Intelligence Rules
 
 **Simple commands** (single operation, no artifacts):
-- Required: `<objective>`, `<process>`, `<success_criteria>`
+- Required: `## Objective`, `## Process`, `## Success Criteria`
 - Example: `/check-todos`, `/first-principles`
 
 **Complex commands** (multi-step, produces artifacts):
-- Required: `<objective>`, `<process>`, `<success_criteria>`
-- Add: `<context>` (if loading state), `<verification>` (if creating files), `<output>` (what gets created)
+- Required: `## Objective`, `## Process`, `## Success Criteria`
+- Add: `## Context` (if loading state), `## Verification` (if creating files), `## Output` (what gets created)
 - Example: `/commit`, `/create-prompt`, `/run-prompt`
 
 **Commands with dynamic arguments**:
-- Use `$ARGUMENTS` in `<objective>` or `<process>` tags
+- Use `$ARGUMENTS` in `## Objective` or `## Process` sections
 - Include `argument-hint` in frontmatter
 - Make it clear what the arguments are for
 
 **Commands that produce files**:
-- Always include `<output>` tag specifying what gets created
-- Always include `<verification>` tag with checks to perform
+- Always include `## Output` section specifying what gets created
+- Always include `## Verification` section with checks to perform
 
 **Commands that run tests/builds**:
-- Include `<testing>` tag with specific commands
-- Include pass/fail criteria in `<success_criteria>`
+- Include `## Testing` section with specific commands
+- Include pass/fail criteria in `## Success Criteria`
 
 
 ## Arguments Intelligence
@@ -188,7 +188,7 @@ Omit `argument-hint` and don't reference `$ARGUMENTS`.
 
 ### Incorporating Arguments
 
-**In `<objective>` tag:**
+**In `## Objective` section:**
 ```markdown
 
 ## Objective
@@ -197,16 +197,16 @@ Fix issue #$ARGUMENTS following project conventions.
 This ensures bugs are resolved systematically with proper testing.
 ```
 
-**In `<process>` tag:**
+**In `## Process` section:**
 ```markdown
-<process>
+## Process
 1. Understand issue #$ARGUMENTS from issue tracker
 2. Locate relevant code
 3. Implement fix
 4. Add tests
 ```
 
-**In `<context>` tag:**
+**In `## Context` section:**
 ```markdown
 
 ## Context
@@ -357,16 +357,16 @@ Claude can access the referenced file's contents.
 
 ## Best Practices
 
-**1. Always use XML structure**
+**1. Always use Markdown structure**
 ```yaml
-# All slash commands should have XML-structured bodies
+# All slash commands should have Markdown-structured bodies
 ```
 
-After frontmatter, use XML tags:
-- `<objective>` - What and why (always)
-- `<process>` - How to do it (always)
-- `<success_criteria>` - Definition of done (always)
-- Additional tags as needed (see xml_structure section)
+After frontmatter, use Markdown headings:
+- `## Objective` - What and why (always)
+- `## Process` - How to do it (always)
+- `## Success Criteria` - Definition of done (always)
+- Additional sections as needed (see Markdown Structure section)
 
 **2. Clear descriptions**
 ```yaml
@@ -417,7 +417,7 @@ description: Review this code for security vulnerabilities
 ## Objective
 Review code for security vulnerabilities and suggest fixes.
 
-<process>
+## Process
 1. Scan code for common vulnerabilities (XSS, SQL injection, etc.)
 2. Identify specific issues with line numbers
 3. Suggest remediation for each issue
@@ -446,7 +446,7 @@ Create a git commit for current changes following repository conventions.
 - Changes: ! `git diff HEAD`
 - Recent commits: ! `git log --oneline -5`
 
-<process>
+## Process
 1. Review staged and unstaged changes
 2. Stage relevant files
 3. Write commit message following recent commit style
@@ -472,7 +472,7 @@ Fix issue #$ARGUMENTS following project coding standards.
 
 This ensures bugs are resolved systematically with proper testing.
 
-<process>
+## Process
 1. Understand the issue described in ticket #$ARGUMENTS
 2. Locate the relevant code in codebase
 3. Implement a solution that addresses root cause
@@ -500,7 +500,7 @@ Analyze performance of @ $ARGUMENTS and suggest specific optimizations.
 
 This helps improve application performance through targeted improvements.
 
-<process>
+## Process
 1. Review code in @ $ARGUMENTS for performance issues
 2. Identify bottlenecks and inefficiencies
 3. Suggest three specific optimizations with rationale
@@ -560,18 +560,18 @@ See [references/patterns.md](references/patterns.md) for more examples.
    ---
    ```
 
-3. **Create XML-structured body**:
+3. **Create Markdown-structured body**:
 
    **Always include:**
-   - `<objective>` - What and why
-   - `<process>` - How to do it (numbered steps)
-   - `<success_criteria>` - Definition of done
+   - `## Objective` - What and why
+   - `## Process` - How to do it (numbered steps)
+   - `## Success Criteria` - Definition of done
 
    **Include when relevant:**
-   - `<context>` - Dynamic state (! `commands`) or file references (@ files)
-   - `<verification>` - Checks to perform if creating artifacts
-   - `<testing>` - Test commands if tests are part of workflow
-   - `<output>` - Files created/modified
+   - `## Context` - Dynamic state (! `commands`) or file references (@ files)
+   - `## Verification` - Checks to perform if creating artifacts
+   - `## Testing` - Test commands if tests are part of workflow
+   - `## Output` - Files created/modified
 
 4. **Integrate $ARGUMENTS properly**:
    - If user input needed: Add `argument-hint` and use `$ARGUMENTS` in tags
@@ -596,11 +596,11 @@ A well-structured slash command meets these criteria:
 - `argument-hint` present if command accepts arguments
 - `allowed-tools` specified if tool restrictions needed
 
-**XML Structure**:
-- All three required tags present: `<objective>`, `<process>`, `<success_criteria>`
-- Conditional tags used appropriately based on complexity
-- No raw markdown headings in body
-- All XML tags properly closed
+**Markdown Structure**:
+- All three required sections present: `## Objective`, `## Process`, `## Success Criteria`
+- Conditional sections used appropriately based on complexity
+- Markdown headings used consistently
+- Proper heading hierarchy maintained
 
 **Arguments Handling**:
 - `$ARGUMENTS` used when command operates on user-specified data
@@ -614,7 +614,7 @@ A well-structured slash command meets these criteria:
 - Command accomplishes intended purpose reliably
 
 **Quality**:
-- Clear, actionable instructions in `<process>` tag
-- Measurable completion criteria in `<success_criteria>`
+- Clear, actionable instructions in `## Process` section
+- Measurable completion criteria in `## Success Criteria`
 - Appropriate level of detail (not over-engineered for simple tasks)
 - Examples provided when beneficial

@@ -142,7 +142,7 @@ After successful execution, prompts are automatically moved to `.prompts/complet
 The system transforms vague ideas into rigorous specifications by:
 
 1. **Asking the right questions** - Clarifies ambiguity before generating anything
-2. **Adding structure automatically** - XML tags, success criteria, verification steps
+2. **Adding structure automatically** - Markdown headings, success criteria, verification steps
 3. **Explaining constraints** - Not just "what" but "WHY" things should be done certain ways
 4. **Thinking about failure modes** - "What to avoid and why" prevents common mistakes
 5. **Defining done** - Clear, measurable success criteria so you know when it's complete

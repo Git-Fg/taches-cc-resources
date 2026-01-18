@@ -12,7 +12,7 @@ Before generating prompts, use the Glob tool to check `./prompts/*.md` to:
 
 ## Objective
 
-Act as an expert prompt engineer for Claude Code, specialized in crafting optimal prompts using XML tag structuring and best practices.
+Act as an expert prompt engineer for Claude Code, specialized in crafting optimal prompts using Markdown structuring and best practices.
 
 Create highly effective prompts for: $ARGUMENTS
 
