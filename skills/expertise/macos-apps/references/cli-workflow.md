@@ -2,7 +2,7 @@
 
 Build, run, debug, and monitor macOS apps entirely from command line without opening Xcode.
 
-<prerequisites>
+### Prerequisites
 ```bash
 # Ensure Xcode is installed and selected
 xcode-select -p
@@ -17,9 +17,8 @@ brew install xcodegen
 # Optional: prettier build output
 brew install xcbeautify
 ```
-</prerequisites>
 
-<create_project>
+### Create Project
 **Create a new project entirely from CLI**:
 
 ```bash
@@ -69,17 +68,15 @@ xcodebuild -project MyApp.xcodeproj -scheme MyApp build
 ```
 
 See [project-scaffolding.md](project-scaffolding.md) for complete project.yml templates.
-</create_project>
 
-<build>
-<list_schemes>
+### Build
+#### List Schemes
 ```bash
 # See available schemes and targets
 xcodebuild -list -project MyApp.xcodeproj
 ```
-</list_schemes>
 
-<build_debug>
+#### Build Debug
 ```bash
 # Build debug configuration
 xcodebuild -project MyApp.xcodeproj \
@@ -91,9 +88,8 @@ xcodebuild -project MyApp.xcodeproj \
 # Output location
 ls ./build/Build/Products/Debug/MyApp.app
 ```
-</build_debug>
 
-<build_release>
+#### Build Release
 ```bash
 # Build release configuration
 xcodebuild -project MyApp.xcodeproj \
@@ -102,9 +98,8 @@ xcodebuild -project MyApp.xcodeproj \
     -derivedDataPath ./build \
     build
 ```
-</build_release>
 
-<build_with_signing>
+### Build With Signing
 ```bash
 # Build with code signing for distribution
 xcodebuild -project MyApp.xcodeproj \
@@ -115,9 +110,8 @@ xcodebuild -project MyApp.xcodeproj \
     DEVELOPMENT_TEAM=YOURTEAMID \
     build
 ```
-</build_with_signing>
 
-<clean>
+### Clean
 ```bash
 # Clean build artifacts
 xcodebuild -project MyApp.xcodeproj \
@@ -127,9 +121,8 @@ xcodebuild -project MyApp.xcodeproj \
 # Remove derived data
 rm -rf ./build
 ```
-</clean>
 
-<build_errors>
+### Build Errors
 Build output goes to stdout. Filter for errors:
 
 ```bash
@@ -141,11 +134,9 @@ For prettier output, use xcpretty (install with `gem install xcpretty`):
 ```bash
 xcodebuild -project MyApp.xcodeproj -scheme MyApp build | xcpretty
 ```
-</build_errors>
-</build>
 
-<run>
-<launch_app>
+### Run
+### Launch App
 ```bash
 # Run the built app
 open ./build/Build/Products/Debug/MyApp.app
@@ -153,9 +144,8 @@ open ./build/Build/Products/Debug/MyApp.app
 # Or run directly (shows stdout in terminal)
 ./build/Build/Products/Debug/MyApp.app/Contents/MacOS/MyApp
 ```
-</launch_app>
 
-<run_with_arguments>
+### Run With Arguments
 ```bash
 # Pass command line arguments
 ./build/Build/Products/Debug/MyApp.app/Contents/MacOS/MyApp --debug-mode
@@ -163,9 +153,8 @@ open ./build/Build/Products/Debug/MyApp.app
 # Pass environment variables
 MYAPP_DEBUG=1 ./build/Build/Products/Debug/MyApp.app/Contents/MacOS/MyApp
 ```
-</run_with_arguments>
 
-<background>
+### Background
 ```bash
 # Run in background (don't bring to front)
 open -g ./build/Build/Products/Debug/MyApp.app
@@ -173,11 +162,9 @@ open -g ./build/Build/Products/Debug/MyApp.app
 # Run hidden (no dock icon)
 open -j ./build/Build/Products/Debug/MyApp.app
 ```
-</background>
-</run>
 
-<logging>
-<os_log_in_code>
+### Logging
+### Os Log In Code
 Add logging to your Swift code:
 
 ```swift
@@ -212,9 +199,8 @@ class DataService {
 - `.notice` - Notable conditions
 - `.error` - Errors
 - `.fault` - Critical failures
-</os_log_in_code>
 
-<stream_logs>
+### Stream Logs
 ```bash
 # Stream logs from your app (run while app is running)
 log stream --predicate 'subsystem == "com.yourcompany.MyApp"' --level info
@@ -231,9 +217,8 @@ log stream --predicate 'subsystem == "com.yourcompany.MyApp"' --level debug
 # Show only errors
 log stream --predicate 'subsystem == "com.yourcompany.MyApp" and messageType == error'
 ```
-</stream_logs>
 
-<search_past_logs>
+### Search Past Logs
 ```bash
 # Search recent logs (last hour)
 log show --predicate 'subsystem == "com.yourcompany.MyApp"' --last 1h
@@ -246,9 +231,8 @@ log show --predicate 'subsystem == "com.yourcompany.MyApp"' \
 # Export to file
 log show --predicate 'subsystem == "com.yourcompany.MyApp"' --last 1h > app_logs.txt
 ```
-</search_past_logs>
 
-<system_logs>
+### System Logs
 ```bash
 # See app lifecycle events
 log stream --predicate 'process == "MyApp" or (sender == "lsd" and message contains "MyApp")'
@@ -259,11 +243,9 @@ log stream --predicate 'subsystem == "com.apple.network" and process == "MyApp"'
 # Core Data / SwiftData activity
 log stream --predicate 'subsystem == "com.apple.coredata"'
 ```
-</system_logs>
-</logging>
 
-<debugging>
-<lldb_attach>
+### Debugging
+### Lldb Attach
 ```bash
 # Start app, then attach lldb
 ./build/Build/Products/Debug/MyApp.app/Contents/MacOS/MyApp &
@@ -274,9 +256,8 @@ lldb -n MyApp
 # Or attach by PID
 lldb -p $(pgrep MyApp)
 ```
-</lldb_attach>
 
-<lldb_launch>
+#### Lldb Launch
 ```bash
 # Launch app under lldb directly
 lldb ./build/Build/Products/Debug/MyApp.app/Contents/MacOS/MyApp
@@ -284,9 +265,8 @@ lldb ./build/Build/Products/Debug/MyApp.app/Contents/MacOS/MyApp
 # In lldb:
 (lldb) run
 ```
-</lldb_launch>
 
-<common_lldb_commands>
+### Common Lldb Commands
 ```bash
 # In lldb session:
 
@@ -334,9 +314,8 @@ lldb ./build/Build/Products/Debug/MyApp.app/Contents/MacOS/MyApp
 # Expression evaluation
 (lldb) expr self.items.append(newItem)
 ```
-</common_lldb_commands>
 
-<debug_entitlement>
+### Debug Entitlement
 For lldb to attach, your app needs the `get-task-allow` entitlement (included in Debug builds by default):
 
 ```xml
@@ -349,11 +328,9 @@ If you have attachment issues:
 # Check entitlements
 codesign -d --entitlements - ./build/Build/Products/Debug/MyApp.app
 ```
-</debug_entitlement>
-</debugging>
 
-<crash_logs>
-<locations>
+### Crash Logs
+### Locations
 ```bash
 # User crash logs
 ls ~/Library/Logs/DiagnosticReports/
@@ -364,9 +341,8 @@ ls /Library/Logs/DiagnosticReports/
 # Find your app's crashes
 ls ~/Library/Logs/DiagnosticReports/ | grep MyApp
 ```
-</locations>
 
-<read_crash>
+### Read Crash
 ```bash
 # View latest crash
 cat ~/Library/Logs/DiagnosticReports/MyApp_*.ips | head -200
@@ -374,18 +350,15 @@ cat ~/Library/Logs/DiagnosticReports/MyApp_*.ips | head -200
 # Symbolicate (if you have dSYM)
 atos -arch arm64 -o ./build/Build/Products/Debug/MyApp.app.dSYM/Contents/Resources/DWARF/MyApp -l 0x100000000 0x100001234
 ```
-</read_crash>
 
-<monitor_crashes>
+#### Monitor Crashes
 ```bash
 # Watch for new crashes
 fswatch ~/Library/Logs/DiagnosticReports/ | grep MyApp
 ```
-</monitor_crashes>
-</crash_logs>
 
-<profiling>
-<instruments_cli>
+### Profiling
+#### Instruments Cli
 ```bash
 # List available templates
 instruments -s templates
@@ -399,9 +372,8 @@ instruments -t "Allocations" -D memory.trace ./build/Build/Products/Debug/MyApp.
 # Profile leaks
 instruments -t "Leaks" -D leaks.trace ./build/Build/Products/Debug/MyApp.app
 ```
-</instruments_cli>
 
-<signposts>
+### Signposts
 Add signposts for custom profiling:
 
 ```swift
@@ -424,11 +396,9 @@ class DataService {
 ```
 
 View in Instruments with "os_signpost" instrument.
-</signposts>
-</profiling>
 
-<code_signing>
-<check_signature>
+### Code Signing
+### Check Signature
 ```bash
 # Verify signature
 codesign -v ./build/Build/Products/Release/MyApp.app
@@ -439,9 +409,8 @@ codesign -dv --verbose=4 ./build/Build/Products/Release/MyApp.app
 # Show entitlements
 codesign -d --entitlements - ./build/Build/Products/Release/MyApp.app
 ```
-</check_signature>
 
-<sign_manually>
+### Sign Manually
 ```bash
 # Sign with Developer ID (for distribution outside App Store)
 codesign --force --sign "Developer ID Application: Your Name (TEAMID)" \
@@ -449,9 +418,8 @@ codesign --force --sign "Developer ID Application: Your Name (TEAMID)" \
     --options runtime \
     ./build/Build/Products/Release/MyApp.app
 ```
-</sign_manually>
 
-<notarize>
+#### Notarize
 ```bash
 # Create ZIP for notarization
 ditto -c -k --keepParent ./build/Build/Products/Release/MyApp.app MyApp.zip
@@ -471,11 +439,9 @@ xcrun stapler staple ./build/Build/Products/Release/MyApp.app
 ```bash
 xcrun notarytool store-credentials --apple-id your@email.com --team-id TEAMID
 ```
-</notarize>
-</code_signing>
 
-<testing>
-<run_tests>
+### Testing
+### Run Tests
 ```bash
 # Run all tests
 xcodebuild -project MyApp.xcodeproj \
@@ -495,9 +461,8 @@ xcodebuild -project MyApp.xcodeproj \
     -only-testing:MyAppTests/DataServiceTests/testLoadItems \
     test
 ```
-</run_tests>
 
-<test_output>
+### Test Output
 ```bash
 # Pretty test output
 xcodebuild test -project MyApp.xcodeproj -scheme MyApp | xcpretty --test
@@ -509,9 +474,8 @@ xcodebuild test -project MyApp.xcodeproj -scheme MyApp \
 # View result bundle
 xcrun xcresulttool get --path ./TestResults.xcresult --format json
 ```
-</test_output>
 
-<test_coverage>
+### Test Coverage
 ```bash
 # Build with coverage
 xcodebuild -project MyApp.xcodeproj \
@@ -525,10 +489,8 @@ xcrun llvm-cov report \
     ./build/Build/Products/Debug/MyApp.app/Contents/MacOS/MyApp \
     -instr-profile=./build/Build/ProfileData/*/Coverage.profdata
 ```
-</test_coverage>
-</testing>
 
-<complete_workflow>
+### Complete Workflow
 Typical development cycle without opening Xcode:
 
 ```bash
@@ -556,9 +518,8 @@ xcodebuild -project MyApp.xcodeproj -scheme MyApp test
 # 8. Build release
 xcodebuild -project MyApp.xcodeproj -scheme MyApp -configuration Release -derivedDataPath ./build build
 ```
-</complete_workflow>
 
-<helper_script>
+### Helper Script
 Create a build script for convenience:
 
 ```bash
@@ -591,9 +552,8 @@ chmod +x build.sh
 ./build.sh        # Debug build
 ./build.sh Release  # Release build
 ```
-</helper_script>
 
-<useful_aliases>
+### Useful Aliases
 Add to ~/.zshrc or ~/.bashrc:
 
 ```bash
@@ -612,4 +572,3 @@ alias xl='log stream --predicate "subsystem contains \"$(defaults read ./build/B
 # Clean
 alias xc='xcodebuild -project *.xcodeproj -scheme $(basename *.xcodeproj .xcodeproj) clean && rm -rf ./build'
 ```
-</useful_aliases>

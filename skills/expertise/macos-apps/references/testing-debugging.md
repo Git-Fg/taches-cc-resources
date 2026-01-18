@@ -2,8 +2,8 @@
 
 Patterns for unit testing, UI testing, and debugging macOS apps.
 
-<unit_testing>
-<basic_test>
+### Unit Testing
+#### Basic Test
 ```swift
 import XCTest
 @testable import MyApp
@@ -46,9 +46,8 @@ final class DataServiceTests: XCTestCase {
     }
 }
 ```
-</basic_test>
 
-<async_testing>
+#### Async Testing
 ```swift
 final class NetworkServiceTests: XCTestCase {
     var sut: NetworkService!
@@ -93,9 +92,8 @@ final class NetworkServiceTests: XCTestCase {
     }
 }
 ```
-</async_testing>
 
-<testing_observables>
+#### Testing Observables
 ```swift
 final class AppStateTests: XCTestCase {
     func testAddItem() {
@@ -123,9 +121,8 @@ final class AppStateTests: XCTestCase {
     }
 }
 ```
-</testing_observables>
 
-<mock_dependencies>
+### Mock Dependencies
 ```swift
 // Protocol for testability
 protocol DataStoreProtocol {
@@ -170,9 +167,8 @@ final class ViewModelTests: XCTestCase {
     }
 }
 ```
-</mock_dependencies>
 
-<testing_swiftdata>
+### Testing Swiftdata
 ```swift
 final class SwiftDataTests: XCTestCase {
     var container: ModelContainer!
@@ -221,11 +217,9 @@ final class SwiftDataTests: XCTestCase {
     }
 }
 ```
-</testing_swiftdata>
-</unit_testing>
 
-<swiftdata_debugging>
-<verify_relationships>
+### Swiftdata Debugging
+### Verify Relationships
 When SwiftData items aren't appearing or relationships seem broken:
 
 ```swift
@@ -249,9 +243,8 @@ func verifyCard(_ card: Card) {
     }
 }
 ```
-</verify_relationships>
 
-<common_swiftdata_issues>
+### Common Swiftdata Issues
 **Issue: Items not appearing in list**
 
 Symptoms: Added items don't show, count is 0
@@ -276,9 +269,8 @@ Common causes:
 - Forgot `modelContext.insert(item)` for new objects
 - Didn't set inverse relationship (`card.column = column`)
 - Using wrong modelContext (view context vs background context)
-</common_swiftdata_issues>
 
-<inspect_database>
+### Inspect Database
 ```swift
 // Print database location
 func printDatabaseLocation() {
@@ -302,9 +294,8 @@ func dumpAllItems<T: PersistentModel>(_ type: T.Type, context: ModelContext) {
 dumpAllItems(Column.self, context: modelContext)
 dumpAllItems(Card.self, context: modelContext)
 ```
-</inspect_database>
 
-<logging_swiftdata_operations>
+### Logging Swiftdata Operations
 ```swift
 import os
 
@@ -331,9 +322,8 @@ func moveCard(_ card: Card, to newColumn: Column) {
 // View logs in Console.app or:
 // log stream --predicate 'subsystem == "com.yourapp" AND category == "SwiftData"' --level debug
 ```
-</logging_swiftdata_operations>
 
-<symptom_cause_table>
+### Symptom Cause Table
 **Quick reference for common SwiftData symptoms:**
 
 | Symptom | Likely Cause | Fix |
@@ -344,10 +334,8 @@ func moveCard(_ card: Card, to newColumn: Column) {
 | @Query returns empty | Schema mismatch | Verify @Model matches container schema |
 | Cascade delete fails | Missing deleteRule | Add `@Relationship(deleteRule: .cascade)` |
 | Relationship array always empty | Not using inverse | Set inverse on child, not append on parent |
-</symptom_cause_table>
-</swiftdata_debugging>
 
-<ui_testing>
+### Ui Testing
 ```swift
 import XCTest
 
@@ -396,10 +384,9 @@ final class MyAppUITests: XCTestCase {
     }
 }
 ```
-</ui_testing>
 
-<debugging>
-<os_log>
+### Debugging
+### Os Log
 ```swift
 import os
 
@@ -421,9 +408,8 @@ logger.info("User: \(username, privacy: .private)")
 // In console
 // log stream --predicate 'subsystem == "com.yourcompany.MyApp"' --level debug
 ```
-</os_log>
 
-<signposts>
+### Signposts
 ```swift
 import os
 
@@ -449,9 +435,8 @@ func processItem(_ item: Item) {
     signposter.endInterval("Process Item", state, "Processed \(item.name)")
 }
 ```
-</signposts>
 
-<breakpoint_actions>
+### Breakpoint Actions
 ```swift
 // Symbolic breakpoints in Xcode:
 // - Symbol: `-[NSException raise]` to catch all exceptions
@@ -467,9 +452,8 @@ func criticalFunction() {
     }
 }
 ```
-</breakpoint_actions>
 
-<memory_debugging>
+### Memory Debugging
 ```swift
 // Check for leaks with weak references
 class DebugHelper {
@@ -504,11 +488,9 @@ func testNoMemoryLeak() {
     XCTAssertNil(weakRef, "ViewModel should be deallocated")
 }
 ```
-</memory_debugging>
-</debugging>
 
-<common_issues>
-<memory_leaks>
+### Common Issues
+### Memory Leaks
 **Symptom**: Memory grows over time, objects not deallocated
 
 **Common causes**:
@@ -531,9 +513,8 @@ deinit {
     NotificationCenter.default.removeObserver(self)
 }
 ```
-</memory_leaks>
 
-<main_thread_violations>
+### Main Thread Violations
 **Symptom**: Purple warnings, UI not updating, crashes
 
 **Fix**:
@@ -548,9 +529,8 @@ DispatchQueue.main.async {
     self.tableView.reloadData()
 }
 ```
-</main_thread_violations>
 
-<swiftui_not_updating>
+### Swiftui Not Updating
 **Symptom**: View doesn't reflect state changes
 
 **Common causes**:
@@ -570,10 +550,8 @@ class AppState {
 @Bindable var appState = appState
 TextField("Name", text: $appState.name)
 ```
-</swiftui_not_updating>
-</common_issues>
 
-<test_coverage>
+### Test Coverage
 ```bash
 # Build with coverage
 xcodebuild -project MyApp.xcodeproj \
@@ -585,9 +563,8 @@ xcodebuild -project MyApp.xcodeproj \
 # View coverage report
 xcrun xccov view --report ./build/Logs/Test/*.xcresult
 ```
-</test_coverage>
 
-<performance_testing>
+### Performance Testing
 ```swift
 func testPerformanceLoadLargeDataset() {
     measure {
@@ -609,4 +586,3 @@ func testPerformanceWithMetrics() {
     }
 }
 ```
-</performance_testing>

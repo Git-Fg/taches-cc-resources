@@ -2,8 +2,8 @@
 
 Share extensions, widgets, Quick Look previews, and Shortcuts for macOS.
 
-<share_extension>
-<setup>
+### Share Extension
+#### Setup
 1. File > New > Target > Share Extension
 2. Configure activation rules in Info.plist
 3. Implement share view controller
@@ -30,9 +30,8 @@ Share extensions, widgets, Quick Look previews, and Shortcuts for macOS.
     <string>$(PRODUCT_MODULE_NAME).ShareViewController</string>
 </dict>
 ```
-</setup>
 
-<share_view_controller>
+##### Share View Controller
 ```swift
 import Cocoa
 import Social
@@ -102,9 +101,8 @@ class ShareViewController: SLComposeServiceViewController {
     }
 }
 ```
-</share_view_controller>
 
-<app_groups>
+### App Groups
 Share data between app and extension:
 
 ```xml
@@ -124,11 +122,9 @@ let containerURL = FileManager.default.containerURL(
     forSecurityApplicationGroupIdentifier: "group.com.yourcompany.myapp"
 )
 ```
-</app_groups>
-</share_extension>
 
-<widgets>
-<widget_extension>
+### Widgets
+### Widget Extension
 1. File > New > Target > Widget Extension
 2. Define timeline provider
 3. Create widget view
@@ -209,9 +205,8 @@ struct ItemWidget: Widget {
     }
 }
 ```
-</widget_extension>
 
-<widget_deep_links>
+### Widget Deep Links
 ```swift
 struct ItemWidgetView: View {
     var entry: ItemEntry
@@ -248,9 +243,8 @@ struct MyApp: App {
     }
 }
 ```
-</widget_deep_links>
 
-<update_widget>
+### Update Widget
 ```swift
 // From main app, tell widget to refresh
 import WidgetKit
@@ -262,11 +256,9 @@ func itemsChanged() {
 // Reload all widgets
 WidgetCenter.shared.reloadAllTimelines()
 ```
-</update_widget>
-</widgets>
 
-<quick_look>
-<preview_extension>
+### Quick Look
+### Preview Extension
 1. File > New > Target > Quick Look Preview Extension
 2. Implement preview view controller
 
@@ -293,9 +285,8 @@ class PreviewViewController: NSViewController, QLPreviewingController {
     }
 }
 ```
-</preview_extension>
 
-<thumbnail_extension>
+### Thumbnail Extension
 1. File > New > Target > Thumbnail Extension
 
 ```swift
@@ -326,11 +317,9 @@ class ThumbnailProvider: QLThumbnailProvider {
     }
 }
 ```
-</thumbnail_extension>
-</quick_look>
 
-<shortcuts>
-<app_intents>
+### Shortcuts
+### App Intents
 ```swift
 import AppIntents
 
@@ -380,9 +369,8 @@ struct MyAppShortcuts: AppShortcutsProvider {
     }
 }
 ```
-</app_intents>
 
-<entity_queries>
+### Entity Queries
 ```swift
 // Define entity
 struct ItemEntity: AppEntity {
@@ -429,10 +417,8 @@ struct OpenItemIntent: AppIntent {
     }
 }
 ```
-</entity_queries>
-</shortcuts>
 
-<action_extension>
+### Action Extension
 ```swift
 import Cocoa
 
@@ -471,9 +457,8 @@ class ActionViewController: NSViewController {
     }
 }
 ```
-</action_extension>
 
-<extension_best_practices>
+### Extension Best Practices
 - Share data via App Groups
 - Keep extensions lightweight (memory limits)
 - Handle errors gracefully
@@ -481,4 +466,3 @@ class ActionViewController: NSViewController {
 - Update Info.plist activation rules carefully
 - Use WidgetCenter.shared.reloadTimelines() to update widgets
 - Define clear App Intents with good phrases
-</extension_best_practices>

@@ -2,8 +2,8 @@
 
 Modern Swift concurrency for responsive, safe macOS apps.
 
-<async_await_basics>
-<simple_async>
+### Async Await Basics
+#### Simple Async
 ```swift
 // Basic async function
 func fetchData() async throws -> [Item] {
@@ -29,9 +29,8 @@ struct ContentView: View {
     }
 }
 ```
-</simple_async>
 
-<task_modifier>
+#### Task Modifier
 ```swift
 struct ItemListView: View {
     @State private var items: [Item] = []
@@ -57,11 +56,9 @@ struct ItemListView: View {
     }
 }
 ```
-</task_modifier>
-</async_await_basics>
 
-<actors>
-<basic_actor>
+### Actors
+#### Basic Actor
 ```swift
 // Actor for thread-safe state
 actor DataCache {
@@ -85,9 +82,8 @@ let cache = DataCache()
 await cache.set("key", data: data)
 let cached = await cache.get("key")
 ```
-</basic_actor>
 
-<service_actor>
+#### Service Actor
 ```swift
 actor NetworkService {
     private let session: URLSession
@@ -118,9 +114,8 @@ actor NetworkService {
     }
 }
 ```
-</service_actor>
 
-<nonisolated>
+### Nonisolated
 ```swift
 actor ImageProcessor {
     private var processedCount = 0
@@ -144,11 +139,9 @@ actor ImageProcessor {
     }
 }
 ```
-</nonisolated>
-</actors>
 
-<main_actor>
-<ui_updates>
+### Main Actor
+### Ui Updates
 ```swift
 // Mark entire class as @MainActor
 @MainActor
@@ -189,9 +182,8 @@ class DataProcessor {
     }
 }
 ```
-</ui_updates>
 
-<main_actor_dispatch>
+### Main Actor Dispatch
 ```swift
 // From async context
 await MainActor.run {
@@ -208,11 +200,9 @@ Task { @MainActor in
     self.progress = 0.5
 }
 ```
-</main_actor_dispatch>
-</main_actor>
 
-<structured_concurrency>
-<task_groups>
+### Structured Concurrency
+### Task Groups
 ```swift
 // Parallel execution with results
 func loadAllCategories() async throws -> [Category: [Item]] {
@@ -234,9 +224,8 @@ func loadAllCategories() async throws -> [Category: [Item]] {
     }
 }
 ```
-</task_groups>
 
-<limited_concurrency>
+### Limited Concurrency
 ```swift
 // Process with limited parallelism
 func processImages(_ urls: [URL], maxConcurrent: Int = 4) async throws -> [ProcessedImage] {
@@ -269,9 +258,8 @@ func processImages(_ urls: [URL], maxConcurrent: Int = 4) async throws -> [Proce
     return results
 }
 ```
-</limited_concurrency>
 
-<async_let>
+### Async Let
 ```swift
 // Concurrent bindings
 func loadDashboard() async throws -> Dashboard {
@@ -287,11 +275,9 @@ func loadDashboard() async throws -> Dashboard {
     )
 }
 ```
-</async_let>
-</structured_concurrency>
 
-<async_sequences>
-<for_await>
+### Async Sequences
+### For Await
 ```swift
 // Iterate async sequence
 func monitorChanges() async {
@@ -310,9 +296,8 @@ func observeNotifications() async {
     }
 }
 ```
-</for_await>
 
-<custom_async_sequence>
+### Custom Async Sequence
 ```swift
 struct CountdownSequence: AsyncSequence {
     typealias Element = Int
@@ -339,9 +324,8 @@ for await count in CountdownSequence(start: 10) {
     print(count)
 }
 ```
-</custom_async_sequence>
 
-<async_stream>
+### Async Stream
 ```swift
 // Bridge callback-based API
 func fileChanges(at path: String) -> AsyncStream<FileChange> {
@@ -383,11 +367,9 @@ func networkEvents() -> AsyncThrowingStream<NetworkEvent, Error> {
     }
 }
 ```
-</async_stream>
-</async_sequences>
 
-<cancellation>
-<checking_cancellation>
+### Cancellation
+### Checking Cancellation
 ```swift
 func processLargeDataset(_ items: [Item]) async throws -> [Result] {
     var results: [Result] = []
@@ -408,9 +390,8 @@ func processLargeDataset(_ items: [Item]) async throws -> [Result] {
     return results
 }
 ```
-</checking_cancellation>
 
-<cancellation_handlers>
+### Cancellation Handlers
 ```swift
 func downloadFile(_ url: URL) async throws -> Data {
     let task = URLSession.shared.dataTask(with: url)
@@ -431,9 +412,8 @@ func downloadFile(_ url: URL) async throws -> Data {
     }
 }
 ```
-</cancellation_handlers>
 
-<task_cancellation>
+### Task Cancellation
 ```swift
 class ViewModel {
     private var loadTask: Task<Void, Never>?
@@ -457,11 +437,9 @@ class ViewModel {
     }
 }
 ```
-</task_cancellation>
-</cancellation>
 
-<sendable>
-<sendable_types>
+### Sendable
+### Sendable Types
 ```swift
 // Value types are Sendable by default if all properties are Sendable
 struct Item: Sendable {
@@ -498,9 +476,8 @@ final class ThreadSafeCache: @unchecked Sendable {
     }
 }
 ```
-</sendable_types>
 
-<sending_closures>
+### Sending Closures
 ```swift
 // Closures that cross actor boundaries must be @Sendable
 func processInBackground(work: @Sendable @escaping () async -> Void) {
@@ -515,24 +492,19 @@ Task {
     await process(items)
 }
 ```
-</sending_closures>
-</sendable>
 
-<best_practices>
-<do>
+### Best Practices
+### Do
 - Use `.task` modifier for view-related async work
 - Use actors for shared mutable state
 - Mark UI-updating code with `@MainActor`
 - Check `Task.isCancelled` in long operations
 - Use structured concurrency (task groups, async let) over unstructured
 - Cancel tasks when no longer needed
-</do>
 
-<avoid>
+### Avoid
 - Creating detached tasks unnecessarily (loses structured concurrency benefits)
 - Blocking actors with synchronous work
 - Ignoring cancellation in long-running operations
 - Passing non-Sendable types across actor boundaries
 - Using `DispatchQueue` when async/await works
-</avoid>
-</best_practices>

@@ -1,8 +1,7 @@
-<overview>
+### Overview
 State management, dependency injection, and app structure patterns for macOS apps. Use @Observable for shared state, environment for dependency injection, and structured async/await patterns for concurrency.
-</overview>
 
-<recommended_structure>
+### Recommended Structure
 ```
 MyApp/
 ├── App/
@@ -29,10 +28,9 @@ MyApp/
 └── Resources/
     └── Assets.xcassets
 ```
-</recommended_structure>
 
-<state_management>
-<observable_pattern>
+### State Management
+#### Observable Pattern
 Use `@Observable` (macOS 14+) for shared state:
 
 ```swift
@@ -70,9 +68,8 @@ class AppState {
     }
 }
 ```
-</observable_pattern>
 
-<environment_injection>
+#### Environment Injection
 Inject state at app level:
 
 ```swift
@@ -99,9 +96,8 @@ struct SidebarView: View {
     }
 }
 ```
-</environment_injection>
 
-<bindable_for_mutations>
+#### Bindable For Mutations
 Use `@Bindable` for two-way bindings:
 
 ```swift
@@ -135,9 +131,8 @@ struct SettingsView: View {
     }
 }
 ```
-</bindable_for_mutations>
 
-<multiple_state_objects>
+### Multiple State Objects
 Split state by domain:
 
 ```swift
@@ -176,11 +171,9 @@ struct MyApp: App {
     }
 }
 ```
-</multiple_state_objects>
-</state_management>
 
-<dependency_injection>
-<environment_keys>
+### Dependency Injection
+### Environment Keys
 Define custom environment keys for services:
 
 ```swift
@@ -237,9 +230,8 @@ struct ItemListView: View {
     }
 }
 ```
-</environment_keys>
 
-<testing_with_mocks>
+### Testing With Mocks
 ```swift
 // Mock for testing
 class MockDataStore: DataStoreProtocol {
@@ -265,9 +257,8 @@ class MockDataStore: DataStoreProtocol {
         .environment(\.dataStore, mockStore)
 }
 ```
-</testing_with_mocks>
 
-<service_container>
+### Service Container
 For apps with many services:
 
 ```swift
@@ -310,11 +301,9 @@ struct MyApp: App {
     }
 }
 ```
-</service_container>
-</dependency_injection>
 
-<app_lifecycle>
-<app_delegate>
+### App Lifecycle
+### App Delegate
 Use AppDelegate for lifecycle events:
 
 ```swift
@@ -357,9 +346,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 ```
-</app_delegate>
 
-<scene_phase>
+### Scene Phase
 React to app state changes:
 
 ```swift
@@ -387,10 +375,8 @@ struct ContentView: View {
     }
 }
 ```
-</scene_phase>
-</app_lifecycle>
 
-<coordinator_pattern>
+### Coordinator Pattern
 For complex navigation flows:
 
 ```swift
@@ -458,10 +444,9 @@ struct ContentView: View {
     }
 }
 ```
-</coordinator_pattern>
 
-<error_handling>
-<error_types>
+### Error Handling
+### Error Types
 Define domain-specific errors:
 
 ```swift
@@ -503,9 +488,8 @@ enum AppError: LocalizedError {
     }
 }
 ```
-</error_types>
 
-<error_presentation>
+### Error Presentation
 Present errors to user:
 
 ```swift
@@ -553,11 +537,9 @@ struct ContentView: View {
     }
 }
 ```
-</error_presentation>
-</error_handling>
 
-<async_patterns>
-<task_management>
+### Async Patterns
+### Task Management
 ```swift
 struct ItemListView: View {
     @Environment(AppState.self) private var appState
@@ -587,9 +569,8 @@ struct ItemListView: View {
     }
 }
 ```
-</task_management>
 
-<async_sequences>
+### Async Sequences
 ```swift
 @Observable
 class NotificationListener {
@@ -609,24 +590,19 @@ class NotificationListener {
     }
 }
 ```
-</async_sequences>
-</async_patterns>
 
-<best_practices>
-<do>
+### Best Practices
+### Do
 - Use `@Observable` for shared state (macOS 14+)
 - Inject dependencies through environment
 - Keep views focused - they ARE the view model in SwiftUI
 - Use protocols for testability
 - Handle errors at appropriate levels
 - Cancel tasks when views disappear
-</do>
 
-<avoid>
+### Avoid
 - Massive centralized state objects
 - Passing state through init parameters (use environment)
 - Business logic in views (use services)
 - Ignoring task cancellation
 - Retaining strong references to self in async closures
-</avoid>
-</best_practices>

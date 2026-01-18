@@ -2,8 +2,8 @@
 
 Details that make apps feel native and professional.
 
-<keyboard_shortcuts>
-<standard_shortcuts>
+### Keyboard Shortcuts
+#### Standard Shortcuts
 ```swift
 import SwiftUI
 
@@ -52,9 +52,8 @@ struct AppCommands: Commands {
     }
 }
 ```
-</standard_shortcuts>
 
-<view_shortcuts>
+#### View Shortcuts
 ```swift
 struct ContentView: View {
     var body: some View {
@@ -78,10 +77,8 @@ struct ContentView: View {
     }
 }
 ```
-</view_shortcuts>
-</keyboard_shortcuts>
 
-<menu_bar>
+### Menu Bar
 ```swift
 @main
 struct MyApp: App {
@@ -131,9 +128,8 @@ struct MyApp: App {
     }
 }
 ```
-</menu_bar>
 
-<context_menus>
+### Context Menus
 ```swift
 struct ItemRow: View {
     let item: Item
@@ -159,10 +155,9 @@ struct ItemRow: View {
     }
 }
 ```
-</context_menus>
 
-<window_management>
-<multiple_windows>
+### Window Management
+### Multiple Windows
 ```swift
 @main
 struct MyApp: App {
@@ -204,9 +199,8 @@ struct ContentView: View {
     }
 }
 ```
-</multiple_windows>
 
-<window_state>
+### Window State
 ```swift
 // Save and restore window state
 class WindowStateManager {
@@ -230,10 +224,8 @@ class WindowDelegate: NSObject, NSWindowDelegate {
     }
 }
 ```
-</window_state>
-</window_management>
 
-<dock_menu>
+### Dock Menu
 ```swift
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
@@ -275,10 +267,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 ```
-</dock_menu>
 
-<accessibility>
-<voiceover>
+### Accessibility
+### Voiceover
 ```swift
 struct ItemRow: View {
     let item: Item
@@ -299,9 +290,8 @@ struct ItemRow: View {
     }
 }
 ```
-</voiceover>
 
-<custom_rotors>
+### Custom Rotors
 ```swift
 struct NoteListView: View {
     let notes: [Note]
@@ -328,9 +318,8 @@ struct NoteListView: View {
     }
 }
 ```
-</custom_rotors>
 
-<reduced_motion>
+### Reduced Motion
 ```swift
 struct AnimationHelper {
     static var prefersReducedMotion: Bool {
@@ -347,10 +336,8 @@ withAnimation(AnimationHelper.animation(.spring())) {
     isExpanded.toggle()
 }
 ```
-</reduced_motion>
-</accessibility>
 
-<user_defaults>
+### User Defaults
 ```swift
 extension UserDefaults {
     enum Keys {
@@ -396,9 +383,8 @@ func registerDefaults() {
     ])
 }
 ```
-</user_defaults>
 
-<error_presentation>
+### Error Presentation
 ```swift
 struct ErrorPresenter: ViewModifier {
     @Binding var error: AppError?
@@ -430,9 +416,8 @@ extension View {
 ContentView()
     .errorAlert($appState.error)
 ```
-</error_presentation>
 
-<onboarding>
+### Onboarding
 ```swift
 struct OnboardingView: View {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
@@ -484,9 +469,8 @@ struct FeatureRow: View {
     }
 }
 ```
-</onboarding>
 
-<sparkle_updates>
+### Sparkle Updates
 ```swift
 // Add Sparkle package for auto-updates
 // https://github.com/sparkle-project/Sparkle
@@ -517,9 +501,8 @@ CommandGroup(after: .appInfo) {
     }
 }
 ```
-</sparkle_updates>
 
-<app_lifecycle>
+### App Lifecycle
 ```swift
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -552,4 +535,3 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 ```
-</app_lifecycle>
