@@ -1,9 +1,8 @@
-<overview>
+## Overview
 The planning hierarchy ensures context flows down and progress flows up.
 Each level builds on the previous and enables the next.
-</overview>
 
-<hierarchy>
+## Hierarchy
 ```
 BRIEF.md          ← Vision (human-focused)
     ↓
@@ -13,7 +12,6 @@ phases/XX/PLAN.md ← Implementation (Claude-executable)
     ↓
 prompts/          ← Execution (via create-meta-prompts)
 ```
-</hierarchy>
 
 <level name="brief">
 **Purpose**: Capture vision, goals, constraints
@@ -25,7 +23,6 @@ prompts/          ← Execution (via create-meta-prompts)
 **Enables**: Roadmap creation
 
 This is the ONLY document optimized for human reading.
-</level>
 
 <level name="roadmap">
 **Purpose**: Define phases and sequence
@@ -37,7 +34,6 @@ This is the ONLY document optimized for human reading.
 **Enables**: Phase planning
 
 Roadmap looks UP to Brief for scope, looks DOWN to track phase completion.
-</level>
 
 <level name="phase_plan">
 **Purpose**: Define Claude-executable tasks
@@ -49,7 +45,6 @@ Roadmap looks UP to Brief for scope, looks DOWN to track phase completion.
 **Enables**: Prompt generation, direct execution
 
 Phase plan looks UP to Roadmap for scope, produces implementation details.
-</level>
 
 <level name="prompts">
 **Purpose**: Optimized execution instructions
@@ -61,10 +56,9 @@ Phase plan looks UP to Roadmap for scope, produces implementation details.
 **Enables**: Autonomous execution
 
 Prompts are generated from phase plan via create-meta-prompts skill.
-</level>
 
-<navigation_rules>
-<looking_up>
+## Navigation Rules
+### Looking Up
 When creating a lower-level artifact, ALWAYS read higher levels for context:
 
 - Creating Roadmap → Read Brief
@@ -72,18 +66,16 @@ When creating a lower-level artifact, ALWAYS read higher levels for context:
 - Generating Prompts → Read Phase Plan AND Roadmap
 
 This ensures alignment with overall vision.
-</looking_up>
 
-<looking_down>
+### Looking Down
 When updating a higher-level artifact, check lower levels for status:
 
 - Updating Roadmap progress → Check which phase PLANs exist, completion state
 - Reviewing Brief → See how far we've come via Roadmap
 
 This enables progress tracking.
-</looking_down>
 
-<missing_prerequisites>
+### Missing Prerequisites
 If a prerequisite doesn't exist:
 
 ```
@@ -96,10 +88,8 @@ Options:
 ```
 
 Always offer to create missing pieces rather than skipping.
-</missing_prerequisites>
-</navigation_rules>
 
-<file_locations>
+## File Locations
 All planning artifacts in `.planning/`:
 
 ```
@@ -118,9 +108,8 @@ All planning artifacts in `.planning/`:
 ```
 
 Phase directories use `XX-kebab-case` for consistent ordering.
-</file_locations>
 
-<scope_inheritance>
+## Scope Inheritance
 Each level inherits and narrows scope:
 
 **Brief**: "Build a task management app"
@@ -129,9 +118,8 @@ Each level inherits and narrows scope:
 
 Scope flows DOWN and gets more specific.
 Progress flows UP and gets aggregated.
-</scope_inheritance>
 
-<cross_phase_context>
+## Cross Phase Context
 When planning Phase N, Claude should understand:
 
 - What Phase N-1 delivered (completed work)
@@ -139,4 +127,3 @@ When planning Phase N, Claude should understand:
 - What Phase N+1 will need (don't paint into corner)
 
 Read previous phase's PLAN.md to understand current state.
-</cross_phase_context>

@@ -11,14 +11,13 @@ This document catalogs research mistakes discovered in production use, providing
 **Why it happens**: Not explicitly checking all known configuration patterns
 **Prevention**:
 ```xml
-<verification_checklist>
+## Verification Checklist
 **CRITICAL**: Verify ALL configuration scopes:
 □ User/global scope - System-wide configuration
 □ Project scope - Project-level configuration files
 □ Local scope - Project-specific user overrides
 □ Workspace scope - IDE/tool workspace settings
 □ Environment scope - Environment variables
-</verification_checklist>
 ```
 
 ### Pitfall 2: "Search for X" Vagueness
@@ -27,7 +26,7 @@ This document catalogs research mistakes discovered in production use, providing
 **Why it happens**: Vague research instructions don't specify exact sources
 **Prevention**:
 ```xml
-<sources>
+## Sources
 Official sources (use WebFetch):
 - https://exact-url-to-official-docs
 - https://exact-url-to-api-reference
@@ -35,7 +34,6 @@ Official sources (use WebFetch):
 Search queries (use WebSearch):
 - "specific search query {current_year}"
 - "another specific query {current_year}"
-</sources>
 ```
 
 ### Pitfall 3: Deprecated vs Current Features
@@ -44,12 +42,11 @@ Search queries (use WebSearch):
 **Why it happens**: Not checking multiple sources or recent updates
 **Prevention**:
 ```xml
-<verification_checklist>
+## Verification Checklist
 □ Check current official documentation
 □ Review changelog/release notes for recent updates
 □ Verify version numbers and publication dates
 □ Cross-reference multiple authoritative sources
-</verification_checklist>
 ```
 
 ### Pitfall 4: Tool-Specific Variations
@@ -58,13 +55,12 @@ Search queries (use WebSearch):
 **Why it happens**: Not explicitly checking each environment separately
 **Prevention**:
 ```xml
-<verification_checklist>
+## Verification Checklist
 □ Claude Desktop capabilities
 □ Claude Code capabilities
 □ VS Code extension capabilities
 □ API/SDK capabilities
 Document which environment supports which features
-</verification_checklist>
 ```
 
 ### Pitfall 5: Confident Negative Claims Without Citations
@@ -73,13 +69,12 @@ Document which environment supports which features
 **Why it happens**: Drawing conclusions from absence of evidence rather than evidence of absence
 **Prevention**:
 ```xml
-<critical_claims_audit>
+## Critical Claims Audit
 For any "X is not possible" or "Y is the only way" statement:
 - [ ] Is this verified by official documentation stating it explicitly?
 - [ ] Have I checked for recent updates that might change this?
 - [ ] Have I verified all possible approaches/mechanisms?
 - [ ] Am I confusing "I didn't find it" with "it doesn't exist"?
-</critical_claims_audit>
 ```
 
 ### Pitfall 6: Missing Enumeration
@@ -88,7 +83,7 @@ For any "X is not possible" or "Y is the only way" statement:
 **Why it happens**: Not creating explicit checklist of items to investigate
 **Prevention**:
 ```xml
-<verification_checklist>
+## Verification Checklist
 Enumerate ALL known options FIRST:
 □ Option 1: [specific item]
 □ Option 2: [specific item]
@@ -99,7 +94,6 @@ For each option above, document:
 - Existence (confirmed/not found/unclear)
 - Official source URL
 - Current status (active/deprecated/beta)
-</verification_checklist>
 ```
 
 ### Pitfall 7: Single-Source Verification
@@ -108,13 +102,12 @@ For each option above, document:
 **Why it happens**: Not cross-referencing multiple authoritative sources
 **Prevention**:
 ```xml
-<source_verification>
+## Source Verification
 For critical claims, require multiple sources:
 - [ ] Official documentation (primary)
 - [ ] Release notes/changelog (for currency)
 - [ ] Additional authoritative source (for verification)
 - [ ] Contradiction check (ensure sources agree)
-</source_verification>
 ```
 
 ### Pitfall 8: Assumed Completeness
@@ -123,13 +116,12 @@ For critical claims, require multiple sources:
 **Why it happens**: Not verifying publication dates and source authority
 **Prevention**:
 ```xml
-<source_verification>
+## Source Verification
 For each source consulted:
 - [ ] Publication/update date verified (prefer recent/current)
 - [ ] Source authority confirmed (official docs, not blogs)
 - [ ] Version relevance checked (matches current version)
 - [ ] Multiple search queries tried (not just one)
-</source_verification>
 ```
 
 ## Red Flags in Research Outputs

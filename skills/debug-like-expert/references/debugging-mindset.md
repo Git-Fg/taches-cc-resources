@@ -1,8 +1,7 @@
-<philosophy>
+## Philosophy
 Debugging is applied epistemology. You're investigating a system to discover truth about its behavior. The difference between junior and senior debugging is not knowledge of frameworks - it's the discipline of systematic investigation.
-</philosophy>
 
-<meta_debugging>
+## Meta Debugging
 **Special challenge**: When you're debugging code you wrote or modified, you're fighting your own mental model.
 
 **Why this is harder**:
@@ -42,7 +41,7 @@ Debugging is applied epistemology. You're investigating a system to discover tru
 - Don't assume the bug is in the framework or existing code
 - Start investigating where you made changes
 
-<example>
+### Example
 ❌ "I implemented the auth flow correctly, the bug must be in the existing user service"
 
 ✅ "I implemented the auth flow. Let me verify each part:
@@ -52,16 +51,14 @@ Debugging is applied epistemology. You're investigating a system to discover tru
    - One of these is probably wrong"
 
 The second approach found that logout wasn't clearing the token from localStorage, only from memory.
-</example>
 
 **The hardest admission**: "I implemented this wrong."
 
 Not "the requirements were unclear" or "the library is confusing" - YOU made an error. Whether it was 5 minutes ago or 5 days ago doesn't matter. Your code, your responsibility, your bug to find.
 
 This intellectual honesty is the difference between debugging for hours and finding bugs quickly.
-</meta_debugging>
 
-<foundation>
+## Foundation
 When debugging, return to foundational truths:
 
 **What do you know for certain?**
@@ -75,9 +72,8 @@ When debugging, return to foundational truths:
 - "This worked before" - Can you prove when it worked and what changed?
 
 Strip away everything you think you know. Build understanding from observable facts.
-</foundation>
 
-<example>
+## Example
 ❌ "React state updates should be synchronous here"
 ✅ "Let me add a console.log to observe when state actually updates"
 
@@ -86,9 +82,8 @@ Strip away everything you think you know. Build understanding from observable fa
 
 ❌ "This database query should be fast"
 ✅ "Let me run EXPLAIN to see the actual execution plan"
-</example>
 
-<cognitive_biases>
+## Cognitive Biases
 
 <bias name="confirmation_bias">
 **The problem**: You form a hypothesis and only look for evidence that confirms it.
@@ -96,7 +91,6 @@ Strip away everything you think you know. Build understanding from observable fa
 **The trap**: "I think it's a race condition" → You only look for async code, missing the actual typo in a variable name.
 
 **The antidote**: Actively seek evidence that disproves your hypothesis. Ask "What would prove me wrong?"
-</bias>
 
 <bias name="anchoring">
 **The problem**: The first explanation you encounter becomes your anchor, and you adjust from there instead of considering alternatives.
@@ -104,7 +98,6 @@ Strip away everything you think you know. Build understanding from observable fa
 **The trap**: Error message mentions "timeout" → You assume it's a network issue, when it's actually a deadlock.
 
 **The antidote**: Generate multiple independent hypotheses before investigating any single one. Force yourself to list 3+ possible causes.
-</bias>
 
 <bias name="availability_heuristic">
 **The problem**: You remember recent bugs and assume similar symptoms mean the same cause.
@@ -112,7 +105,6 @@ Strip away everything you think you know. Build understanding from observable fa
 **The trap**: "We had a caching issue last week, this must be caching too."
 
 **The antidote**: Treat each bug as novel until evidence suggests otherwise. Recent memory is not evidence.
-</bias>
 
 <bias name="sunk_cost_fallacy">
 **The problem**: You've spent 2 hours debugging down one path, so you keep going even when evidence suggests it's wrong.
@@ -120,11 +112,9 @@ Strip away everything you think you know. Build understanding from observable fa
 **The trap**: "I've almost figured out this state management issue" - when the actual bug is in the API layer.
 
 **The antidote**: Set checkpoints. Every 30 minutes, ask: "If I started fresh right now, is this still the path I'd take?"
-</bias>
 
-</cognitive_biases>
 
-<systematic_investigation>
+## Systematic Investigation
 
 <discipline name="change_one_variable">
 **Why it matters**: If you change multiple things at once, you don't know which one fixed (or broke) it.
@@ -139,7 +129,6 @@ Strip away everything you think you know. Build understanding from observable fa
 **The temptation**: "Let me also update this dependency and refactor this function and change this config..."
 
 **The reality**: Now you have no idea what actually mattered.
-</discipline>
 
 <discipline name="complete_reading">
 **Why it matters**: Skimming code causes you to miss crucial details. You see what you expect to see, not what's there.
@@ -153,7 +142,6 @@ Strip away everything you think you know. Build understanding from observable fa
 **The shortcut**: "This function is long, I'll just read the part where the error happens"
 
 **The miss**: The bug is actually in how the function is called 50 lines up.
-</discipline>
 
 <discipline name="embrace_not_knowing">
 **Why it matters**: Premature certainty stops investigation. "I don't know" is a position of strength.
@@ -165,13 +153,11 @@ Strip away everything you think you know. Build understanding from observable fa
 **The pressure**: Users want answers. Managers want ETAs. Your ego wants to look smart.
 
 **The truth**: "I need to investigate further" is more professional than a wrong fix.
-</discipline>
 
-</systematic_investigation>
 
-<when_to_restart>
+## When To Restart
 
-<restart_signals>
+### Restart Signals
 You should consider starting over when:
 
 1. **You've been investigating for 2+ hours with no progress**
@@ -193,9 +179,8 @@ You should consider starting over when:
 5. **The fix works but you don't know why**
    - This isn't fixed. This is luck.
    - Investigate until you understand, or revert the change
-</restart_signals>
 
-<restart_protocol>
+### Restart Protocol
 When restarting:
 
 1. **Close all files and terminals**
@@ -205,11 +190,9 @@ When restarting:
 5. **Begin again from Phase 1: Evidence Gathering**
 
 This isn't failure. This is professionalism.
-</restart_protocol>
 
-</when_to_restart>
 
-<humility>
+## Humility
 The best debuggers have deep humility about their mental models:
 
 **They know**:
@@ -229,9 +212,8 @@ The best debuggers have deep humility about their mental models:
 - "What am I wrong about?"
 - "What haven't I tested?"
 - "What does the evidence actually say?"
-</humility>
 
-<craft>
+## Craft
 Debugging is a craft that improves with practice:
 
 **Novice debuggers**:
@@ -250,4 +232,3 @@ Debugging is a craft that improves with practice:
 **The difference**: Not intelligence. Not knowledge. Discipline.
 
 Practice the discipline of systematic investigation, and debugging becomes a strength.
-</craft>

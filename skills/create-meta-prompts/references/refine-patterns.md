@@ -1,10 +1,9 @@
-<overview>
+## Overview
 Prompt patterns for improving existing research or plan outputs based on feedback.
-</overview>
 
-<prompt_template>
+## Prompt Template
 ```xml
-<objective>
+### Objective
 Refine {topic}-{original_purpose} based on feedback.
 
 Target: @.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md
@@ -12,38 +11,32 @@ Current summary: @.prompts/{num}-{topic}-{original_purpose}/SUMMARY.md
 
 Purpose: {What improvement is needed}
 Output: Updated {topic}-{original_purpose}.md with improvements
-</objective>
 
-<context>
+### Context
 Original output: @.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md
-</context>
 
-<feedback>
+### Feedback
 {Specific issues to address}
 {What was missing or insufficient}
 {Areas needing more depth}
-</feedback>
 
-<preserve>
+### Preserve
 {What worked well and should be kept}
 {Structure or findings to maintain}
-</preserve>
 
-<requirements>
+### Requirements
 - Address all feedback points
 - Maintain original structure and metadata format
 - Keep what worked from previous version
 - Update confidence based on improvements
 - Clearly improve on identified weaknesses
-</requirements>
 
-<output>
+### Output
 1. Archive current output to: `.prompts/{num}-{topic}-{original_purpose}/archive/{topic}-{original_purpose}-v{n}.md`
 2. Write improved version to: `.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md`
 3. Create SUMMARY.md with version info and changes from previous
-</output>
 
-<summary_requirements>
+### Summary Requirements
 Create `.prompts/{num}-{topic}-{original_purpose}/SUMMARY.md`
 
 Load template: [summary-template.md](summary-template.md)
@@ -52,38 +45,33 @@ For Refine, always include:
 - Version with iteration info (e.g., "v2 (refined from v1)")
 - Changes from Previous section listing what improved
 - Updated confidence if gaps were filled
-</summary_requirements>
 
-<success_criteria>
+### Success Criteria
 - All feedback points addressed
 - Original structure maintained
 - Previous version archived
 - SUMMARY.md reflects version and changes
 - Quality demonstrably improved
-</success_criteria>
 ```
-</prompt_template>
 
-<key_principles>
+## Key Principles
 
-<preserve_context>
+### Preserve Context
 Refine builds on existing work, not replaces it:
 ```xml
-<context>
+#### Context
 Original output: @.prompts/001-auth-research/auth-research.md
 
 Key strengths to preserve:
 - Library comparison structure
 - Security recommendations
 - Code examples format
-</context>
 ```
-</preserve_context>
 
-<specific_feedback>
+### Specific Feedback
 Feedback must be actionable:
 ```xml
-<feedback>
+#### Feedback
 Issues to address:
 - Security analysis was surface-level - need CVE references and vulnerability patterns
 - Performance benchmarks missing - add actual timing data
@@ -92,151 +80,125 @@ Issues to address:
 Do NOT change:
 - Library comparison structure
 - Recommendation format
-</feedback>
 ```
-</specific_feedback>
 
-<version_tracking>
+### Version Tracking
 Archive before overwriting:
 ```xml
-<output>
+#### Output
 1. Archive: `.prompts/001-auth-research/archive/auth-research-v1.md`
 2. Write improved: `.prompts/001-auth-research/auth-research.md`
 3. Update SUMMARY.md with version info
-</output>
 ```
-</version_tracking>
 
-</key_principles>
 
-<refine_types>
+## Refine Types
 
-<deepen_research>
+### Deepen Research
 When research was too surface-level:
 
 ```xml
-<objective>
+#### Objective
 Refine auth-research based on feedback.
 
 Target: @.prompts/001-auth-research/auth-research.md
-</objective>
 
-<feedback>
+#### Feedback
 - Security analysis too shallow - need specific vulnerability patterns
 - Missing performance benchmarks
 - Rate limiting not covered
-</feedback>
 
-<preserve>
+#### Preserve
 - Library comparison structure
 - Code example format
 - Recommendation priorities
-</preserve>
 
-<requirements>
+#### Requirements
 - Add CVE references for common vulnerabilities
 - Include actual benchmark data from library docs
 - Add rate limiting patterns section
 - Increase confidence if gaps are filled
-</requirements>
 ```
-</deepen_research>
 
-<expand_scope>
+### Expand Scope
 When research missed important areas:
 
 ```xml
-<objective>
+#### Objective
 Refine stripe-research to include webhooks.
 
 Target: @.prompts/005-stripe-research/stripe-research.md
-</objective>
 
-<feedback>
+#### Feedback
 - Webhooks section completely missing
 - Need signature verification patterns
 - Retry handling not covered
-</feedback>
 
-<preserve>
+#### Preserve
 - API authentication section
 - Checkout flow documentation
 - Error handling patterns
-</preserve>
 
-<requirements>
+#### Requirements
 - Add comprehensive webhooks section
 - Include signature verification code examples
 - Cover retry and idempotency patterns
 - Update summary to reflect expanded scope
-</requirements>
 ```
-</expand_scope>
 
-<update_plan>
+### Update Plan
 When plan needs adjustment:
 
 ```xml
-<objective>
+#### Objective
 Refine auth-plan to add rate limiting phase.
 
 Target: @.prompts/002-auth-plan/auth-plan.md
-</objective>
 
-<feedback>
+#### Feedback
 - Rate limiting was deferred but is critical for production
 - Should be its own phase, not bundled with tests
-</feedback>
 
-<preserve>
+#### Preserve
 - Phase 1-3 structure
 - Dependency chain
 - Task granularity
-</preserve>
 
-<requirements>
+#### Requirements
 - Insert Phase 4: Rate limiting
 - Adjust Phase 5 (tests) to depend on rate limiting
 - Update phase count in summary
 - Ensure new phase is prompt-sized
-</requirements>
 ```
-</update_plan>
 
-<correct_errors>
+### Correct Errors
 When output has factual errors:
 
 ```xml
-<objective>
+#### Objective
 Refine jwt-research to correct library recommendation.
 
 Target: @.prompts/003-jwt-research/jwt-research.md
-</objective>
 
-<feedback>
+#### Feedback
 - jsonwebtoken recommendation is outdated
 - jose is now preferred for security and performance
 - Bundle size comparison was incorrect
-</feedback>
 
-<preserve>
+#### Preserve
 - Research structure
 - Security best practices section
 - Token storage recommendations
-</preserve>
 
-<requirements>
+#### Requirements
 - Update library recommendation to jose
 - Correct bundle size data
 - Add note about jsonwebtoken deprecation concerns
 - Lower confidence if other findings may need verification
-</requirements>
 ```
-</correct_errors>
 
-</refine_types>
 
-<folder_structure>
+## Folder Structure
 Refine prompts get their own folder (new number), but output goes to the original folder:
 
 ```
@@ -258,39 +220,33 @@ This maintains:
 - Clear prompt history (each prompt is numbered)
 - Single source of truth for each output
 - Visible iteration count in SUMMARY.md
-</folder_structure>
 
-<execution_notes>
+## Execution Notes
 
-<dependency_handling>
+### Dependency Handling
 Refine prompts depend on the target output existing:
 - Check target file exists before execution
 - If target folder missing, offer to create the original prompt first
 
 ```xml
-<dependency_check>
+#### Dependency Check
 If `.prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md` not found:
 - Error: "Cannot refine - target output doesn't exist"
 - Offer: "Create the original {purpose} prompt first?"
-</dependency_check>
 ```
-</dependency_handling>
 
-<archive_creation>
+### Archive Creation
 Before overwriting, ensure archive exists:
 ```bash
 mkdir -p .prompts/{num}-{topic}-{original_purpose}/archive/
 mv .prompts/{num}-{topic}-{original_purpose}/{topic}-{original_purpose}.md \
    .prompts/{num}-{topic}-{original_purpose}/archive/{topic}-{original_purpose}-v{n}.md
 ```
-</archive_creation>
 
-<summary_update>
+### Summary Update
 SUMMARY.md must reflect the refinement:
 - Update version number
 - Add "Changes from Previous" section
 - Update one-liner if findings changed
 - Update confidence if improved
-</summary_update>
 
-</execution_notes>

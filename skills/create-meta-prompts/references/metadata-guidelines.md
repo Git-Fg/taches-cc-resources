@@ -1,61 +1,47 @@
-<overview>
+## Overview
 Standard metadata structure for research and plan outputs. Include in all research, plan, and refine prompts.
-</overview>
 
-<metadata_structure>
+## Metadata Structure
 ```xml
-<metadata>
+### Metadata
   <confidence level="{high|medium|low}">
     {Why this confidence level}
-  </confidence>
-  <dependencies>
+  #### Dependencies
     {What's needed to proceed}
-  </dependencies>
-  <open_questions>
+  #### Open Questions
     {What remains uncertain}
-  </open_questions>
-  <assumptions>
+  #### Assumptions
     {What was assumed}
-  </assumptions>
-</metadata>
 ```
-</metadata_structure>
 
-<confidence_levels>
+## Confidence Levels
 - **high**: Official docs, verified patterns, clear consensus, few unknowns
 - **medium**: Mixed sources, some outdated info, minor gaps, reasonable approach
 - **low**: Sparse documentation, conflicting info, significant unknowns, best guess
-</confidence_levels>
 
-<dependencies_format>
+## Dependencies Format
 External requirements that must be met:
 ```xml
-<dependencies>
+### Dependencies
   - API keys for third-party service
   - Database migration completed
   - Team trained on new patterns
-</dependencies>
 ```
-</dependencies_format>
 
-<open_questions_format>
+## Open Questions Format
 What couldn't be determined or needs validation:
 ```xml
-<open_questions>
+### Open Questions
   - Actual rate limits under production load
   - Performance with >100k records
   - Specific error codes for edge cases
-</open_questions>
 ```
-</open_questions_format>
 
-<assumptions_format>
+## Assumptions Format
 Context assumed that might need validation:
 ```xml
-<assumptions>
+### Assumptions
   - Using REST API (not GraphQL)
   - Single region deployment
   - Node.js/TypeScript stack
-</assumptions>
 ```
-</assumptions_format>

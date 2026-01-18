@@ -1,10 +1,9 @@
 
-<overview>
+## Overview
 The most common debugging mistake: declaring victory too early. A fix isn't complete until it's verified. This document defines what "verified" means and provides systematic approaches to proving your fix works.
-</overview>
 
 
-<definition>
+## Definition
 A fix is verified when:
 
 1. **The original issue no longer occurs**
@@ -28,9 +27,8 @@ A fix is verified when:
    - Not just "worked once" but "works reliably"
 
 **Anything less than this is not verified.**
-</definition>
 
-<examples>
+## Examples
 ❌ **Not verified**:
 - "I ran it once and it didn't crash"
 - "It seems to work now"
@@ -42,7 +40,6 @@ A fix is verified when:
 - "The data now saves correctly and I can retrieve it"
 - "All existing tests pass, plus I added a test for this scenario"
 - "Verified in dev, staging, and production environments"
-</examples>
 
 
 <pattern name="reproduction_verification">
@@ -83,7 +80,6 @@ A fix is verified when:
 - Maybe you fixed a different bug
 
 **Solution**: Revert your fix. If the bug comes back, you've verified your fix addressed it.
-</pattern>
 
 
 <pattern name="regression_testing">
@@ -111,7 +107,7 @@ A fix is verified when:
 - Integration tests for the feature
 - End-to-end tests for the workflow
 
-<example>
+## Example
 **Fix**: Changed how user sessions are stored (from memory to database)
 
 **Adjacent functionality to verify**:
@@ -124,8 +120,6 @@ A fix is verified when:
 - OAuth login still works ✓
 
 If you only tested "login works", you missed 6 other things that could break.
-</example>
-</pattern>
 
 
 <pattern name="test_first_debugging">
@@ -178,7 +172,6 @@ If you only tested "login works", you missed 6 other things that could break.
 - Exploratory debugging (you don't understand the bug yet)
 - Infrastructure issues (can't easily test)
 - One-off data issues
-</pattern>
 
 
 <pattern name="environment_verification">
@@ -217,7 +210,7 @@ If you only tested "login works", you missed 6 other things that could break.
 - [ ] Works in production (the real test)
 ```
 
-<example>
+## Example
 **Bug**: Batch processing fails in production but works locally
 
 **Investigation**:
@@ -231,8 +224,6 @@ If you only tested "login works", you missed 6 other things that could break.
 - Verify performance in staging
 - Monitor first production run
 - Confirm all environments work
-</example>
-</pattern>
 
 
 <pattern name="stability_testing">
@@ -285,7 +276,7 @@ async function testWithRandomTiming() {
 // Run this 1000 times
 ```
 
-<example>
+## Example
 **Bug**: Race condition in file upload
 
 **Weak verification**:
@@ -301,11 +292,9 @@ async function testWithRandomTiming() {
 - Run all tests 50 times: zero failures ✓
 
 Now it's verified.
-</example>
-</pattern>
 
 
-<checklist>
+## Checklist
 Copy this checklist when verifying a fix:
 
 ```markdown
@@ -351,10 +340,9 @@ Copy this checklist when verifying a fix:
 ```
 
 **Do not merge/deploy until all checkboxes are checked.**
-</checklist>
 
 
-<distrust>
+## Distrust
 Your verification might be wrong if:
 
 **1. You can't reproduce the original bug anymore**
@@ -394,10 +382,9 @@ Your verification might be wrong if:
 - "All tests pass including new regression test"
 - "Deployed to staging, tested for 3 days, no issues"
 - "Root cause was X, fix addresses X directly, verified by Y"
-</distrust>
 
 
-<mindset>
+## Mindset
 **Assume your fix is wrong until proven otherwise.**
 
 This isn't pessimism - it's professionalism.
@@ -422,4 +409,3 @@ This isn't pessimism - it's professionalism.
 - Learning from the investigation
 
 **Verification is not optional. It's the most important part of debugging.**
-</mindset>
