@@ -22,7 +22,7 @@ This system separates **analysis** from **execution**:
 
 The system consistently generates prompts with:
 
-- **XML structure** for clear semantic organization
+- **Markdown structure** for clear semantic organization
 - **Contextual "why"** - explains purpose, audience, and goals
 - **Success criteria** - specific, measurable outcomes
 - **Verification protocols** - how to test that it worked
