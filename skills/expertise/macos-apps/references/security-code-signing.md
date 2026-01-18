@@ -2,8 +2,8 @@
 
 Secure coding, keychain, code signing, and notarization for macOS apps.
 
-<keychain>
-<save_retrieve>
+### Keychain
+#### Save Retrieve
 ```swift
 import Security
 
@@ -111,9 +111,8 @@ extension KeychainService {
     }
 }
 ```
-</save_retrieve>
 
-<keychain_access_groups>
+### Keychain Access Groups
 Share keychain items between apps:
 
 ```swift
@@ -134,9 +133,8 @@ let query: [String: Any] = [
     kSecValueData as String: data
 ]
 ```
-</keychain_access_groups>
 
-<keychain_access_control>
+### Keychain Access Control
 ```swift
 // Require user presence (Touch ID / password)
 func saveSecure(key: String, data: Data) throws {
@@ -162,11 +160,9 @@ func saveSecure(key: String, data: Data) throws {
     }
 }
 ```
-</keychain_access_control>
-</keychain>
 
-<secure_coding>
-<input_validation>
+### Secure Coding
+### Input Validation
 ```swift
 // Validate user input
 func validateUsername(_ username: String) throws -> String {
@@ -194,9 +190,8 @@ func sanitizeHTML(_ input: String) -> String {
         .replacingOccurrences(of: "'", with: "&#39;")
 }
 ```
-</input_validation>
 
-<secure_random>
+### Secure Random
 ```swift
 import Security
 
@@ -214,9 +209,8 @@ func generateToken(length: Int = 32) -> String? {
     return data.base64EncodedString()
 }
 ```
-</secure_random>
 
-<cryptography>
+### Cryptography
 ```swift
 import CryptoKit
 
@@ -248,9 +242,8 @@ func deriveKey(from password: String, salt: Data) -> SymmetricKey {
     return key
 }
 ```
-</cryptography>
 
-<secure_file_storage>
+### Secure File Storage
 ```swift
 // Store sensitive files with data protection
 func saveSecureFile(_ data: Data, to url: URL) throws {
@@ -268,11 +261,9 @@ func readSecureFile(at url: URL) throws -> Data {
     return try Data(contentsOf: url)
 }
 ```
-</secure_file_storage>
-</secure_coding>
 
-<app_sandbox>
-<entitlements>
+### App Sandbox
+### Entitlements
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -312,9 +303,8 @@ func readSecureFile(at url: URL) throws -> Data {
 </dict>
 </plist>
 ```
-</entitlements>
 
-<request_permission>
+###### Request Permission
 ```swift
 // Request camera permission
 import AVFoundation
@@ -333,11 +323,9 @@ func checkCameraAuthorization() -> AVAuthorizationStatus {
     AVCaptureDevice.authorizationStatus(for: .video)
 }
 ```
-</request_permission>
-</app_sandbox>
 
-<code_signing>
-<signing_identity>
+###### Code Signing
+###### Signing Identity
 ```bash
 # List available signing identities
 security find-identity -v -p codesigning
@@ -357,9 +345,8 @@ codesign -dv --verbose=4 MyApp.app
 # Show entitlements
 codesign -d --entitlements - MyApp.app
 ```
-</signing_identity>
 
-<hardened_runtime>
+###### Hardened Runtime
 ```xml
 <!-- Required for notarization -->
 <!-- Hardened runtime entitlements -->
@@ -380,11 +367,9 @@ codesign -d --entitlements - MyApp.app
 <key>com.apple.security.cs.allow-dyld-environment-variables</key>
 <true/>
 ```
-</hardened_runtime>
-</code_signing>
 
-<notarization>
-<notarize_app>
+###### Notarization
+###### Notarize App
 ```bash
 # Create ZIP for notarization
 ditto -c -k --keepParent MyApp.app MyApp.zip
@@ -414,9 +399,8 @@ xcrun stapler staple MyApp.app
 # Verify notarization
 spctl --assess --verbose=4 --type execute MyApp.app
 ```
-</notarize_app>
 
-<store_credentials>
+###### Store Credentials
 ```bash
 # Store notarization credentials in keychain
 xcrun notarytool store-credentials "AC_PASSWORD" \
@@ -429,9 +413,8 @@ xcrun notarytool submit MyApp.zip \
     --keychain-profile "AC_PASSWORD" \
     --wait
 ```
-</store_credentials>
 
-<dmg_notarization>
+###### Dmg Notarization
 ```bash
 # Create DMG
 hdiutil create -volname "MyApp" -srcfolder MyApp.app -ov -format UDZO MyApp.dmg
@@ -447,10 +430,8 @@ xcrun notarytool submit MyApp.dmg \
 # Staple DMG
 xcrun stapler staple MyApp.dmg
 ```
-</dmg_notarization>
-</notarization>
 
-<transport_security>
+##### Transport Security
 ```swift
 // HTTPS only (default in iOS 9+ / macOS 10.11+)
 // Add exceptions in Info.plist if needed
@@ -499,10 +480,9 @@ class PinnedSessionDelegate: NSObject, URLSessionDelegate {
     }
 }
 ```
-</transport_security>
 
-<best_practices>
-<security_checklist>
+### Best Practices
+### Security Checklist
 - Store secrets in Keychain, never in UserDefaults or files
 - Use App Transport Security (HTTPS only)
 - Validate all user input
@@ -511,14 +491,11 @@ class PinnedSessionDelegate: NSObject, URLSessionDelegate {
 - Sign and notarize for distribution
 - Request only necessary entitlements
 - Clear sensitive data from memory when done
-</security_checklist>
 
-<common_mistakes>
+### Common Mistakes
 - Storing API keys in code (use Keychain or secure config)
 - Logging sensitive data
 - Using `print()` for sensitive values in production
 - Not validating server certificates
 - Weak password hashing (use bcrypt/scrypt/Argon2)
 - Storing passwords instead of hashes
-</common_mistakes>
-</best_practices>

@@ -22,7 +22,7 @@ This system separates **analysis** from **execution**:
 
 The system consistently generates prompts with:
 
-- **XML structure** for clear semantic organization
+- **Markdown structure** for clear semantic organization
 - **Contextual "why"** - explains purpose, audience, and goals
 - **Success criteria** - specific, measurable outcomes
 - **Verification protocols** - how to test that it worked
@@ -142,7 +142,7 @@ After successful execution, prompts are automatically moved to `.prompts/complet
 The system transforms vague ideas into rigorous specifications by:
 
 1. **Asking the right questions** - Clarifies ambiguity before generating anything
-2. **Adding structure automatically** - XML tags, success criteria, verification steps
+2. **Adding structure automatically** - Markdown headings, success criteria, verification steps
 3. **Explaining constraints** - Not just "what" but "WHY" things should be done certain ways
 4. **Thinking about failure modes** - "What to avoid and why" prevents common mistakes
 5. **Defining done** - Clear, measurable success criteria so you know when it's complete

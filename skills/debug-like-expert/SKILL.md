@@ -3,13 +3,14 @@ name: debug-like-expert
 description: Deep analysis debugging mode for complex issues. Activates methodical investigation protocol with evidence gathering, hypothesis testing, and rigorous verification. Use when standard troubleshooting fails or when issues require systematic root cause analysis.
 ---
 
-<objective>
+
+## Objective
 Deep analysis debugging mode for complex issues. This skill activates methodical investigation protocols with evidence gathering, hypothesis testing, and rigorous verification when standard troubleshooting has failed.
 
 The skill emphasizes treating code you wrote with MORE skepticism than unfamiliar code, as cognitive biases about "how it should work" can blind you to actual implementation errors. Use scientific method to systematically identify root causes rather than applying quick fixes.
-</objective>
 
-<context_scan>
+
+## Context Scan
 **Run on every invocation to detect domain-specific debugging expertise:**
 
 ```bash
@@ -30,14 +31,15 @@ ls ~/.claude/skills/expertise/ 2>/dev/null | head -5
 ```
 
 **Present findings before starting investigation.**
-</context_scan>
 
-<domain_expertise>
+
+## Domain Expertise
 **Domain-specific expertise lives in `~/.claude/skills/expertise/`**
 
 Domain skills contain comprehensive knowledge including debugging, testing, performance, and common pitfalls. Before investigation, determine if domain expertise should be loaded.
 
-<scan_domains>
+
+### Scan Domains
 ```bash
 ls ~/.claude/skills/expertise/ 2>/dev/null
 ```
@@ -45,9 +47,9 @@ ls ~/.claude/skills/expertise/ 2>/dev/null
 This reveals available domain expertise (e.g., macos-apps, iphone-apps, python-games, unity-games).
 
 **If no expertise skills found:** Proceed without domain expertise (graceful degradation). The skill works fine with general debugging methodology.
-</scan_domains>
 
-<inference_rules>
+
+##### Inference Rules
 If user's description or codebase contains domain keywords, INFER the domain:
 
 | Keywords/Files | Domain Skill |
@@ -66,9 +68,9 @@ If domain inferred, confirm:
 Detected: [domain] issue → expertise/[skill-name]
 Load this debugging expertise? (Y / see other options / none)
 ```
-</inference_rules>
 
-<no_inference>
+
+### No Inference
 If no domain obvious, present options:
 
 ```
@@ -86,9 +88,9 @@ C. Create domain expertise for this domain
 
 Select:
 ```
-</no_inference>
 
-<load_domain>
+
+### Load Domain
 When domain selected, READ all references from that skill:
 
 ```bash
@@ -106,33 +108,33 @@ This loads comprehensive domain knowledge BEFORE investigation:
 Announce: "Loaded [domain] expertise. Investigating with domain-specific context."
 
 **If domain skill not found:** Inform user and offer to proceed with general methodology or create the expertise.
-</load_domain>
 
-<when_to_load>
+
+### When To Load
 Domain expertise should be loaded BEFORE investigation when domain is known.
 
 Domain expertise is NOT needed for:
 - Pure logic bugs (domain-agnostic)
 - Generic algorithm issues
 - When user explicitly says "skip domain context"
-</when_to_load>
-</domain_expertise>
 
-<context>
+
+## Context
 This skill activates when standard troubleshooting has failed. The issue requires methodical investigation, not quick fixes. You are entering the mindset of a senior engineer who debugs with scientific rigor.
 
 **Important**: If you wrote or modified any of the code being debugged, you have cognitive biases about how it works. Your mental model of "how it should work" may be wrong. Treat code you wrote with MORE skepticism than unfamiliar code - you're blind to your own assumptions.
-</context>
 
-<core_principle>
+
+## Core Principle
 **VERIFY, DON'T ASSUME.** Every hypothesis must be tested. Every "fix" must be validated. No solutions without evidence.
 
 **ESPECIALLY**: Code you designed or implemented is guilty until proven innocent. Your intent doesn't matter - only the code's actual behavior matters. Question your own design decisions as rigorously as you'd question anyone else's.
-</core_principle>
 
-<quick_start>
 
-<evidence_gathering>
+## Quick Start
+
+
+### Evidence Gathering
 
 Before proposing any solution:
 
@@ -156,9 +158,9 @@ Before proposing any solution:
 
 See [references/when-to-research.md](references/when-to-research.md) for detailed guidance on research strategy.
 
-</evidence_gathering>
 
-<root_cause_analysis>
+
+### Root Cause Analysis
 
 **A. Form Hypotheses**
 
@@ -184,9 +186,9 @@ Don't move forward until you can answer:
 - What evidence contradicts other hypotheses?
 - What additional information is needed?
 
-</root_cause_analysis>
 
-<solution_development>
+
+### Solution Development
 
 **Only after confirming root cause:**
 
@@ -208,11 +210,10 @@ Don't move forward until you can answer:
 
 See [references/verification-patterns.md](references/verification-patterns.md) for comprehensive verification approaches.
 
-</solution_development>
 
-</quick_start>
 
-<critical_rules>
+
+## Critical Rules
 
 1. **NO DRIVE-BY FIXES**: If you can't explain WHY a change works, don't make it
 2. **VERIFY EVERYTHING**: Test your assumptions. Read the actual code. Check the actual behavior
@@ -227,9 +228,9 @@ See [references/verification-patterns.md](references/verification-patterns.md) f
 7. **CHASE DEPENDENCIES**: If the issue involves libraries, configs, or external systems, investigate those too
 8. **QUESTION PREVIOUS WORK**: Maybe the earlier "fix" was wrong. Re-examine with fresh eyes
 
-</critical_rules>
 
-<success_criteria>
+
+## Success Criteria
 
 Before starting:
 - [ ] Context scan executed to detect domain
@@ -247,9 +248,9 @@ If you can't answer "yes" to all of these, keep investigating.
 
 **CRITICAL**: Do NOT mark debugging tasks as complete until this checklist passes.
 
-</success_criteria>
 
-<output_format>
+
+## Output Format
 
 ```markdown
 ## Issue: [Problem Description]
@@ -270,9 +271,9 @@ If you can't answer "yes" to all of these, keep investigating.
 [How you confirmed this works and doesn't break anything else]
 ```
 
-</output_format>
 
-<advanced_topics>
+
+## Advanced Topics
 
 For deeper topics, see reference files:
 
@@ -306,4 +307,3 @@ For deeper topics, see reference files:
 - What to search for vs what to reason about
 - Balancing research time vs experimentation
 
-</advanced_topics>

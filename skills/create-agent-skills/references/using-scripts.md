@@ -1,10 +1,10 @@
 # Using Scripts in Skills
 
-<purpose>
+## Purpose
 Scripts are executable code that Claude runs as-is rather than regenerating each time. They ensure reliable, error-free execution of repeated operations.
-</purpose>
 
-<when_to_use>
+
+## When to Use
 Use scripts when:
 - The same code runs across multiple skill invocations
 - Operations are error-prone when rewritten from scratch
@@ -17,9 +17,9 @@ Common script types:
 - **API calls** - Authenticated requests, webhook handlers, data fetches
 - **Data processing** - Transform files, batch operations, migrations
 - **Build processes** - Compile, bundle, test runners
-</when_to_use>
 
-<script_structure>
+
+## Script Structure
 Scripts live in `scripts/` within the skill directory:
 
 ```
@@ -40,9 +40,9 @@ A well-structured script includes:
 3. Error handling
 4. Idempotent operations where possible
 5. Clear output/feedback
-</script_structure>
 
-<script_example>
+
+## Script Example
 ```bash
 #!/bin/bash
 # deploy.sh - Deploy project to Vercel
@@ -69,9 +69,9 @@ fi
 
 echo "Deployment complete."
 ```
-</script_example>
 
-<workflow_integration>
+
+## Workflow Integration
 Workflows reference scripts like this:
 
 ```xml
@@ -86,9 +86,9 @@ Workflows reference scripts like this:
 ```
 
 The workflow tells Claude WHEN to run the script. The script handles HOW the operation executes.
-</workflow_integration>
 
-<best_practices>
+
+## Best Practices
 **Do:**
 - Make scripts idempotent (safe to run multiple times)
 - Include clear usage comments
@@ -102,12 +102,12 @@ The workflow tells Claude WHEN to run the script. The script handles HOW the ope
 - Skip error handling
 - Make scripts do too many unrelated things
 - Forget to make scripts executable (`chmod +x`)
-</best_practices>
 
-<security_considerations>
+
+## Security Considerations
 - Never embed API keys, tokens, or secrets in scripts
 - Use environment variables for sensitive configuration
 - Validate and sanitize any user-provided inputs
 - Be cautious with scripts that delete or modify data
 - Consider adding `--dry-run` options for destructive operations
-</security_considerations>
+

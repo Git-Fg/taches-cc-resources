@@ -9,7 +9,7 @@ arguments:
 
 Execute the plan at {{plan_path}} using **intelligent segmentation** for optimal quality.
 
-**Process:**
+## Process
 
 1. **Verify plan exists and is unexecuted:**
    - Read {{plan_path}}
@@ -113,7 +113,7 @@ Execute the plan at {{plan_path}} using **intelligent segmentation** for optimal
    - Verify commit successful
    - Present completion message with next steps
 
-**Critical Rules:**
+## Critical Rules
 
 - **Read execution_context first:** Always load files from `<execution_context>` section before executing
 - **Minimal context loading:** Only read files explicitly mentioned in `<execution_context>` and `<context>` sections
@@ -123,7 +123,8 @@ Execute the plan at {{plan_path}} using **intelligent segmentation** for optimal
 - **Verification is mandatory:** Don't mark complete without running verification checks
 - **Follow execute-phase.md protocol:** Loaded context contains all execution instructions
 
-**Context Efficiency Target:**
+## Context Efficiency Target
+
 - Execution context: ~5-7k tokens (execute-phase.md, summary.md, checkpoints.md if needed)
 - Domain context: ~10-15k tokens (BRIEF, ROADMAP, codebase files)
 - Total overhead: <30% context, reserving 70%+ for workspace and implementation

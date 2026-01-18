@@ -1,11 +1,11 @@
 # Error Handling and Recovery for Subagents
 
-<common_failure_modes>
+## Common Failure Modes
 
 
 Industry research identifies these failure patterns:
 
-<specification_problems>
+### Specification Problems
 **32% of failures**: Subagents don't know what to do.
 
 **Causes**:
@@ -17,9 +17,8 @@ Industry research identifies these failure patterns:
 **Symptoms**: Subagent asks clarifying questions (can't if it's a subagent), makes incorrect assumptions, produces partial outputs, or fails to complete task.
 
 **Prevention**: Explicit `<role>`, `<workflow>`, `<focus_areas>`, and `<output_format>` sections in prompt.
-</specification_problems>
 
-<inter_agent_misalignment>
+### Inter Agent Misalignment
 **28% of failures**: Coordination breakdowns in multi-agent workflows.
 
 **Causes**:
@@ -31,9 +30,8 @@ Industry research identifies these failure patterns:
 **Symptoms**: Duplicate work, contradictory outputs, infinite loops, tasks falling through cracks.
 
 **Prevention**: Clear orchestration patterns (see [orchestration-patterns.md](orchestration-patterns.md)), explicit handoff protocols.
-</inter_agent_misalignment>
 
-<verification_gaps>
+### Verification Gaps
 **24% of failures**: Nobody checks quality.
 
 **Causes**:
@@ -45,9 +43,8 @@ Industry research identifies these failure patterns:
 **Symptoms**: Incorrect results silently propagated, hallucinations undetected, format errors break downstream processes.
 
 **Prevention**: Include verification steps in subagent workflows, validate outputs before use, implement evaluator agents.
-</verification_gaps>
 
-<error_cascading>
+### Error Cascading
 **Critical pattern**: Failures in one subagent propagate to others.
 
 **Causes**:
@@ -58,9 +55,8 @@ Industry research identifies these failure patterns:
 **Symptoms**: Single failure causes entire workflow to fail.
 
 **Prevention**: Defensive programming in subagent prompts, graceful degradation strategies, validation at boundaries.
-</error_cascading>
 
-<non_determinism>
+### Non Determinism
 **Inherent challenge**: Same prompt can produce different outputs.
 
 **Causes**:
@@ -71,43 +67,37 @@ Industry research identifies these failure patterns:
 **Symptoms**: Inconsistent behavior across invocations, tests pass sometimes and fail other times.
 
 **Mitigation**: Lower temperature for consistency-critical tasks, comprehensive testing to identify variation patterns, robust validation.
-</non_determinism>
-</common_failure_modes>
 
-<recovery_strategies>
+## Recovery Strategies
 
 
-<graceful_degradation>
+### Graceful Degradation
 **Pattern**: Workflow produces useful result even when ideal path fails.
 
-<example>
+#### Example
 ```markdown
-<workflow>
+##### Workflow
 1. Attempt to fetch latest API documentation from web
 2. If fetch fails, use cached documentation (flag as potentially outdated)
 3. If no cache available, use local stub documentation (flag as incomplete)
 4. Generate code with best available information
 5. Add TODO comments indicating what should be verified
-</workflow>
 
-<fallback_hierarchy>
+##### Fallback Hierarchy
 - Primary: Live API docs (most accurate)
 - Secondary: Cached docs (may be stale, flag date)
 - Tertiary: Stub docs (minimal, flag as incomplete)
 - Always: Add verification TODOs to generated code
-</fallback_hierarchy>
 ```
 
 **Key principle**: Partial success better than total failure. Always produce something useful.
-</example>
-</graceful_degradation>
 
-<autonomous_retry>
+### Autonomous Retry
 **Pattern**: Subagent retries failed operations with exponential backoff.
 
-<example>
+#### Example
 ```markdown
-<error_handling>
+##### Error Handling
 When a tool call fails:
 1. Attempt operation
 2. If fails, wait 1 second and retry
@@ -116,42 +106,36 @@ When a tool call fails:
 5. Document the failure in output
 
 Maximum 3 retry attempts before falling back.
-</error_handling>
 ```
 
 **Use case**: Transient failures (network issues, temporary file locks, rate limits).
 
 **Anti-pattern**: Infinite retry loops without backoff or max attempts.
-</example>
-</autonomous_retry>
 
-<circuit_breakers>
+### Circuit Breakers
 **Pattern**: Prevent cascading failures by stopping calls to failing components.
 
-<conceptual_example>
+#### Conceptual Example
 ```markdown
-<circuit_breaker_logic>
+##### Circuit Breaker Logic
 If API endpoint has failed 5 consecutive times:
 - Stop calling the endpoint (circuit "open")
 - Use fallback data source
 - After 5 minutes, attempt one call (circuit "half-open")
 - If succeeds, resume normal calls (circuit "closed")
 - If fails, keep circuit open for another 5 minutes
-</circuit_breaker_logic>
 ```
 
 **Application to subagents**: Include in prompt when subagent calls external APIs or services.
 
 **Benefit**: Prevents wasting time/tokens on operations known to be failing.
-</conceptual_example>
-</circuit_breakers>
 
-<timeouts>
+### Timeouts
 **Pattern**: Agents going silent shouldn't block workflow indefinitely.
 
-<implementation>
+#### Implementation
 ```markdown
-<timeout_handling>
+##### Timeout Handling
 For long-running operations:
 1. Set reasonable timeout (e.g., 2 minutes for analysis)
 2. If operation exceeds timeout:
@@ -159,19 +143,16 @@ For long-running operations:
    - Provide partial results if available
    - Clearly flag as incomplete
    - Suggest manual intervention
-</timeout_handling>
 ```
 
 **Note**: Claude Code has built-in timeouts for tool calls. Subagent prompts should include guidance on what to do when operations approach reasonable time limits.
-</implementation>
-</timeouts>
 
-<multiple_verification_paths>
+### Multiple Verification Paths
 **Pattern**: Different validators catch different error types.
 
-<example>
+#### Example
 ```markdown
-<verification_strategy>
+##### Verification Strategy
 After generating code:
 1. Syntax check: Parse code to verify valid syntax
 2. Type check: Run static type checker (if applicable)
@@ -181,19 +162,16 @@ After generating code:
 
 If any check fails, fix issue and re-run all checks.
 Each check catches different error types.
-</verification_strategy>
 ```
 
 **Benefit**: Layered validation catches more issues than single validation pass.
-</example>
-</multiple_verification_paths>
 
-<reassigning_tasks>
+### Reassigning Tasks
 **Pattern**: Invoke alternative agents or escalate to human when primary approach fails.
 
-<example>
+#### Example
 ```markdown
-<escalation_workflow>
+##### Escalation Workflow
 If automated fix fails after 2 attempts:
 1. Document what was tried and why it failed
 2. Provide diagnosis of the problem
@@ -201,20 +179,16 @@ If automated fix fails after 2 attempts:
 4. DO NOT continue attempting automated fixes that aren't working
 
 Know when to escalate rather than thrashing.
-</escalation_workflow>
 ```
 
 **Key insight**: Subagents should recognize their limitations and provide useful handoff information.
-</example>
-</reassigning_tasks>
-</recovery_strategies>
 
-<structured_communication>
+## Structured Communication
 
 
 Multi-agent systems fail when communication is ambiguous. Structured messaging prevents misunderstandings.
 
-<message_types>
+### Message Types
 Every message between agents (or from agent to user) should have explicit type:
 
 **Request**: Asking for something
@@ -251,14 +225,13 @@ From: test-writer
 Reason: Cannot write tests - no testing framework configured in project
 Recommendation: Install Jest or similar framework first
 ```
-</message_types>
 
-<schema_validation>
+### Schema Validation
 **Pattern**: Validate every payload against expected schema.
 
-<example>
+#### Example
 ```markdown
-<output_validation>
+##### Output Validation
 Expected output format:
 {
   "vulnerabilities": [
@@ -278,20 +251,16 @@ Before returning output:
 2. Check all required fields present
 3. Validate severity values are from allowed list
 4. Ensure location follows "file:line" format
-</output_validation>
 ```
 
 **Benefit**: Prevents malformed outputs from breaking downstream processes.
-</example>
-</schema_validation>
-</structured_communication>
 
-<observability>
+## Observability
 
 
 "Most agent failures are not model failures, they are context failures."
 
-<structured_logging>
+### Structured Logging
 **What to log**:
 - Input prompts and parameters
 - Tool calls and their results
@@ -318,9 +287,8 @@ Status: Success
 ```
 
 **Use case**: Debugging failures, identifying patterns, performance optimization.
-</structured_logging>
 
-<correlation_ids>
+### Correlation Ids
 **Pattern**: Track every message, plan, and tool call for end-to-end reconstruction.
 
 ```markdown
@@ -339,9 +307,8 @@ Main chat [abc123]:
 ```
 
 **Benefit**: Can trace entire workflow execution, identify where failures occurred, understand cascading effects.
-</correlation_ids>
 
-<metrics_monitoring>
+### Metrics Monitoring
 **Key metrics to track**:
 - Success rate (completed tasks / total invocations)
 - Error rate by error type
@@ -356,12 +323,11 @@ Main chat [abc123]:
 - Token usage increases >50% without prompt changes
 - Latency exceeds 2x baseline
 - Same error type occurs >5 times in 24 hours
-</metrics_monitoring>
 
-<evaluator_agents>
+### Evaluator Agents
 **Pattern**: Dedicated quality guardrail agents validate outputs.
 
-<example>
+#### Example
 ```markdown
 ---
 name: output-validator
@@ -370,36 +336,30 @@ tools: Read
 model: haiku
 ---
 
-<role>
+##### Role
 You are an output validation specialist. Check subagent outputs for:
 - Schema compliance
 - Completeness
 - Internal consistency
 - Format correctness
-</role>
 
-<workflow>
+##### Workflow
 1. Receive subagent output and expected schema
 2. Validate structure matches schema
 3. Check for required fields
 4. Verify value constraints (enums, formats, ranges)
 5. Test internal consistency (references valid, no contradictions)
 6. Return validation report: Pass/Fail with specific issues
-</workflow>
 
-<validation_criteria>
+##### Validation Criteria
 Pass: All checks succeed
 Fail: Any check fails - provide detailed error report
 Partial: Minor issues that don't prevent use - flag warnings
-</validation_criteria>
 ```
 
 **Use case**: Critical workflows where output quality is essential, high-risk operations, compliance requirements.
-</example>
-</evaluator_agents>
-</observability>
 
-<anti_patterns>
+## Anti Patterns
 
 
 <anti_pattern name="silent_failures">
@@ -413,7 +373,6 @@ Output: "No issues found" (incomplete review, but looks successful)
 ```
 
 **Fix**: Explicitly state what was reviewed, flag partial completion, include error summary.
-</anti_pattern>
 
 <anti_pattern name="no_fallback">
 ❌ When ideal path fails, subagent gives up entirely
@@ -433,7 +392,6 @@ Output: Code generated with note: "Verify against current API docs, using cached
 ```
 
 **Principle**: Provide best possible output given constraints, clearly flag limitations.
-</anti_pattern>
 
 <anti_pattern name="infinite_retry">
 ❌ Retrying failed operations without backoff or limit
@@ -441,7 +399,6 @@ Output: Code generated with note: "Verify against current API docs, using cached
 **Risk**: Wastes tokens, time, and may hit rate limits.
 
 **Fix**: Maximum retry count (typically 2-3), exponential backoff, fallback after exhausting retries.
-</anti_pattern>
 
 <anti_pattern name="error_cascading">
 ❌ Downstream agents assume upstream outputs are valid
@@ -458,7 +415,6 @@ Total workflow failure from single upstream error
 ```
 
 **Fix**: Each agent validates inputs before processing, includes error handling for invalid inputs.
-</anti_pattern>
 
 <anti_pattern name="no_error_context">
 ❌ Error messages without diagnostic context
@@ -468,10 +424,8 @@ Total workflow failure from single upstream error
 **Good**: "Failed to complete task: Unable to access file src/auth.ts (file not found). Attempted to review authentication code but file missing from expected location. Recommendation: Verify file path or check if file was moved/deleted."
 
 **Principle**: Error messages should help diagnose root cause and suggest remediation.
-</anti_pattern>
-</anti_patterns>
 
-<recovery_checklist>
+## Recovery Checklist
 
 
 Include these patterns in subagent prompts:
@@ -499,4 +453,3 @@ Include these patterns in subagent prompts:
 - [ ] Self-checking (does output make sense?)
 - [ ] Format compliance verification
 - [ ] Completeness check (all required components present?)
-</recovery_checklist>

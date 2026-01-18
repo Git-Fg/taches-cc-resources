@@ -2,7 +2,7 @@
 
 Apps where users create, open, and save discrete files (like TextEdit, Pages, Xcode).
 
-<when_to_use>
+### When To Use
 Use document-based architecture when:
 - Users explicitly create/open/save files
 - Multiple documents open simultaneously
@@ -12,10 +12,9 @@ Use document-based architecture when:
 Do NOT use when:
 - Single internal database (use shoebox pattern)
 - No user-facing files
-</when_to_use>
 
-<swiftui_document_group>
-<basic_setup>
+### Swiftui Document Group
+#### Basic Setup
 ```swift
 import SwiftUI
 import UniformTypeIdentifiers
@@ -67,9 +66,8 @@ extension UTType {
     }
 }
 ```
-</basic_setup>
 
-<document_view>
+#### Document View
 ```swift
 struct DocumentView: View {
     @Binding var document: MyDocument
@@ -93,9 +91,8 @@ extension FocusedValues {
     }
 }
 ```
-</document_view>
 
-<document_commands>
+#### Document Commands
 ```swift
 struct DocumentCommands: Commands {
     @FocusedBinding(\.document) private var document
@@ -117,9 +114,8 @@ struct DocumentCommands: Commands {
     }
 }
 ```
-</document_commands>
 
-<reference_file_document>
+### Reference File Document
 For documents referencing external files:
 
 ```swift
@@ -149,10 +145,8 @@ struct ProjectDocument: ReferenceFileDocument {
     }
 }
 ```
-</reference_file_document>
-</swiftui_document_group>
 
-<info_plist_document_types>
+### Info Plist Document Types
 Configure document types in Info.plist:
 
 ```xml
@@ -194,12 +188,11 @@ Configure document types in Info.plist:
     </dict>
 </array>
 ```
-</info_plist_document_types>
 
-<nsdocument_appkit>
+### Nsdocument Appkit
 For more control, use NSDocument:
 
-<nsdocument_subclass>
+### Nsdocument Subclass
 ```swift
 import AppKit
 
@@ -229,9 +222,8 @@ class Document: NSDocument {
     }
 }
 ```
-</nsdocument_subclass>
 
-<undo_support>
+### Undo Support
 ```swift
 class Document: NSDocument {
     var content = DocumentContent() {
@@ -252,9 +244,8 @@ class Document: NSDocument {
     }
 }
 ```
-</undo_support>
 
-<nsdocument_lifecycle>
+### Nsdocument Lifecycle
 ```swift
 class Document: NSDocument {
     // Called when document is first opened
@@ -287,10 +278,8 @@ class Document: NSDocument {
     }
 }
 ```
-</nsdocument_lifecycle>
-</nsdocument_appkit>
 
-<package_documents>
+### Package Documents
 For documents containing multiple files (like .pages):
 
 ```swift
@@ -348,9 +337,8 @@ extension UTType {
     }
 }
 ```
-</package_documents>
 
-<recent_documents>
+### Recent Documents
 ```swift
 // NSDocumentController manages Recent Documents automatically
 
@@ -383,9 +371,8 @@ struct AppCommands: Commands {
     }
 }
 ```
-</recent_documents>
 
-<export_import>
+### Export Import
 ```swift
 struct DocumentView: View {
     @Binding var document: MyDocument
@@ -442,4 +429,3 @@ extension MyDocument {
     }
 }
 ```
-</export_import>

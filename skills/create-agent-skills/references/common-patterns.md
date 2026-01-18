@@ -1,13 +1,13 @@
-<overview>
+## Overview
 This reference documents common patterns for skill authoring, including templates, examples, terminology consistency, and anti-patterns. All patterns use pure XML structure.
-</overview>
 
-<template_pattern>
-<description>
+
+## Template Pattern
+### Description
 Provide templates for output format. Match the level of strictness to your needs.
-</description>
 
-<strict_requirements>
+
+#### Strict Requirements
 Use when output format must be exact and consistent:
 
 ```xml
@@ -33,9 +33,9 @@ ALWAYS use this exact template structure:
 ```
 
 **When to use**: Compliance reports, standardized formats, automated processing
-</strict_requirements>
 
-<flexible_guidance>
+
+#### Flexible Guidance
 Use when Claude should adapt the format based on context:
 
 ```xml
@@ -60,15 +60,15 @@ Adjust sections as needed for the specific analysis type.
 ```
 
 **When to use**: Exploratory analysis, context-dependent formatting, creative tasks
-</flexible_guidance>
-</template_pattern>
 
-<examples_pattern>
-<description>
+
+
+## Examples Pattern
+### Description
 For skills where output quality depends on seeing examples, provide input/output pairs.
-</description>
 
-<commit_messages_example>
+
+### Commit Messages Example
 ```xml
 <objective>
 Generate commit messages following conventional commit format.
@@ -102,22 +102,22 @@ Use UTC timestamps consistently across report generation
 Follow this style: type(scope): brief description, then detailed explanation.
 </commit_message_format>
 ```
-</commit_messages_example>
 
-<when_to_use>
+
+### When to Use
 - Output format has nuances that text explanations can't capture
 - Pattern recognition is easier than rule following
 - Examples demonstrate edge cases
 - Multi-shot learning improves quality
-</when_to_use>
-</examples_pattern>
 
-<consistent_terminology>
-<principle>
+
+
+## Consistent Terminology
+### Principle
 Choose one term and use it throughout the skill. Inconsistent terminology confuses Claude and reduces execution quality.
-</principle>
 
-<good_example>
+
+#### Good Example
 Consistent usage:
 - Always "API endpoint" (not mixing with "URL", "API route", "path")
 - Always "field" (not mixing with "box", "element", "control")
@@ -134,9 +134,9 @@ Extract data from API endpoints using field mappings.
 3. Extract field values
 </quick_start>
 ```
-</good_example>
 
-<bad_example>
+
+#### Bad Example
 Inconsistent usage creates confusion:
 
 ```xml
@@ -152,22 +152,22 @@ Pull data from API routes using element mappings.
 ```
 
 Claude must now interpret: Are "API routes" and "URLs" the same? Are "fields", "boxes", "elements", and "controls" the same?
-</bad_example>
 
-<implementation>
+
+### Implementation
 1. Choose terminology early in skill development
 2. Document key terms in `<objective>` or `<context>`
 3. Use find/replace to enforce consistency
 4. Review reference files for consistent usage
-</implementation>
-</consistent_terminology>
 
-<provide_default_with_escape_hatch>
-<principle>
+
+
+## Provide Default with Escape Hatch
+### Principle
 Provide a default approach with an escape hatch for special cases, not a list of alternatives. Too many options paralyze decision-making.
-</principle>
 
-<good_example>
+
+#### Good Example
 Clear default with escape hatch:
 
 ```xml
@@ -183,9 +183,9 @@ with pdfplumber.open("file.pdf") as pdf:
 For scanned PDFs requiring OCR, use pdf2image with pytesseract instead.
 </quick_start>
 ```
-</good_example>
 
-<bad_example>
+
+#### Bad Example
 Too many options creates decision paralysis:
 
 ```xml
@@ -204,22 +204,22 @@ Choose based on your needs.
 ```
 
 Claude must now research and compare all options before starting. This wastes tokens and time.
-</bad_example>
 
-<implementation>
+
+### Implementation
 1. Recommend ONE default approach
 2. Explain when to use the default (implied: most of the time)
 3. Add ONE escape hatch for edge cases
 4. Link to advanced reference if multiple alternatives truly needed
-</implementation>
-</provide_default_with_escape_hatch>
 
-<anti_patterns>
-<description>
+
+
+## Anti-Patterns
+### Description
 Common mistakes to avoid when authoring skills.
-</description>
 
-<pitfall name="markdown_headings_in_body">
+
+### Markdown Headings in Body
 ❌ **BAD**: Using markdown headings in skill body:
 
 ```markdown
@@ -249,9 +249,9 @@ Form filling requires additional setup...
 ```
 
 **Why it matters**: XML provides semantic meaning, reliable parsing, and token efficiency.
-</pitfall>
 
-<pitfall name="vague_descriptions">
+
+### Vague Descriptions
 ❌ **BAD**:
 ```yaml
 description: Helps with documents
@@ -263,9 +263,9 @@ description: Extract text and tables from PDF files, fill forms, merge documents
 ```
 
 **Why it matters**: Vague descriptions prevent Claude from discovering and using the skill appropriately.
-</pitfall>
 
-<pitfall name="inconsistent_pov">
+
+### Inconsistent POV
 ❌ **BAD**:
 ```yaml
 description: I can help you process Excel files and generate reports
@@ -277,9 +277,9 @@ description: Processes Excel files and generates reports. Use when analyzing spr
 ```
 
 **Why it matters**: Skills must use third person. First/second person breaks the skill metadata pattern.
-</pitfall>
 
-<pitfall name="wrong_naming_convention">
+
+### Wrong Naming Convention
 ❌ **BAD**: Directory name doesn't match skill name or verb-noun convention:
 - Directory: `facebook-ads`, Name: `facebook-ads-manager`
 - Directory: `stripe-integration`, Name: `stripe`
@@ -291,9 +291,9 @@ description: Processes Excel files and generates reports. Use when analyzing spr
 - Directory: `process-pdfs`, Name: `process-pdfs`
 
 **Why it matters**: Consistency in naming makes skills discoverable and predictable.
-</pitfall>
 
-<pitfall name="too_many_options">
+
+### Too Many Options
 ❌ **BAD**:
 ```xml
 <quick_start>
@@ -315,9 +315,9 @@ For scanned PDFs requiring OCR, use pdf2image with pytesseract instead.
 ```
 
 **Why it matters**: Decision paralysis. Provide one default approach with escape hatch for special cases.
-</pitfall>
 
-<pitfall name="deeply_nested_references">
+
+### Deeply Nested References
 ❌ **BAD**: References nested multiple levels:
 ```
 SKILL.md → advanced.md → details.md → examples.md
@@ -331,9 +331,9 @@ SKILL.md → examples.md
 ```
 
 **Why it matters**: Claude may only partially read deeply nested files. Keep references one level deep from SKILL.md.
-</pitfall>
 
-<pitfall name="windows_paths">
+
+### Windows Paths
 ❌ **BAD**:
 ```xml
 <reference_guides>
@@ -349,9 +349,9 @@ See scripts/validate.py for validation
 ```
 
 **Why it matters**: Always use forward slashes for cross-platform compatibility.
-</pitfall>
 
-<pitfall name="dynamic_context_and_file_reference_execution">
+
+### Dynamic Context and File Reference Execution
 **Problem**: When showing examples of dynamic context syntax (exclamation mark + backticks) or file references (@ prefix), the skill loader executes these during skill loading.
 
 ❌ **BAD** - These execute during skill load:
@@ -376,9 +376,9 @@ Review dependencies in: @ package.json (remove space after @ in actual usage)
 - Skills with example commands or file paths that shouldn't execute during loading
 
 **Why it matters**: Without the space, these execute during skill load, causing errors or unwanted file reads.
-</pitfall>
 
-<pitfall name="missing_required_tags">
+
+### Missing Required Tags
 ❌ **BAD**: Missing required tags:
 ```xml
 <quick_start>
@@ -404,9 +404,9 @@ Use this tool for processing...
 ```
 
 **Why it matters**: Every skill must have `<objective>`, `<quick_start>`, and `<success_criteria>` (or `<when_successful>`).
-</pitfall>
 
-<pitfall name="hybrid_xml_markdown">
+
+### Hybrid XML/Markdown
 ❌ **BAD**: Mixing XML tags with markdown headings:
 ```markdown
 <objective>
@@ -438,9 +438,9 @@ Form filling...
 ```
 
 **Why it matters**: Consistency in structure. Either use pure XML or pure markdown (prefer XML).
-</pitfall>
 
-<pitfall name="unclosed_xml_tags">
+
+### Unclosed XML Tags
 ❌ **BAD**: Forgetting to close XML tags:
 ```xml
 <objective>
@@ -463,15 +463,15 @@ Use pdfplumber...
 ```
 
 **Why it matters**: Unclosed tags break XML parsing and create ambiguous boundaries.
-</pitfall>
-</anti_patterns>
 
-<progressive_disclosure_pattern>
-<description>
+
+
+## Progressive Disclosure Pattern
+### Description
 Keep SKILL.md concise by linking to detailed reference files. Claude loads reference files only when needed.
-</description>
 
-<implementation>
+
+### Implementation
 ```xml
 <objective>
 Manage Facebook Ads campaigns, ad sets, and ads via the Marketing API.
@@ -496,15 +496,15 @@ See [basic-operations.md](basic-operations.md) for campaign creation and managem
 - Claude only reads relevant reference files
 - Token usage scales with task complexity
 - Easier to maintain and update
-</implementation>
-</progressive_disclosure_pattern>
 
-<validation_pattern>
-<description>
+
+
+## Validation Pattern
+### Description
 For skills with validation steps, make validation scripts verbose and specific.
-</description>
 
-<implementation>
+
+### Implementation
 ```xml
 <validation>
 After making changes, validate immediately:
@@ -527,15 +527,15 @@ Only proceed when validation passes with zero errors.
 - Claude can fix issues without guessing
 - Specific error messages reduce iteration cycles
 - Available options shown in error messages
-</implementation>
-</validation_pattern>
 
-<checklist_pattern>
-<description>
+
+
+## Checklist Pattern
+### Description
 For complex multi-step workflows, provide a checklist Claude can copy and track progress.
-</description>
 
-<implementation>
+
+### Implementation
 ```xml
 <workflow>
 Copy this checklist and check off items as you complete them:
@@ -591,5 +591,5 @@ If verification fails, return to Step 2.
 - Clear progress tracking
 - Prevents skipping steps
 - Easy to resume after interruption
-</implementation>
-</checklist_pattern>
+
+

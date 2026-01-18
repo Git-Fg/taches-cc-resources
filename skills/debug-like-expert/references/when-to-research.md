@@ -1,10 +1,9 @@
 
-<overview>
+## Overview
 Debugging requires both reasoning about code and researching external knowledge. The skill is knowing when to use each. This guide helps you recognize signals that indicate you need external knowledge vs when you can reason through the problem with the code in front of you.
-</overview>
 
 
-<research_signals>
+## Research Signals
 
 **1. Error messages you don't recognize**
 - Stack traces from libraries you haven't used
@@ -15,14 +14,13 @@ Debugging requires both reasoning about code and researching external knowledge.
 - Often leads to GitHub issues, Stack Overflow, or official docs
 - Others have likely encountered this
 
-<example>
+### Example
 Error: `EADDRINUSE: address already in use :::3000`
 
 This is a system-level error. Research it:
 - Web search: "EADDRINUSE address already in use"
 - Learn: Port is already occupied by another process
 - Solution: Find and kill the process, or use different port
-</example>
 
 **2. Library/framework behavior doesn't match expectations**
 - You're using a library correctly (you think) but it's not working
@@ -34,14 +32,13 @@ This is a system-level error. Research it:
 - Search GitHub issues for the library
 - Check if there are breaking changes in recent versions
 
-<example>
+### Example
 You're using `useEffect` in React but it's running on every render despite empty dependency array.
 
 Research needed:
 - Check React docs for useEffect rules
 - Search: "useEffect running on every render"
 - Discover: React 18 StrictMode runs effects twice in dev mode
-</example>
 
 **3. Domain knowledge gaps**
 - Debugging authentication: need to understand OAuth flow
@@ -73,10 +70,9 @@ Research needed:
 - Migration guides
 - "Breaking changes" documentation
 
-</research_signals>
 
 
-<reasoning_signals>
+## Reasoning Signals
 
 **1. The bug is in YOUR code**
 - Not library behavior, not system issues
@@ -88,7 +84,7 @@ Research needed:
 - You can modify it to add observability
 - No external documentation will help
 
-<example>
+### Example
 Bug: Shopping cart total calculates incorrectly
 
 This is your logic:
@@ -103,7 +99,6 @@ DO reason through it:
 - Log each item's price and quantity
 - Log the running sum
 - Trace the logic step by step
-</example>
 
 **2. You have all the information needed**
 - The bug is reproducible
@@ -137,10 +132,9 @@ DO reason through it:
 - Use a debugger
 - Test with different inputs
 
-</reasoning_signals>
 
 
-<research_how>
+## Research How
 
 **Web Search - When and How**
 
@@ -217,10 +211,9 @@ Ask specific questions about the library
 - Read examples and guides, not just API reference
 - Look for "Common Pitfalls" or "Troubleshooting" sections
 
-</research_how>
 
 
-<balance>
+## Balance
 
 **The research trap**: Spending hours reading docs about topics tangential to your bug
 - You think it's a caching issue, so you read all about cache invalidation
@@ -252,7 +245,7 @@ Ask specific questions about the library
    - Reasoning → reveals what to research
    - Keep switching based on what you learn
 
-<example>
+### Example
 **Bug**: Real-time updates stop working after 1 hour
 
 **Start with research** (5 min):
@@ -281,12 +274,10 @@ vs
 **Wrong approach**: Spend 2 hours reading WebSocket spec
 - Learned a lot about WebSocket protocol
 - Didn't solve the problem (it was a config issue)
-</example>
-
-</balance>
 
 
-<decision_tree>
+
+## Decision Tree
 ```
 Is this a error message I don't recognize?
 ├─ YES → Web search the error message
@@ -308,10 +299,9 @@ Can I observe the behavior directly?
 ├─ YES → Add observability and reason through it
 └─ NO → Research the domain/concept first, then reason
 ```
-</decision_tree>
 
 
-<red_flags>
+## Red Flags
 
 **You're researching too much if**:
 - You've read 20 blog posts but haven't looked at your code
@@ -331,10 +321,9 @@ Can I observe the behavior directly?
 - Each reasoning session tests a specific hypothesis
 - You're making steady progress toward understanding
 
-</red_flags>
 
 
-<mindset>
+## Mindset
 
 **Good researchers ask**:
 - "What specific question do I need answered?"
@@ -358,4 +347,3 @@ Can I observe the behavior directly?
 - Research what you don't know
 - Reason through what you can observe
 - Fix what you understand
-</mindset>

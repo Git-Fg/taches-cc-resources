@@ -1,7 +1,6 @@
 
-<overview>
+## Overview
 Debugging is applied scientific method. You observe a phenomenon (the bug), form hypotheses about its cause, design experiments to test those hypotheses, and revise based on evidence. This isn't metaphorical - it's literal experimental science.
-</overview>
 
 
 <principle name="falsifiability">
@@ -20,9 +19,8 @@ A good hypothesis can be proven wrong. If you can't design an experiment that co
 - "The library's caching mechanism is returning stale data because our cache key doesn't include the timestamp"
 
 **The difference**: Specificity. Good hypotheses make specific, testable claims.
-</principle>
 
-<how_to_form>
+## How To Form
 **Process for forming hypotheses**:
 
 1. **Observe the behavior precisely**
@@ -41,7 +39,7 @@ A good hypothesis can be proven wrong. If you can't design an experiment that co
    - If hypothesis X is true, I should see Y
    - If hypothesis X is false, I should see Z
 
-<example>
+### Example
 **Observation**: Button click sometimes saves data, sometimes doesn't.
 
 **Vague hypothesis**: "The save isn't working reliably"
@@ -59,11 +57,9 @@ A good hypothesis can be proven wrong. If you can't design an experiment that co
 3. "The save is successful but the UI doesn't update because the response is being ignored"
    - Testable: Check if API returns success
    - Falsifiable: If UI updates on successful response, this is wrong
-</example>
-</how_to_form>
 
 
-<experimental_design>
+## Experimental Design
 An experiment is a test that produces evidence supporting or refuting a hypothesis.
 
 **Good experiments**:
@@ -78,7 +74,7 @@ An experiment is a test that produces evidence supporting or refuting a hypothes
 - Rely on subjective judgment
 - Can't be reproduced
 
-<framework>
+### Framework
 For each hypothesis, design an experiment:
 
 **1. Prediction**: If hypothesis H is true, then I will observe X
@@ -89,9 +85,8 @@ For each hypothesis, design an experiment:
 **6. Observe the result**: Record what actually happened
 **7. Conclude**: Does this support or refute H?
 
-</framework>
 
-<example>
+### Example
 **Hypothesis**: "The component is re-rendering excessively because the parent is passing a new object reference on every render"
 
 **1. Prediction**: If true, the component will re-render even when the object's values haven't changed
@@ -120,11 +115,9 @@ For each hypothesis, design an experiment:
    ```
 
 **7. Conclude**: CONFIRMED. New object every parent render → child re-renders
-</example>
-</experimental_design>
 
 
-<evidence_quality>
+## Evidence Quality
 Not all evidence is equal. Learn to distinguish strong from weak evidence.
 
 **Strong evidence**:
@@ -139,7 +132,7 @@ Not all evidence is equal. Learn to distinguish strong from weak evidence.
 - Ambiguous ("Something seems off")
 - Confounded ("It works after I restarted the server and cleared the cache and updated the package")
 
-<examples>
+### Examples
 **Strong**:
 ```javascript
 console.log('User ID:', userId); // Output: User ID: undefined
@@ -166,11 +159,9 @@ for (let i = 0; i < 100; i++) {
 **Weak**:
 "It usually works, but sometimes fails"
 ❌ Not quantified, no pattern identified
-</examples>
-</evidence_quality>
 
 
-<decision_point>
+## Decision Point
 Don't act too early (premature fix) or too late (analysis paralysis).
 
 **Act when you can answer YES to all**:
@@ -199,7 +190,7 @@ Don't act too early (premature fix) or too late (analysis paralysis).
 - "Let me try changing Y and see" - Random changes, not hypothesis-driven
 - "I'll fix it and if it works, great" - Outcome-based, not understanding-based
 
-<example>
+### Example
 **Too early** (don't act):
 - Hypothesis: "Maybe the API is slow"
 - Evidence: None, just a guess
@@ -214,11 +205,9 @@ Don't act too early (premature fix) or too late (analysis paralysis).
   - Logged app behavior: crashes on accessing undefined status
 - Action: Add defensive check for missing status field
 - Result: Bug fixed because you understood the cause
-</example>
-</decision_point>
 
 
-<recovery>
+## Recovery
 You will be wrong sometimes. This is normal. The skill is recovering gracefully.
 
 **When your hypothesis is disproven**:
@@ -245,7 +234,7 @@ You will be wrong sometimes. This is normal. The skill is recovering gracefully.
    - You're not your ideas
    - Being wrong quickly is better than being wrong slowly
 
-<example>
+### Example
 **Initial hypothesis**: "The memory leak is caused by event listeners not being cleaned up"
 
 **Experiment**: Check Chrome DevTools for listener counts
@@ -258,16 +247,14 @@ You will be wrong sometimes. This is normal. The skill is recovering gracefully.
 4. ✅ "New hypothesis: Large arrays are being cached and never released. Let me test by checking the heap for array sizes..."
 
 This is good debugging. Wrong hypothesis, quick recovery, better understanding.
-</example>
-</recovery>
 
 
-<multiple_hypotheses>
+## Multiple Hypotheses
 Don't fall in love with your first hypothesis. Generate multiple alternatives.
 
 **Strategy**: "Strong inference" - Design experiments that differentiate between competing hypotheses.
 
-<example>
+### Example
 **Problem**: Form submission fails intermittently
 
 **Competing hypotheses**:
@@ -304,11 +291,9 @@ try {
 - Fails at [2] with 429 status → Hypothesis 4
 
 **One experiment, differentiates between four hypotheses.**
-</example>
-</multiple_hypotheses>
 
 
-<workflow>
+## Workflow
 ```
 1. Observe unexpected behavior
      ↓
@@ -330,10 +315,9 @@ try {
 ```
 
 **Key insight**: This is a loop, not a line. You'll cycle through multiple times. That's expected.
-</workflow>
 
 
-<pitfalls>
+## Pitfalls
 
 **Pitfall: Testing multiple hypotheses at once**
 - You change three things and it works
@@ -358,9 +342,8 @@ try {
 - Under pressure, you start making random changes
 - "Let me just try this..."
 - Solution: Double down on rigor when pressure increases
-</pitfalls>
 
-<excellence>
+## Excellence
 **Great debuggers**:
 - Form multiple competing hypotheses
 - Design clever experiments that differentiate between them
@@ -370,4 +353,3 @@ try {
 - Understand the mechanism, not just the symptom
 
 This is the difference between guessing and debugging.
-</excellence>

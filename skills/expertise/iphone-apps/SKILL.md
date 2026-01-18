@@ -3,8 +3,9 @@ name: build-iphone-apps
 description: Build professional native iPhone apps in Swift with SwiftUI and UIKit. Full lifecycle - build, debug, test, optimize, ship. CLI-only, no Xcode. Targets iOS 26 with iOS 18 compatibility.
 ---
 
-<essential_principles>
-## How We Work
+## Essential Principles
+
+### How We Work
 
 **The user is the product owner. Claude is the developer.**
 
@@ -60,9 +61,8 @@ Right: "Before I start, does X mean Y or Z?"
 ### 6. Always Leave It Working
 
 Every stopping point = working state. Tests pass, app launches, changes committed. The user can walk away anytime and come back to something that works.
-</essential_principles>
 
-<intake>
+## Intake
 **Ask the user:**
 
 What would you like to do?
@@ -75,9 +75,8 @@ What would you like to do?
 7. Something else
 
 **Then read the matching workflow from `workflows/` and follow it.**
-</intake>
 
-<routing>
+## Routing
 | Response | Workflow |
 |----------|----------|
 | 1, "new", "create", "build", "start" | `workflows/build-new-app.md` |
@@ -87,10 +86,10 @@ What would you like to do?
 | 5, "slow", "optimize", "performance", "fast" | `workflows/optimize-performance.md` |
 | 6, "ship", "release", "TestFlight", "App Store" | `workflows/ship-app.md` |
 | 7, other | Clarify, then select workflow or references |
-</routing>
 
-<verification_loop>
-## After Every Change
+## Verification Loop
+
+### After Every Change
 
 ```bash
 # 1. Does it build?
@@ -109,10 +108,10 @@ Report to the user:
 - "Build: ✓"
 - "Tests: 12 pass, 0 fail"
 - "App launches in simulator, ready for you to check [specific thing]"
-</verification_loop>
 
-<when_to_test>
-## Testing Decision
+## When to Test
+
+### Testing Decision
 
 **Write a test when:**
 - Logic that must be correct (calculations, transformations, rules)
@@ -128,10 +127,10 @@ Report to the user:
 - One-off verification (launch and check manually)
 
 **The principle:** Tests let the user verify correctness without reading code. If the user needs to verify it works, and it's not purely visual, write a test.
-</when_to_test>
 
-<reference_index>
-## Domain Knowledge
+## Reference Index
+
+### Domain Knowledge
 
 All in `references/`:
 
@@ -141,10 +140,10 @@ All in `references/`:
 **Quality:** polish-and-ux, accessibility, performance
 **Assets & Security:** app-icons, security, app-store
 **Development:** project-scaffolding, cli-workflow, cli-observability, testing, ci-cd
-</reference_index>
 
-<workflows_index>
-## Workflows
+## Workflows Index
+
+### Workflows
 
 All in `workflows/`:
 
@@ -156,4 +155,3 @@ All in `workflows/`:
 | write-tests.md | Write and run tests |
 | optimize-performance.md | Profile and speed up |
 | ship-app.md | TestFlight, App Store submission |
-</workflows_index>

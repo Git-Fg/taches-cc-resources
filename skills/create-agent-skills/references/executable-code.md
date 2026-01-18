@@ -1,28 +1,28 @@
-<when_to_use_scripts>
+## When to Use Scripts
 Even if Claude could write a script, pre-made scripts offer advantages:
 - More reliable than generated code
 - Save tokens (no need to include code in context)
 - Save time (no code generation required)
 - Ensure consistency across uses
 
-<execution_vs_reference>
+### Execution vs Reference
 Make clear whether Claude should:
 - **Execute the script** (most common): "Run `analyze_form.py` to extract fields"
 - **Read it as reference** (for complex logic): "See `analyze_form.py` for the extraction algorithm"
 
 For most utility scripts, execution is preferred.
-</execution_vs_reference>
 
-<how_scripts_work>
+
+### How Scripts Work
 When Claude executes a script via bash:
 1. Script code never enters context window
 2. Only script output consumes tokens
 3. Far more efficient than having Claude generate equivalent code
-</how_scripts_work>
-</when_to_use_scripts>
 
-<file_organization>
-<scripts_directory>
+
+
+## File Organization
+### Scripts Directory
 **Best practice**: Place all executable scripts in a `scripts/` subdirectory within the skill folder.
 
 ```
@@ -47,11 +47,11 @@ skill-name/
 ```bash
 python ~/.claude/skills/skill-name/scripts/analyze.py input.har
 ```
-</scripts_directory>
-</file_organization>
 
-<utility_scripts_pattern>
-<example>
+
+
+## Utility Scripts Pattern
+### Example
 ## Utility scripts
 
 **analyze_form.py**: Extract all form fields from PDF
@@ -80,13 +80,13 @@ python scripts/validate_boxes.py fields.json
 ```bash
 python scripts/fill_form.py input.pdf fields.json output.pdf
 ```
-</example>
-</utility_scripts_pattern>
 
-<solve_dont_punt>
+
+
+## Solve, Don't Punt
 Handle error conditions rather than punting to Claude.
 
-<example type="good">
+#### Good Example
 ```python
 def process_file(path):
     """Process a file, creating it if it doesn't exist."""
@@ -102,20 +102,20 @@ def process_file(path):
         print(f"Cannot access {path}, using default")
         return ''
 ```
-</example>
 
-<example type="bad">
+
+#### Bad Example
 ```python
 def process_file(path):
     # Just fail and let Claude figure it out
     return open(path).read()
 ```
-</example>
 
-<configuration_values>
+
+### Configuration Values
 Document configuration parameters to avoid "voodoo constants":
 
-<example type="good">
+#### Good Example
 ```python
 # HTTP requests typically complete within 30 seconds
 REQUEST_TIMEOUT = 30
@@ -123,28 +123,28 @@ REQUEST_TIMEOUT = 30
 # Three retries balances reliability vs speed
 MAX_RETRIES = 3
 ```
-</example>
 
-<example type="bad">
+
+#### Bad Example
 ```python
 TIMEOUT = 47  # Why 47?
 RETRIES = 5   # Why 5?
 ```
-</example>
-</configuration_values>
-</solve_dont_punt>
 
-<package_dependencies>
-<runtime_constraints>
+
+
+
+## Package Dependencies
+### Runtime Constraints
 Skills run in code execution environment with platform-specific limitations:
 - **claude.ai**: Can install packages from npm and PyPI
 - **Anthropic API**: No network access and no runtime package installation
-</runtime_constraints>
 
-<guidance>
+
+### Guidance
 List required packages in your SKILL.md and verify they're available.
 
-<example type="good">
+#### Good Example
 Install required package: `pip install pypdf`
 
 Then use it:
@@ -153,23 +153,23 @@ Then use it:
 from pypdf import PdfReader
 reader = PdfReader("file.pdf")
 ```
-</example>
 
-<example type="bad">
+
+#### Bad Example
 "Use the pdf library to process the file."
-</example>
-</guidance>
-</package_dependencies>
 
-<mcp_tool_references>
+
+
+
+## MCP Tool References
 If your Skill uses MCP (Model Context Protocol) tools, always use fully qualified tool names.
 
-<format>ServerName:tool_name</format>
+### FormatServerName:tool_name
 
-<examples>
+### Examples
 - Use the BigQuery:bigquery_schema tool to retrieve table schemas.
 - Use the GitHub:create_issue tool to create issues.
-</examples>
+
 
 Without the server prefix, Claude may fail to locate the tool, especially when multiple MCP servers are available.
-</mcp_tool_references>
+

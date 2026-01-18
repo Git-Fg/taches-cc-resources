@@ -103,12 +103,11 @@ Milestones mark shipped versions. They solve the "what happens after v1.0?" prob
 
 ---
 
-<details>
+## Details
 <summary>Original Vision (v1.0 - Archived)</summary>
 
 [Original brief content]
 
-</details>
 ```
 
 **ROADMAP.md updated:**
@@ -122,7 +121,7 @@ Milestones mark shipped versions. They solve the "what happens after v1.0?" prob
 
 ## Phases
 
-<details>
+## Details
 <summary>✅ v1.0 MVP (Phases 1-4) - SHIPPED 2025-11-25</summary>
 
 - [x] Phase 1: Foundation
@@ -130,7 +129,6 @@ Milestones mark shipped versions. They solve the "what happens after v1.0?" prob
 - [x] Phase 3: Polish
 - [x] Phase 4: Launch
 
-</details>
 
 ### 🚧 v1.1 Hardening (In Progress)
 
@@ -143,21 +141,19 @@ Milestones mark shipped versions. They solve the "what happens after v1.0?" prob
 When planning Phase 5, the PLAN.md automatically gets context:
 
 ```markdown
-<context>
+## Context
 @.planning/BRIEF.md                      # Knows: v1.0 shipped, codebase exists
 @.planning/MILESTONES.md                 # Knows: what v1.0 delivered
 @AppName/NetworkManager.swift            # Existing code to improve
 @AppName/APIClient.swift                 # Existing code to fix
-</context>
 
-<tasks>
+## Tasks
 <task type="auto">
   <name>Add comprehensive error handling to NetworkManager</name>
   <files>AppName/NetworkManager.swift</files>
   <action>Existing NetworkManager has basic try/catch. Add: retry logic (3 attempts with exponential backoff), specific error types (NetworkError enum), user-friendly error messages. Maintain existing public API - internal improvements only.</action>
   <verify>Build succeeds, existing tests pass, new error tests pass</verify>
   <done>All network calls have retry logic, error messages are user-friendly</done>
-</task>
 ```
 
 **Key difference from greenfield:**
@@ -205,15 +201,13 @@ When planning Phase 5, the PLAN.md automatically gets context:
 
 ## Phases
 
-<details>
+### Details
 <summary>✅ v1.0 MVP (Phases 1-4)</summary>
 [Collapsed]
-</details>
 
-<details>
+### Details
 <summary>✅ v1.1 Hardening (Phases 5-6)</summary>
 [Collapsed]
-</details>
 
 ### 🚧 v2.0 SwiftUI Redesign (In Progress)
 
@@ -363,50 +357,44 @@ Starting new work?
 
 ### Greenfield Plan (v1.0):
 ```markdown
-<objective>
+### Objective
 Create authentication system from scratch.
-</objective>
 
-<context>
+### Context
 @.planning/BRIEF.md
 @.planning/ROADMAP.md
-</context>
 
-<tasks>
+### Tasks
 <task type="auto">
   <name>Create User model</name>
   <files>src/models/User.ts</files>
   <action>Create User interface with id, email, passwordHash, createdAt fields. Export from models/index.</action>
   <verify>TypeScript compiles, User type exported</verify>
   <done>User model exists and is importable</done>
-</task>
 ```
 
 ### Brownfield Plan (v1.1):
 ```markdown
-<objective>
+#### Objective
 Add MFA to existing authentication system.
-</objective>
 
-<context>
+#### Context
 @.planning/BRIEF.md              # Shows v1.0 shipped, auth exists
 @.planning/MILESTONES.md         # Shows what v1.0 delivered
 @src/models/User.ts              # Existing User model
 @src/auth/AuthService.ts         # Existing auth logic
-</context>
 
-<tasks>
+#### Tasks
 <task type="auto">
   <name>Add MFA fields to User model</name>
   <files>src/models/User.ts</files>
   <action>Add to existing User interface: mfaEnabled (boolean), mfaSecret (string | null), mfaBackupCodes (string[]). Maintain backward compatibility - all new fields optional or have defaults.</action>
   <verify>TypeScript compiles, existing User usages still work</verify>
   <done>User model has MFA fields, no breaking changes</done>
-</task>
 
 <task type="checkpoint:human-verify" gate="blocking">
   <what-built>MFA enrollment flow</what-built>
-  <how-to-verify>
+  ##### How To Verify
     1. Run: npm run dev
     2. Login as existing user (test@example.com)
     3. Navigate to Settings → Security
@@ -415,9 +403,7 @@ Add MFA to existing authentication system.
     6. Enter code - should enable successfully
     7. Logout, login again - should prompt for MFA code
     8. Verify: existing users without MFA can still login (backward compat)
-  </how-to-verify>
   <resume-signal>Type "approved" or describe issues</resume-signal>
-</task>
 ```
 
 **Key differences:**

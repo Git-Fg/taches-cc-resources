@@ -3,21 +3,22 @@ description: Solve problems backwards - what would guarantee failure?
 argument-hint: [goal or leave blank for current context]
 ---
 
-<objective>
+## Objective
+
 Apply inversion thinking to $ARGUMENTS (or the current discussion if no arguments provided).
 
 Instead of asking "How do I succeed?", ask "What would guarantee failure?" then avoid those things.
-</objective>
 
-<process>
+## Process
+
 1. State the goal or desired outcome
 2. Invert: "What would guarantee I fail at this?"
 3. List all failure modes (be thorough and honest)
 4. For each failure mode, identify the avoidance strategy
 5. Build success plan by systematically avoiding failure
-</process>
 
-<output_format>
+## Output Format
+
 **Goal:** [what success looks like]
 
 **Guaranteed Failure Modes:**
@@ -34,12 +35,11 @@ By simply not doing [X, Y, Z], success becomes much more likely because...
 
 **Remaining Risk:**
 [What's left after avoiding obvious failures]
-</output_format>
 
-<success_criteria>
+## Success Criteria
+
 - Failure modes are specific and realistic
 - Avoidance strategies are actionable
 - Surfaces risks that optimistic planning misses
 - Creates clear "never do" boundaries
 - Shows path to success via negativa
-</success_criteria>

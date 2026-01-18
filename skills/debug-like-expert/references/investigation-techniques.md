@@ -1,7 +1,6 @@
 
-<overview>
+## Overview
 These are systematic approaches to narrowing down bugs. Each technique is a tool in your debugging toolkit. The skill is knowing which tool to use when.
-</overview>
 
 
 <technique name="binary_search">
@@ -17,7 +16,7 @@ These are systematic approaches to narrowing down bugs. Each technique is a tool
 4. **Repeat**: Cut that half in half, test again
 5. **Converge**: Keep halving until you find the exact line
 
-<example>
+## Example
 Problem: API request returns wrong data
 
 1. Test: Does the data leave the database correctly? YES
@@ -27,8 +26,6 @@ Problem: API request returns wrong data
 5. **Found it**: Bug is in the serialization layer
 
 You just eliminated 90% of the code in 4 tests.
-</example>
-</technique>
 
 <technique name="comment_out_bisection">
 **Variant**: Commenting out code to find the breaking change.
@@ -39,7 +36,6 @@ You just eliminated 90% of the code in 4 tests.
 4. Converge on the problematic lines
 
 **Warning**: Only works for code you can safely comment out. Don't use for initialization code.
-</technique>
 
 
 <technique name="rubber_duck">
@@ -65,10 +61,8 @@ Write or say out loud:
 
 Often you'll spot the bug mid-explanation: "Wait, I never actually verified that B returns what I think it does."
 
-<example>
+## Example
 "So when the user clicks the button, it calls handleClick, which dispatches an action, which... wait, does the reducer actually handle this action type? Let me check... Oh. The reducer is looking for 'UPDATE_USER' but I'm dispatching 'USER_UPDATE'."
-</example>
-</technique>
 
 
 <technique name="minimal_reproduction">
@@ -92,7 +86,7 @@ Often you'll spot the bug mid-explanation: "Wait, I never actually verified that
 4. **Repeat** until you have the bare minimum
 5. **The bug is now obvious** in the stripped-down code
 
-<example>
+## Example
 Start with: 500-line React component with 15 props, 8 hooks, 3 contexts
 
 End with:
@@ -109,8 +103,6 @@ function MinimalRepro() {
 ```
 
 The bug was hidden in complexity. Minimal reproduction made it obvious.
-</example>
-</technique>
 
 
 <technique name="working_backwards">
@@ -128,7 +120,7 @@ The bug was hidden in complexity. Minimal reproduction made it obvious.
 4. **Repeat backwards** through the call stack
 5. **Find the divergence point**: Where does expected vs actual first differ?
 
-<example>
+## Example
 Problem: UI shows "User not found" when user exists
 
 Trace backwards:
@@ -139,8 +131,6 @@ Trace backwards:
 5. **Found it**: The user ID is 'undefined' (string) instead of a number
 
 Working backwards revealed the bug was in how the ID was passed to the query.
-</example>
-</technique>
 
 
 <technique name="differential_debugging">
@@ -171,7 +161,7 @@ Working backwards revealed the bug was in how the ID was passed to the query.
 3. **Find the difference that causes the failure**
 4. **That difference reveals the root cause**
 
-<example>
+## Example
 Works locally, fails in CI:
 
 Differences:
@@ -183,8 +173,6 @@ Test: Set local timezone to UTC (like CI)
 Result: Now fails locally too
 
 **Found it**: Date comparison logic assumes local timezone
-</example>
-</technique>
 
 
 <technique name="observability_first">
@@ -234,7 +222,6 @@ console.log('[updateUser] Called from:', new Error().stack);
 5. **Only then** make changes
 
 Don't code in the dark. Light up the execution path first.
-</technique>
 
 
 <technique name="comment_out_everything">
@@ -250,7 +237,7 @@ Don't code in the dark. Light up the execution path first.
 
 **Variant**: For config files, reset to defaults and add back one setting at a time.
 
-<example>
+## Example
 Problem: Some middleware breaks requests, but you have 8 middleware functions.
 
 ```javascript
@@ -261,8 +248,6 @@ app.use(bodyParser.json({ limit: '50mb' })); // Uncomment, test → BREAKS
 
 // Found it: Body size limit too high causes memory issues
 ```
-</example>
-</technique>
 
 
 <technique name="git_bisect">
@@ -287,17 +272,15 @@ git bisect good
 
 **Why it's powerful**: Turns "it broke sometime in the last 100 commits" into "it broke in commit abc123" in ~7 tests (log₂ 100 ≈ 7).
 
-<example>
+## Example
 100 commits between working and broken
 Manual testing: 100 commits to check
 Git bisect: 7 commits to check
 
 Time saved: Massive
-</example>
-</technique>
 
 
-<decision_tree>
+## Decision Tree
 **Large codebase, many files**:
 → Binary search / Divide and conquer
 
@@ -321,9 +304,8 @@ Time saved: Massive
 
 **Always**:
 → Observability first before making changes
-</decision_tree>
 
-<combining_techniques>
+## Combining Techniques
 Often you'll use multiple techniques together:
 
 1. **Differential debugging** to identify what changed
@@ -334,4 +316,3 @@ Often you'll use multiple techniques together:
 6. **Working backwards** to find the root cause
 
 Techniques compose. Use as many as needed.
-</combining_techniques>

@@ -22,11 +22,9 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 ```xml
 <task type="checkpoint:human-verify" gate="blocking">
   <what-built>[What Claude automated and deployed/built]</what-built>
-  <how-to-verify>
+  ## How To Verify
     [Exact steps to test - URLs, commands, expected behavior]
-  </how-to-verify>
   <resume-signal>[How to continue - "approved", "yes", or describe issues]</resume-signal>
-</task>
 ```
 
 **Key elements:**
@@ -42,18 +40,15 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
   <action>Run `vercel --yes` to create project and deploy. Capture deployment URL from output.</action>
   <verify>vercel ls shows deployment, curl {url} returns 200</verify>
   <done>App deployed, URL captured</done>
-</task>
 
 <task type="checkpoint:human-verify" gate="blocking">
   <what-built>Deployed to Vercel at https://myapp-abc123.vercel.app</what-built>
-  <how-to-verify>
+  ## How To Verify
     Visit https://myapp-abc123.vercel.app and confirm:
     - Homepage loads without errors
     - Login form is visible
     - No console errors in browser DevTools
-  </how-to-verify>
   <resume-signal>Type "approved" to continue, or describe issues to fix</resume-signal>
-</task>
 ```
 
 **Example: UI Component**
@@ -64,20 +59,17 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
   <action>Create dashboard with sidebar, header, and content area. Use Tailwind responsive classes for mobile.</action>
   <verify>npm run build succeeds, no TypeScript errors</verify>
   <done>Dashboard component builds without errors</done>
-</task>
 
 <task type="checkpoint:human-verify" gate="blocking">
   <what-built>Responsive dashboard layout at /dashboard</what-built>
-  <how-to-verify>
+  ## How To Verify
     1. Run: npm run dev
     2. Visit: http://localhost:3000/dashboard
     3. Desktop (>1024px): Verify sidebar left, content right, header top
     4. Tablet (768px): Verify sidebar collapses to hamburger
     5. Mobile (375px): Verify single column, bottom nav
     6. Check: No layout shift, no horizontal scroll
-  </how-to-verify>
   <resume-signal>Type "approved" or describe layout issues</resume-signal>
-</task>
 ```
 
 **Example: Xcode Build**
@@ -88,19 +80,16 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
   <action>Run `xcodebuild -project App.xcodeproj -scheme App build`. Check for compilation errors in output.</action>
   <verify>Build output contains "BUILD SUCCEEDED", no errors</verify>
   <done>App builds successfully</done>
-</task>
 
 <task type="checkpoint:human-verify" gate="blocking">
   <what-built>Built macOS app at DerivedData/Build/Products/Debug/App.app</what-built>
-  <how-to-verify>
+  ## How To Verify
     Open App.app and test:
     - App launches without crashes
     - Menu bar icon appears
     - Preferences window opens correctly
     - No visual glitches or layout issues
-  </how-to-verify>
   <resume-signal>Type "approved" or describe issues</resume-signal>
-</task>
 ```
 
 ### 2. `checkpoint:decision`
@@ -119,20 +108,16 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 <task type="checkpoint:decision" gate="blocking">
   <decision>[What's being decided]</decision>
   <context>[Why this decision matters]</context>
-  <options>
+  ## Options
     <option id="option-a">
       <name>[Option name]</name>
       <pros>[Benefits]</pros>
       <cons>[Tradeoffs]</cons>
-    </option>
     <option id="option-b">
       <name>[Option name]</name>
       <pros>[Benefits]</pros>
       <cons>[Tradeoffs]</cons>
-    </option>
-  </options>
   <resume-signal>[How to indicate choice]</resume-signal>
-</task>
 ```
 
 **Key elements:**
@@ -145,28 +130,22 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 ```xml
 <task type="checkpoint:decision" gate="blocking">
   <decision>Select authentication provider</decision>
-  <context>
+  ## Context
     Need user authentication for the app. Three solid options with different tradeoffs.
-  </context>
-  <options>
+  ## Options
     <option id="supabase">
       <name>Supabase Auth</name>
       <pros>Built-in with Supabase DB we're using, generous free tier, row-level security integration</pros>
       <cons>Less customizable UI, tied to Supabase ecosystem</cons>
-    </option>
     <option id="clerk">
       <name>Clerk</name>
       <pros>Beautiful pre-built UI, best developer experience, excellent docs</pros>
       <cons>Paid after 10k MAU, vendor lock-in</cons>
-    </option>
     <option id="nextauth">
       <name>NextAuth.js</name>
       <pros>Free, self-hosted, maximum control, widely adopted</pros>
       <cons>More setup work, you manage security updates, UI is DIY</cons>
-    </option>
-  </options>
   <resume-signal>Select: supabase, clerk, or nextauth</resume-signal>
-</task>
 ```
 
 ### 3. `checkpoint:human-action` (Rare)
@@ -192,13 +171,11 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 ```xml
 <task type="checkpoint:human-action" gate="blocking">
   <action>[What human must do - Claude already did everything automatable]</action>
-  <instructions>
+  ## Instructions
     [What Claude already automated]
     [The ONE thing requiring human action]
-  </instructions>
   <verification>[What Claude can check afterward]</verification>
   <resume-signal>[How to continue]</resume-signal>
-</task>
 ```
 
 **Key principle:** Claude automates EVERYTHING possible first, only asks human for the truly unavoidable manual step.
@@ -210,17 +187,14 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
   <action>Use SendGrid API to create subuser account with provided email. Request verification email.</action>
   <verify>API returns 201, account created</verify>
   <done>Account created, verification email sent</done>
-</task>
 
 <task type="checkpoint:human-action" gate="blocking">
   <action>Complete email verification for SendGrid account</action>
-  <instructions>
+  ## Instructions
     I created the account and requested verification email.
     Check your inbox for SendGrid verification link and click it.
-  </instructions>
   <verification>SendGrid API key works: curl test succeeds</verification>
   <resume-signal>Type "done" when email verified</resume-signal>
-</task>
 ```
 
 **Example: Credit Card 3D Secure**
@@ -230,17 +204,14 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
   <action>Use Stripe API to create payment intent for $99. Generate checkout URL.</action>
   <verify>Stripe API returns payment intent ID and URL</verify>
   <done>Payment intent created</done>
-</task>
 
 <task type="checkpoint:human-action" gate="blocking">
   <action>Complete 3D Secure authentication</action>
-  <instructions>
+  ## Instructions
     I created the payment intent: https://checkout.stripe.com/pay/cs_test_abc123
     Visit that URL and complete the 3D Secure verification flow with your test card.
-  </instructions>
   <verification>Stripe webhook receives payment_intent.succeeded event</verification>
   <resume-signal>Type "done" when payment completes</resume-signal>
-</task>
 ```
 
 **Example: Authentication Gate (Dynamic Checkpoint)**
@@ -250,20 +221,17 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
   <files>.vercel/, vercel.json</files>
   <action>Run `vercel --yes` to deploy</action>
   <verify>vercel ls shows deployment, curl returns 200</verify>
-</task>
 
 <!-- If vercel returns "Error: Not authenticated", Claude creates checkpoint on the fly -->
 
 <task type="checkpoint:human-action" gate="blocking">
   <action>Authenticate Vercel CLI so I can continue deployment</action>
-  <instructions>
+  ## Instructions
     I tried to deploy but got authentication error.
     Run: vercel login
     This will open your browser - complete the authentication flow.
-  </instructions>
   <verification>vercel whoami returns your account email</verification>
   <resume-signal>Type "done" when authenticated</resume-signal>
-</task>
 
 <!-- After authentication, Claude retries the deployment -->
 
@@ -271,7 +239,6 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
   <name>Retry Vercel deployment</name>
   <action>Run `vercel --yes` (now authenticated)</action>
   <verify>vercel ls shows deployment, curl returns 200</verify>
-</task>
 ```
 
 **Key distinction:** Authentication gates are created dynamically when Claude encounters auth errors during automation. They're NOT pre-planned - Claude tries to automate first, only asks for credentials when blocked.
@@ -408,32 +375,27 @@ Bad placement:
 <task type="auto">
   <name>Deploy to Vercel</name>
   <files>.vercel/, vercel.json, package.json</files>
-  <action>
+  ## Action
     1. Run `vercel --yes` to create project and deploy
     2. Capture deployment URL from output
     3. Set environment variables with `vercel env add`
     4. Trigger production deployment with `vercel --prod`
-  </action>
-  <verify>
+  ## Verify
     - vercel ls shows deployment
     - curl {url} returns 200
     - Environment variables set correctly
-  </verify>
   <done>App deployed to production, URL captured</done>
-</task>
 
 <!-- Human verifies visual/functional correctness -->
 <task type="checkpoint:human-verify" gate="blocking">
   <what-built>Deployed to https://myapp.vercel.app</what-built>
-  <how-to-verify>
+  ## How To Verify
     Visit https://myapp.vercel.app and confirm:
     - Homepage loads correctly
     - All images/assets load
     - Navigation works
     - No console errors
-  </how-to-verify>
   <resume-signal>Type "approved" or describe issues</resume-signal>
-</task>
 ```
 
 ### Example 2: Database Setup (Correct)
@@ -443,19 +405,16 @@ Bad placement:
 <task type="auto">
   <name>Create Upstash Redis database</name>
   <files>.env</files>
-  <action>
+  ## Action
     1. Run `upstash redis create myapp-cache --region us-east-1`
     2. Capture connection URL from output
     3. Write to .env: UPSTASH_REDIS_URL={url}
     4. Verify connection with test command
-  </action>
-  <verify>
+  ## Verify
     - upstash redis list shows database
     - .env contains UPSTASH_REDIS_URL
     - Test connection succeeds
-  </verify>
   <done>Redis database created and configured</done>
-</task>
 
 <!-- NO CHECKPOINT NEEDED - Claude automated everything and verified programmatically -->
 ```
@@ -467,29 +426,24 @@ Bad placement:
 <task type="auto">
   <name>Configure Stripe webhooks</name>
   <files>.env, src/app/api/webhooks/route.ts</files>
-  <action>
+  ## Action
     1. Use Stripe API to create webhook endpoint pointing to /api/webhooks
     2. Subscribe to events: payment_intent.succeeded, customer.subscription.updated
     3. Save webhook signing secret to .env
     4. Implement webhook handler in route.ts
-  </action>
-  <verify>
+  ## Verify
     - Stripe API returns webhook endpoint ID
     - .env contains STRIPE_WEBHOOK_SECRET
     - curl webhook endpoint returns 200
-  </verify>
   <done>Stripe webhooks configured and handler implemented</done>
-</task>
 
 <!-- Human verifies in Stripe dashboard -->
 <task type="checkpoint:human-verify" gate="blocking">
   <what-built>Stripe webhook configured via API</what-built>
-  <how-to-verify>
+  ## How To Verify
     Visit Stripe Dashboard > Developers > Webhooks
     Confirm: Endpoint shows https://myapp.com/api/webhooks with correct events
-  </how-to-verify>
   <resume-signal>Type "yes" if correct</resume-signal>
-</task>
 ```
 
 ## Anti-Patterns
@@ -499,15 +453,13 @@ Bad placement:
 ```xml
 <task type="checkpoint:human-action" gate="blocking">
   <action>Deploy to Vercel</action>
-  <instructions>
+  ## Instructions
     1. Visit vercel.com/new
     2. Import Git repository
     3. Click Deploy
     4. Copy deployment URL
-  </instructions>
   <verification>Deployment exists</verification>
   <resume-signal>Paste URL</resume-signal>
-</task>
 ```
 
 **Why bad:** Vercel has a CLI. Claude should run `vercel --yes`.
@@ -519,13 +471,11 @@ Bad placement:
   <name>Deploy to Vercel</name>
   <action>Run `vercel --yes`. Capture URL.</action>
   <verify>vercel ls shows deployment, curl returns 200</verify>
-</task>
 
 <task type="checkpoint:human-verify">
   <what-built>Deployed to {url}</what-built>
   <how-to-verify>Visit {url}, check homepage loads</how-to-verify>
   <resume-signal>Type "approved"</resume-signal>
-</task>
 ```
 
 ### ❌ BAD: Too many checkpoints
@@ -552,7 +502,6 @@ Bad placement:
   <what-built>Complete auth flow (schema + API + UI)</what-built>
   <how-to-verify>Test full flow: register, login, access protected page</how-to-verify>
   <resume-signal>Type "approved"</resume-signal>
-</task>
 ```
 
 ### ❌ BAD: Asking for automatable file operations
@@ -560,12 +509,10 @@ Bad placement:
 ```xml
 <task type="checkpoint:human-action">
   <action>Create .env file</action>
-  <instructions>
+  ## Instructions
     1. Create .env in project root
     2. Add: DATABASE_URL=...
     3. Add: STRIPE_KEY=...
-  </instructions>
-</task>
 ```
 
 **Why bad:** Claude has Write tool. This should be `type="auto"`.

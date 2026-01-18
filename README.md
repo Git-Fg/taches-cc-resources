@@ -70,7 +70,7 @@ Commands install globally to `~/.claude/commands/`. Skills install to `~/.claude
 
 Separate analysis from execution. Describe what you want in natural language, Claude generates a rigorous prompt, then runs it in a fresh sub-agent context.
 
-- [`/create-prompt`](./commands/create-prompt.md) - Generate optimized prompts with XML structure
+- [`/create-prompt`](./commands/create-prompt.md) - Generate optimized prompts with Markdown structure
 - [`/run-prompt`](./commands/run-prompt.md) - Execute saved prompts in sub-agent contexts
 
 ### Todo Management

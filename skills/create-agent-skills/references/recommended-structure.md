@@ -2,7 +2,7 @@
 
 The optimal structure for complex skills separates routing, workflows, and knowledge.
 
-<structure>
+## Structure
 ```
 skill-name/
 ├── SKILL.md              # Router + essential principles (unavoidable)
@@ -15,9 +15,9 @@ skill-name/
     ├── reference-b.md
     └── ...
 ```
-</structure>
 
-<why_this_works>
+
+## Why This Works
 ## Problems This Solves
 
 **Problem 1: Context gets skipped**
@@ -35,9 +35,9 @@ A "build" task loads debugging references. A "debug" task loads build references
 **Problem 4: Procedures mixed with knowledge**
 "How to do X" mixed with "What X means" creates confusion.
 **Solution:** Workflows are procedures (steps). References are knowledge (patterns, examples).
-</why_this_works>
 
-<skill_md_template>
+
+## SKILL.md Template
 ## SKILL.md Template
 
 ```markdown
@@ -96,9 +96,9 @@ All domain knowledge in `references/`:
 | option-c.md | [What it does] |
 </workflows_index>
 ```
-</skill_md_template>
 
-<workflow_template>
+
+## Workflow Template
 ## Workflow Template
 
 ```markdown
@@ -128,9 +128,9 @@ This workflow is complete when:
 - [ ] Criterion 3
 </success_criteria>
 ```
-</workflow_template>
 
-<when_to_use_this_pattern>
+
+## When to Use This Pattern
 ## When to Use This Pattern
 
 **Use router + workflows + references when:**
@@ -144,9 +144,9 @@ This workflow is complete when:
 - Small reference set
 - Under 200 lines total
 - No essential principles to enforce
-</when_to_use_this_pattern>
 
-<key_insight>
+
+## Key Insight
 ## The Key Insight
 
 **SKILL.md is always loaded. Use this guarantee.**
@@ -165,4 +165,4 @@ Put reusable knowledge in references/:
 - Patterns and examples
 - Technical details
 - Domain expertise
-</key_insight>
+

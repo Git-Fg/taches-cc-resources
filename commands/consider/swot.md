@@ -3,22 +3,23 @@ description: Map strengths, weaknesses, opportunities, and threats
 argument-hint: [subject or leave blank for current context]
 ---
 
-<objective>
+## Objective
+
 Apply SWOT analysis to $ARGUMENTS (or the current discussion if no arguments provided).
 
 Map internal factors (strengths/weaknesses) and external factors (opportunities/threats) to inform strategy.
-</objective>
 
-<process>
+## Process
+
 1. Define the subject being analyzed (project, decision, position)
 2. Identify internal strengths (advantages you control)
 3. Identify internal weaknesses (disadvantages you control)
 4. Identify external opportunities (favorable conditions you don't control)
 5. Identify external threats (unfavorable conditions you don't control)
 6. Develop strategies that leverage strengths toward opportunities while mitigating weaknesses and threats
-</process>
 
-<output_format>
+## Output Format
+
 **Subject:** [what's being analyzed]
 
 **Strengths (Internal +)**
@@ -38,12 +39,11 @@ Map internal factors (strengths/weaknesses) and external factors (opportunities/
 - **WO Strategy:** Address [weakness] to enable [opportunity]
 - **ST Strategy:** Use [strength] to counter [threat]
 - **WT Strategy:** Minimize [weakness] to avoid [threat]
-</output_format>
 
-<success_criteria>
+## Success Criteria
+
 - Correctly categorizes internal vs. external factors
 - Factors are specific and actionable, not generic
 - Strategies connect multiple quadrants
 - Provides clear direction for action
 - Balances optimism with risk awareness
-</success_criteria>
