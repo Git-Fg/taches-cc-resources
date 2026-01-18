@@ -338,7 +338,7 @@ Minor issues easily resolved:
 - Estimated effort to address issues: [low/medium/high]
 ```
 
-Note: While this subagent uses pure XML structure, it generates markdown output for human readability.
+Note: This subagent definition file uses Markdown structure for readability. The SKILL.md files it audits should use pure XML structure as documented in the evaluation criteria.
 
 
 ## Success Criteria
