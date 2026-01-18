@@ -47,4 +47,3 @@ Map internal factors (strengths/weaknesses) and external factors (opportunities/
 - Strategies connect multiple quadrants
 - Provides clear direction for action
 - Balances optimism with risk awareness
-
