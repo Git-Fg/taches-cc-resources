@@ -3,22 +3,23 @@ description: Apply Eisenhower matrix (urgent/important) to prioritize tasks or d
 argument-hint: [tasks or leave blank for current context]
 ---
 
-<objective>
+## Objective
+
 Apply the Eisenhower matrix to $ARGUMENTS (or the current discussion if no arguments provided).
 
 Categorize items by urgency and importance to clarify what to do now, schedule, delegate, or eliminate.
-</objective>
 
-<process>
+## Process
+
 1. List all tasks, decisions, or items in scope
 2. Evaluate each on two axes:
    - Important: Contributes to long-term goals/values
    - Urgent: Requires immediate attention, has deadline pressure
 3. Place each item in appropriate quadrant
 4. Provide specific action for each quadrant
-</process>
 
-<output_format>
+## Output Format
+
 **Q1: Do First** (Important + Urgent)
 - Item: [specific action, deadline if applicable]
 
@@ -33,13 +34,12 @@ Categorize items by urgency and importance to clarify what to do now, schedule, 
 
 **Immediate Focus:**
 Single sentence on what to tackle right now.
-</output_format>
 
-<success_criteria>
+## Success Criteria
+
 - Every item clearly placed in one quadrant
 - Q1 items have specific next actions
 - Q2 items have scheduling recommendations
 - Q3 items have delegation or minimization strategies
 - Q4 items explicitly marked as droppable
 - Reduces overwhelm by creating clear action hierarchy
-</success_criteria>
