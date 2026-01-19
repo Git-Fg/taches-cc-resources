@@ -20,8 +20,9 @@ Dream big. Happy building.
 - **Thinking Models**: Mental frameworks (first principles, inversion, 80/20, etc.)
 - **Deep Analysis**: Systematic debugging methodology with evidence and hypothesis testing
 
-**[Skills](#skills)** (7 total) - Autonomous workflows that research, generate, and self-heal
+**[Skills](#skills)** (8 total) - Autonomous workflows that research, generate, and self-heal
 - **Create Plans**: Hierarchical project planning for solo developer + Claude workflows
+- **Create MCP Servers**: Build MCP servers for Claude integrations (Python/TypeScript)
 - **Create Agent Skills**: Build new skills by describing what you want
 - **Create Meta-Prompts**: Generate staged workflow prompts with dependency detection
 - **Create Slash Commands**: Build custom commands with proper structure
@@ -196,6 +197,16 @@ Commands: `/create-subagent`, `/audit-subagent`
 Build event-driven automation that triggers on tool calls, session events, or prompt submissions. Describe what you want to automate, get working hook configurations.
 
 Commands: `/create-hook`
+
+### [Create MCP Servers](./skills/create-mcp-servers/)
+
+Build Model Context Protocol (MCP) servers that expose tools, resources, and prompts to Claude. Supports Python and TypeScript implementations with API research, OAuth handling, and response optimization.
+
+**Architecture patterns:** Traditional (1-2 operations) or on-demand discovery (3+ operations) based on complexity.
+
+**Includes:** Adaptive intake, API research via subagent, code generation from templates, environment variable security, and installation in Claude Code + Claude Desktop.
+
+Commands: `/create-mcp-servers` (via skill routing)
 
 ### [Debug Like Expert](./skills/debug-like-expert/)
 
