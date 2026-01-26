@@ -1,219 +1,239 @@
 #!/bin/bash
-# Ralph Wiggum Loop - Docker Mode
-# Runs Claude Code in isolated container with your OAuth credentials
+# Ralph Docker Loop
+# Runs Claude in isolated container, backup/git runs on HOST
 
 set -e
 
 # Configuration
-MODEL="${RALPH_MODEL:-opus}"
 IMAGE_NAME="ralph-loop"
-CONTAINER_NAME="ralph-$$"
-PLAN_FILE="IMPLEMENTATION_PLAN.md"
+PROJECT_DIR="$(pwd)"
+PROJECT_NAME=$(basename "$PROJECT_DIR")
+BACKUP_ENABLED="${RALPH_BACKUP:-true}"
+MODEL="${RALPH_MODEL:-opus}"
 
-# Check for OAuth token
+# Validate model against whitelist (security: prevents command injection)
+validate_model() {
+  local model="$1"
+  case "$model" in
+    opus|sonnet|haiku) return 0 ;;
+    *)
+      echo "Error: Invalid model '$model'. Allowed: opus, sonnet, haiku"
+      exit 1
+      ;;
+  esac
+}
+validate_model "$MODEL"
+PLAN_FILE="IMPLEMENTATION_PLAN.md"
+LOG_FILE="ralph.log"
+
+# SAFETY: Verify PROJECT_DIR is safe to mount
+if [ -z "$PROJECT_DIR" ] || [ "$PROJECT_DIR" = "/" ] || [ "$PROJECT_DIR" = "$HOME" ]; then
+  echo "FATAL: Refusing to mount unsafe directory: $PROJECT_DIR"
+  echo "Run this script from inside a project directory, not ~ or /"
+  exit 1
+fi
+
+# Verify we're in a Ralph project
+if [ ! -f "PROMPT_build.md" ] && [ ! -f "PROMPT_plan.md" ]; then
+  echo "FATAL: Not a Ralph project directory (no PROMPT_*.md files)"
+  echo "Run /setup-ralph first or cd into a Ralph project"
+  exit 1
+fi
+
+# Load OAuth token (with security checks)
+TOKEN_FILE="$HOME/.claude-oauth-token"
 if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
-  if [ -f "$HOME/.claude-oauth-token" ]; then
-    CLAUDE_CODE_OAUTH_TOKEN=$(cat "$HOME/.claude-oauth-token")
+  if [ -f "$TOKEN_FILE" ]; then
+    # Security: Check file permissions (should be 600 or more restrictive)
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      TOKEN_PERMS=$(stat -f %Lp "$TOKEN_FILE" 2>/dev/null)
+    else
+      TOKEN_PERMS=$(stat -c %a "$TOKEN_FILE" 2>/dev/null)
+    fi
+
+    if [ -n "$TOKEN_PERMS" ] && [ "$((TOKEN_PERMS % 100))" -ne 0 ]; then
+      echo "⚠️  Security warning: $TOKEN_FILE has insecure permissions ($TOKEN_PERMS)"
+      echo "   Run: chmod 600 $TOKEN_FILE"
+      echo ""
+    fi
+
+    CLAUDE_CODE_OAUTH_TOKEN=$(cat "$TOKEN_FILE")
   else
-    echo "❌ Error: No OAuth token found"
-    echo ""
-    echo "Set up your token:"
-    echo "  1. Run: claude setup-token"
-    echo "  2. Save token to ~/.claude-oauth-token"
-    echo "     OR set CLAUDE_CODE_OAUTH_TOKEN env var"
-    echo ""
+    echo "Error: No OAuth token found"
+    echo "Run 'claude setup-token' and save to ~/.claude-oauth-token"
+    echo "Then: chmod 600 ~/.claude-oauth-token"
     exit 1
   fi
 fi
 
-# Parse arguments
-MODE="build"
-LIMIT=""
+# Handle --build-image flag
+if [ "$1" = "--build-image" ]; then
+  echo "Building Docker image..."
+  docker build -t "$IMAGE_NAME" .
+  echo "Image built: $IMAGE_NAME"
+  exit 0
+fi
 
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    plan)
-      MODE="plan"
-      shift
-      ;;
-    [0-9]*)
-      LIMIT=$1
-      shift
-      ;;
-    --build-image)
-      echo "Building Docker image..."
-      docker build -t "$IMAGE_NAME" .
-      echo "✅ Image built"
-      exit 0
-      ;;
-    --model)
-      MODEL=$2
-      shift 2
-      ;;
-    *)
-      echo "Usage: $0 [plan] [limit] [--build-image] [--model opus|sonnet]"
-      echo ""
-      echo "Examples:"
-      echo "  $0                  # Build mode, unlimited"
-      echo "  $0 20               # Build mode, max 20 iterations"
-      echo "  $0 plan             # Plan mode"
-      echo "  $0 --build-image    # Build Docker image first"
-      exit 1
-      ;;
-  esac
-done
-
-# Check if image exists, build if not
+# Check if image exists
 if ! docker image inspect "$IMAGE_NAME" &>/dev/null; then
   echo "Docker image not found. Building..."
   docker build -t "$IMAGE_NAME" .
 fi
 
+# Parse arguments
+MODE="build"
+LIMIT=""
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    plan) MODE="plan"; shift ;;
+    [0-9]*) LIMIT=$1; shift ;;
+    --model) MODEL=$2; validate_model "$MODEL"; shift 2 ;;
+    *) shift ;;
+  esac
+done
+
 # ============================================================================
-# ITERATION SUMMARY
+# REMOTE BACKUP (runs on HOST with your gh auth)
 # ============================================================================
 
-print_iteration_summary() {
-  local iteration_start="$1"
-  local iteration_end=$(date +%s)
-  local duration=$((iteration_end - iteration_start))
-  local mins=$((duration / 60))
-  local secs=$((duration % 60))
-
-  # Get the last commit (if any new one was made)
-  local last_commit=$(git log -1 --format="%h %s" 2>/dev/null || echo "")
-  local last_commit_time=$(git log -1 --format="%ct" 2>/dev/null || echo "0")
-
-  # Check if commit was made during this iteration
-  local commit_msg=""
-  if [ "$last_commit_time" -ge "$iteration_start" ]; then
-    commit_msg="$last_commit"
+setup_remote_backup() {
+  if [ "$BACKUP_ENABLED" != "true" ]; then
+    echo "Remote backup: disabled (set RALPH_BACKUP=true to enable)"
+    return 0
   fi
 
-  # Get files changed in last commit
-  local files_new=0
-  local files_modified=0
-  local new_files=""
-  local modified_files=""
-
-  if [ -n "$commit_msg" ]; then
-    new_files=$(git diff-tree --no-commit-id --name-status -r HEAD 2>/dev/null | grep "^A" | cut -f2 || echo "")
-    modified_files=$(git diff-tree --no-commit-id --name-status -r HEAD 2>/dev/null | grep "^M" | cut -f2 || echo "")
-    files_new=$(echo "$new_files" | grep -c . 2>/dev/null || echo "0")
-    files_modified=$(echo "$modified_files" | grep -c . 2>/dev/null || echo "0")
+  if [ ! -d ".git" ]; then
+    echo "Initializing git..."
+    git init
+    git add -A
+    git commit -m "Initial commit" 2>/dev/null || true
   fi
 
-  # Get progress
-  local completed=$(grep -c '^\s*- \[x\]' "$PLAN_FILE" 2>/dev/null || echo "0")
-  local total_tasks=$(grep -c '^\s*- \[' "$PLAN_FILE" 2>/dev/null || echo "0")
-  local pct=0
-  if [ "$total_tasks" -gt 0 ]; then
-    pct=$((completed * 100 / total_tasks))
+  if git remote get-url origin &>/dev/null; then
+    echo "Remote backup: $(git remote get-url origin)"
+    return 0
   fi
 
-  echo ""
-  echo "━━━ Iteration $ITERATION Complete (${mins}m ${secs}s) ━━━"
+  if ! command -v gh &>/dev/null; then
+    echo "Warning: gh CLI not found. Backup disabled."
+    BACKUP_ENABLED="false"
+    return 1
+  fi
 
-  if [ -n "$commit_msg" ]; then
-    echo "✅ Commit: $commit_msg"
-    echo "📁 Files: +$files_new new, ~$files_modified modified"
+  if ! gh auth status &>/dev/null; then
+    echo "Warning: gh not authenticated. Backup disabled."
+    BACKUP_ENABLED="false"
+    return 1
+  fi
 
-    # Show new files
-    if [ -n "$new_files" ]; then
-      echo "$new_files" | while read -r f; do
-        [ -n "$f" ] && echo "   🆕 $f"
-      done
-    fi
+  local repo_name="${PROJECT_NAME}-ralph-backup"
+  echo "Creating private backup: $repo_name"
 
-    # Show modified files (limit to 5)
-    if [ -n "$modified_files" ]; then
-      echo "$modified_files" | head -5 | while read -r f; do
-        [ -n "$f" ] && echo "   ✏️  $f"
-      done
-      local mod_count=$(echo "$modified_files" | wc -l | tr -d ' ')
-      if [ "$mod_count" -gt 5 ]; then
-        echo "   ... and $((mod_count - 5)) more"
-      fi
-    fi
+  if gh repo create "$repo_name" --private --source=. --push 2>/dev/null; then
+    echo "Remote backup: https://github.com/$(gh api user -q .login)/$repo_name"
   else
-    echo "⚠️  No commit this iteration"
+    echo "Warning: Could not create repo. Backup disabled."
+    BACKUP_ENABLED="false"
   fi
+}
 
-  echo "📊 Progress: $completed/$total_tasks tasks ($pct%)"
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+push_to_backup() {
+  if [ "$BACKUP_ENABLED" = "true" ]; then
+    git add -A 2>/dev/null || true
+    git diff --quiet HEAD 2>/dev/null || git commit -m "Auto-save after iteration $ITERATION" 2>/dev/null || true
+    git push origin HEAD 2>/dev/null && echo "Pushed to backup" || echo "Push failed (continuing)"
+  fi
 }
 
 # ============================================================================
-# MAIN LOOP
+# COMPLETION DETECTION (runs on HOST)
 # ============================================================================
 
-# Select prompt file
+check_complete() {
+  if [ ! -f "$PLAN_FILE" ]; then
+    return 1
+  fi
+
+  local incomplete=$(grep -c '^\s*- \[ \]' "$PLAN_FILE" 2>/dev/null || echo "0")
+  if [ "$incomplete" -eq 0 ]; then
+    local completed=$(grep -c '^\s*- \[x\]' "$PLAN_FILE" 2>/dev/null || echo "0")
+    [ "$completed" -gt 0 ] && return 0
+  fi
+  return 1
+}
+
+# ============================================================================
+# MAIN
+# ============================================================================
+
+# Select prompt
 if [ "$MODE" = "plan" ]; then
   PROMPT_FILE="PROMPT_plan.md"
-  echo "🧠 Ralph Planning Mode (Docker)"
+  echo "Ralph Planning Mode (Docker)"
 else
   PROMPT_FILE="PROMPT_build.md"
-  echo "🔨 Ralph Building Mode (Docker)"
+  echo "Ralph Building Mode (Docker)"
 fi
 
 if [ ! -f "$PROMPT_FILE" ]; then
-  echo "❌ Error: $PROMPT_FILE not found"
+  echo "Error: $PROMPT_FILE not found"
   exit 1
 fi
 
+echo "Project: $PROJECT_DIR"
 echo "Model: $MODEL"
-echo "Container: isolated"
-if [ -n "$LIMIT" ]; then
-  echo "Limit: $LIMIT iterations"
-else
-  echo "Limit: unlimited (Ctrl+C to stop)"
-fi
-echo ""
-echo "Starting loop..."
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+[ -n "$LIMIT" ] && echo "Limit: $LIMIT" || echo "Limit: until complete"
 echo ""
 
-# Run the loop
+setup_remote_backup
+echo ""
+echo "Starting loop..."
+echo "---"
+
+echo "=== Ralph Docker $(date '+%Y-%m-%d %H:%M:%S') ===" > "$LOG_FILE"
+
 ITERATION=0
 while true; do
   ITERATION=$((ITERATION + 1))
-  ITERATION_START=$(date +%s)
 
-  echo "📍 Iteration $ITERATION - $(date '+%Y-%m-%d %H:%M:%S')"
+  echo ""
+  echo "Iteration $ITERATION - $(date '+%H:%M:%S')"
 
-  # Check limit
-  if [ -n "$LIMIT" ] && [ "$ITERATION" -gt "$LIMIT" ]; then
-    echo ""
-    echo "✅ Reached iteration limit ($LIMIT)"
+  # Check completion (build mode only)
+  if [ "$MODE" = "build" ] && check_complete; then
+    echo "ALL TASKS COMPLETE"
+    push_to_backup
     exit 0
   fi
 
-  # Run Claude in Docker container
-  # Mount only current directory (isolated from host filesystem)
-  # Pass OAuth token via environment variable
-  if docker run --rm \
-    --name "$CONTAINER_NAME" \
-    -e "CLAUDE_CODE_OAUTH_TOKEN=$CLAUDE_CODE_OAUTH_TOKEN" \
-    -v "$(pwd):/workspace" \
-    -w /workspace \
-    "$IMAGE_NAME" \
-    bash -c "cat $PROMPT_FILE | claude --model $MODEL -p --dangerously-skip-permissions"; then
-
-    # Print iteration summary in build mode
-    if [ "$MODE" = "build" ]; then
-      print_iteration_summary "$ITERATION_START"
-    else
-      echo "✓ Iteration $ITERATION complete"
-    fi
-  else
-    EXIT_CODE=$?
-    echo ""
-    echo "❌ Claude exited with code $EXIT_CODE"
-    echo "Stopping loop"
-    exit $EXIT_CODE
+  # Check limit
+  if [ -n "$LIMIT" ] && [ "$ITERATION" -gt "$LIMIT" ]; then
+    echo "Reached limit ($LIMIT)"
+    push_to_backup
+    exit 0
   fi
 
-  echo ""
+  # Run single iteration in Docker
+  # Container runs ONE iteration, then exits
+  # Backup runs on HOST after container exits
+  # Note: MODEL is already validated against whitelist above
+  if docker run --rm \
+    -v "$PROJECT_DIR:/workspace" \
+    -w /workspace \
+    -e "CLAUDE_CODE_OAUTH_TOKEN=$CLAUDE_CODE_OAUTH_TOKEN" \
+    "$IMAGE_NAME" \
+    bash -c "cat '$PROMPT_FILE' | claude --model '$MODEL' -p --dangerously-skip-permissions --output-format text" \
+    2>&1 | tee -a "$LOG_FILE"; then
+
+    echo "Iteration $ITERATION complete"
+
+    # Push to backup ON HOST (has gh auth)
+    push_to_backup
+  else
+    echo "Claude exited with error"
+    push_to_backup
+    exit 1
+  fi
 
   sleep 1
 done

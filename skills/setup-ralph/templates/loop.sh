@@ -4,23 +4,72 @@
 
 set -e  # Exit on error
 
+# Verify Claude CLI is installed
+if ! command -v claude &>/dev/null; then
+  echo "Error: Claude CLI not found"
+  echo "Install with: npm install -g @anthropic-ai/claude-code"
+  exit 1
+fi
+
+# Cross-platform sed -i wrapper (macOS vs Linux compatibility)
+sed_i() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
+
 # Configuration
 MODEL="${RALPH_MODEL:-opus}"
 VERBOSE="${RALPH_VERBOSE:-false}"
+
+# Validate model against whitelist (security: prevents command injection)
+validate_model() {
+  local model="$1"
+  case "$model" in
+    opus|sonnet|haiku) return 0 ;;
+    *)
+      echo "Error: Invalid model '$model'. Allowed: opus, sonnet, haiku"
+      exit 1
+      ;;
+  esac
+}
+validate_model "$MODEL"
 MAX_STUCK="${RALPH_MAX_STUCK:-3}"  # Max failures on same task before skipping
 PLAN_FILE="IMPLEMENTATION_PLAN.md"
 REPORT_FILE="REPORT.md"
 LOG_FILE="ralph.log"
 START_TIME=$(date +%s)
+BACKUP_ENABLED="${RALPH_BACKUP:-true}"  # Push to remote after each commit
+PROJECT_NAME=$(basename "$(pwd)")
 
-# Load OAuth token for headless mode
-if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ] && [ -f "$HOME/.claude-oauth-token" ]; then
-  export CLAUDE_CODE_OAUTH_TOKEN=$(cat "$HOME/.claude-oauth-token")
+# Load OAuth token for headless mode (with security checks)
+TOKEN_FILE="$HOME/.claude-oauth-token"
+if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ] && [ -f "$TOKEN_FILE" ]; then
+  # Security: Check file permissions (should be 600 or more restrictive)
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    TOKEN_PERMS=$(stat -f %Lp "$TOKEN_FILE" 2>/dev/null)
+  else
+    TOKEN_PERMS=$(stat -c %a "$TOKEN_FILE" 2>/dev/null)
+  fi
+
+  if [ -n "$TOKEN_PERMS" ]; then
+    # Check if group or others have any permissions
+    if [ "$((TOKEN_PERMS % 100))" -ne 0 ]; then
+      echo "⚠️  Security warning: $TOKEN_FILE has insecure permissions ($TOKEN_PERMS)"
+      echo "   Run: chmod 600 $TOKEN_FILE"
+      echo ""
+    fi
+  fi
+
+  export CLAUDE_CODE_OAUTH_TOKEN=$(cat "$TOKEN_FILE")
 fi
 
 if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
   echo "⚠️  Warning: No OAuth token found. Headless mode may fail."
   echo "   Run 'claude setup-token' and save to ~/.claude-oauth-token"
+  echo "   Then: chmod 600 ~/.claude-oauth-token"
   echo ""
 fi
 
@@ -44,6 +93,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --model)
       MODEL=$2
+      validate_model "$MODEL"
       shift 2
       ;;
     *)
@@ -64,6 +114,72 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+# ============================================================================
+# REMOTE BACKUP SETUP
+# ============================================================================
+
+setup_remote_backup() {
+  if [ "$BACKUP_ENABLED" != "true" ]; then
+    echo "Remote backup: disabled (set RALPH_BACKUP=true to enable)"
+    return 0
+  fi
+
+  # Check if git repo exists
+  if [ ! -d ".git" ]; then
+    echo "Initializing git repository..."
+    git init
+    git add -A
+    git commit -m "Initial commit" 2>/dev/null || true
+  fi
+
+  # Check if remote exists
+  if git remote get-url origin &>/dev/null; then
+    echo "Remote backup: $(git remote get-url origin)"
+    return 0
+  fi
+
+  # Check if gh CLI is available and authenticated
+  if ! command -v gh &>/dev/null; then
+    echo "Warning: gh CLI not found. Remote backup disabled."
+    echo "Install: https://cli.github.com/"
+    BACKUP_ENABLED="false"
+    return 1
+  fi
+
+  if ! gh auth status &>/dev/null; then
+    echo "Warning: gh CLI not authenticated. Remote backup disabled."
+    echo "Run: gh auth login"
+    BACKUP_ENABLED="false"
+    return 1
+  fi
+
+  # Create private backup repo
+  local repo_name="${PROJECT_NAME}-ralph-backup"
+  echo "Creating private backup repo: $repo_name"
+
+  if gh repo create "$repo_name" --private --source=. --push 2>/dev/null; then
+    echo "Remote backup: https://github.com/$(gh api user -q .login)/$repo_name"
+    return 0
+  else
+    echo "Warning: Could not create backup repo. Remote backup disabled."
+    BACKUP_ENABLED="false"
+    return 1
+  fi
+}
+
+push_to_backup() {
+  if [ "$BACKUP_ENABLED" != "true" ]; then
+    return 0
+  fi
+
+  # Push to remote (suppress errors, don't fail the loop)
+  if git push origin HEAD 2>/dev/null; then
+    echo "📤 Pushed to remote backup"
+  else
+    echo "⚠️  Push to remote failed (continuing anyway)"
+  fi
+}
 
 # ============================================================================
 # COMPLETION DETECTION
@@ -107,7 +223,11 @@ STUCK_COUNT=0
 
 init_stuck_tracker() {
   if [ -f "$STUCK_FILE" ]; then
-    source "$STUCK_FILE"
+    # Security: Use safe parsing instead of source (prevents shell injection)
+    LAST_TASK=$(grep "^LAST_TASK=" "$STUCK_FILE" 2>/dev/null | cut -d'"' -f2 || echo "")
+    STUCK_COUNT=$(grep "^STUCK_COUNT=" "$STUCK_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
+    # Ensure STUCK_COUNT is a number
+    [[ "$STUCK_COUNT" =~ ^[0-9]+$ ]] || STUCK_COUNT=0
   else
     LAST_TASK=""
     STUCK_COUNT=0
@@ -139,21 +259,20 @@ skip_stuck_task() {
   echo "Marking as blocked and moving on..."
 
   # Add to blockers section or create it
-  if grep -q "^## Blocked" "$PLAN_FILE" 2>/dev/null; then
-    # Append to existing Blocked section
-    sed -i '' "/^## Blocked/a\\
-- $task (stuck after $MAX_STUCK attempts)
-" "$PLAN_FILE"
-  else
+  # Note: We append to end instead of inserting after header (simpler, more portable)
+  if ! grep -q "^## Blocked" "$PLAN_FILE" 2>/dev/null; then
     # Create Blocked section at end
     echo "" >> "$PLAN_FILE"
     echo "## Blocked" >> "$PLAN_FILE"
     echo "" >> "$PLAN_FILE"
-    echo "- $task (stuck after $MAX_STUCK attempts)" >> "$PLAN_FILE"
   fi
+  echo "- $task (stuck after $MAX_STUCK attempts)" >> "$PLAN_FILE"
 
   # Mark the task as skipped in place (change [ ] to [S])
-  sed -i '' "s/- \[ \] $(echo "$task" | sed 's/[[\.*^$()+?{|]/\\&/g')/- [S] $task/" "$PLAN_FILE"
+  # Escape regex metacharacters in task name for safe substitution
+  local escaped_task
+  escaped_task=$(printf '%s\n' "$task" | sed 's/[[\.*^$()+?{|/]/\\&/g')
+  sed_i "s/- \[ \] ${escaped_task}/- [S] $task/" "$PLAN_FILE"
 
   # Reset stuck counter
   LAST_TASK=""
@@ -362,6 +481,15 @@ if [ "$MODE" = "plan" ]; then
 else
   PROMPT_FILE="PROMPT_build.md"
   echo "Ralph Building Mode"
+
+  # Verify plan file exists before starting build mode
+  if [ ! -f "$PLAN_FILE" ]; then
+    echo ""
+    echo "Error: $PLAN_FILE not found"
+    echo "Run './loop.sh plan' first to generate the implementation plan."
+    exit 1
+  fi
+
   init_stuck_tracker
 fi
 
@@ -372,19 +500,16 @@ if [ ! -f "$PROMPT_FILE" ]; then
   exit 1
 fi
 
-# Build Claude CLI command
-CLAUDE_CMD="claude"
-CLAUDE_CMD="$CLAUDE_CMD --model $MODEL"
-CLAUDE_CMD="$CLAUDE_CMD -p"
-CLAUDE_CMD="$CLAUDE_CMD --dangerously-skip-permissions"
-CLAUDE_CMD="$CLAUDE_CMD --output-format text"
+# Build Claude CLI command as array (security: avoids eval injection)
+CLAUDE_ARGS=("--model" "$MODEL" "-p" "--dangerously-skip-permissions" "--output-format" "text")
 
 if [ "$VERBOSE" = "true" ]; then
-  CLAUDE_CMD="$CLAUDE_CMD --verbose"
+  CLAUDE_ARGS+=("--verbose")
 fi
 
 # Display configuration
 echo "Model: $MODEL"
+echo "Claude args: ${CLAUDE_ARGS[*]}"
 echo "Prompt: $PROMPT_FILE"
 if [ -n "$LIMIT" ]; then
   echo "Limit: $LIMIT iterations"
@@ -393,6 +518,10 @@ else
 fi
 echo "Stuck threshold: $MAX_STUCK failures"
 echo "Log file: $LOG_FILE (tail -f to watch)"
+echo ""
+
+# Setup remote backup (creates private GitHub repo if needed)
+setup_remote_backup
 echo ""
 echo "Starting loop..."
 echo "---"
@@ -443,10 +572,12 @@ while true; do
 
   # Run Claude with prompt (tee to log file for observability)
   # Watch progress: tail -f ralph.log
-  if cat "$PROMPT_FILE" | eval $CLAUDE_CMD 2>&1 | tee -a "$LOG_FILE"; then
+  if cat "$PROMPT_FILE" | claude "${CLAUDE_ARGS[@]}" 2>&1 | tee -a "$LOG_FILE"; then
     # Print iteration summary in build mode
     if [ "$MODE" = "build" ]; then
       print_iteration_summary "$ITERATION_START"
+      # Push to remote backup after each successful iteration
+      push_to_backup
     else
       echo "✓ Iteration $ITERATION complete"
     fi

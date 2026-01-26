@@ -376,7 +376,7 @@ Response format:
 - Do NOT use shallow rendering (use Testing Library)
 - Do NOT test implementation details (test behavior)
 
-## Gotcas
+## Gotchas
 
 ### Dates
 - User input is local time, database stores UTC

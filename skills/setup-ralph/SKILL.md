@@ -35,6 +35,10 @@ The loop feeds a prompt file to Claude, the agent completes one task, updates th
 **Context Efficiency**: With ~176K usable tokens from 200K window, allocating 40-60% to "smart zone" means tight tasks with one task per loop achieves maximum context utilization.
 
 **File I/O as State**: The plan file persists between isolated loop executions, serving as deterministic shared state—no sophisticated orchestration needed.
+
+**Remote Backup**: The loop automatically creates a private GitHub repo and pushes after each commit. This protects against accidental data loss from autonomous operations. Requires `gh` CLI authenticated. Disable with `RALPH_BACKUP=false`.
+
+**Safety Rules**: PROMPT_build.md includes critical safety rules prohibiting dangerous operations like `rm -rf` on project directories. Tests must run in isolated temp directories.
 </essential_principles>
 
 <intake>

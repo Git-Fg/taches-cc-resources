@@ -22,7 +22,28 @@ Check if directory already has Ralph setup:
 - If found, ask: "This directory appears to have Ralph files already. Overwrite? (yes/no)"
 - If no, exit workflow
 
-## Step 3: Gather Project Context
+## Step 3: Security Warning
+
+Display to user before proceeding:
+
+```
+⚠️  SECURITY NOTICE
+
+Ralph runs with --dangerously-skip-permissions, meaning it executes
+commands without confirmation. This is powerful but risky.
+
+RECOMMENDED: Run Ralph in Docker for isolation.
+- Limits filesystem access to project directory
+- Prevents accidental system modifications
+- Sandboxes network and process execution
+
+NON-DOCKER: Run at your own risk.
+- Full access to your system as your user
+- Can modify any files you can modify
+- Only use in trusted, isolated environments
+```
+
+## Step 4: Gather Project Context
 
 Ask the user 2-4 questions using AskUserQuestion:
 
@@ -45,16 +66,16 @@ Ask the user 2-4 questions using AskUserQuestion:
 - No, I'll create them as I go
 - No, help me create initial specs
 
-**Question 5 (Optional):** "Run Ralph in Docker for isolation?"
-- Option 1: **Yes, Docker mode** - Isolated container, requires OAuth token setup
-- Option 2: **No, run directly** - Faster, runs on host (default)
+**Question 5 (Required):** "Run Ralph in Docker for isolation?"
+- Option 1: **Yes, Docker mode (Recommended)** - Isolated container, safer execution, requires OAuth token setup
+- Option 2: **No, run directly** - Faster but runs with full host access. Use at your own risk.
 
 If Docker mode selected, check for OAuth token:
 1. Check `$CLAUDE_CODE_OAUTH_TOKEN` env var
 2. Check `~/.claude-oauth-token` file
 3. If neither found, instruct user: "Run `claude setup-token` and save to ~/.claude-oauth-token"
 
-## Step 4: Create Directory Structure
+## Step 5: Create Directory Structure
 
 Create the following structure in target directory:
 
@@ -77,28 +98,28 @@ mkdir -p specs src
 - `specs/` - Requirement documents (one per topic of concern)
 - `src/` - Application source code
 
-## Step 5: Generate Loop Script
+## Step 6: Generate Loop Script
 
 Use `templates/loop.sh` and customize:
 - Set Claude model (default: `opus` for reasoning, can use `sonnet` for speed)
 - Configure CLI flags based on user preferences
 - Add validation commands based on backpressure choice
 
-## Step 6: Generate Planning Prompt
+## Step 7: Generate Planning Prompt
 
 Use `templates/PROMPT_plan.md` and customize:
 - Adjust subagent counts based on project size
 - Reference appropriate source directories
 - Include project-specific context if provided
 
-## Step 7: Generate Building Prompt
+## Step 8: Generate Building Prompt
 
 Use `templates/PROMPT_build.md` and customize:
 - Set validation commands based on backpressure choice
 - Configure subagent limits
 - Add project-specific build/test instructions
 
-## Step 8: Initialize AGENTS.md
+## Step 9: Initialize AGENTS.md
 
 Create minimal `AGENTS.md`:
 
@@ -122,7 +143,7 @@ Start minimal. Add entries only when Ralph exhibits repeated failures or needs s
 [To be filled as needed]
 ```
 
-## Step 9: Make Loop Executable
+## Step 10: Make Loop Executable
 
 ```bash
 chmod +x loop.sh
@@ -133,7 +154,7 @@ chmod +x loop.sh
 chmod +x loop-docker.sh
 ```
 
-## Step 10: Provide Usage Instructions
+## Step 11: Provide Usage Instructions
 
 Display to user:
 
@@ -208,7 +229,7 @@ Need help? Check references/operational-learnings.md for guidance on:
 - Debugging loops
 ```
 
-## Step 11: Offer Spec Creation Help
+## Step 12: Offer Spec Creation Help
 
 Ask using AskUserQuestion:
 "Would you like help creating initial specification files?"
